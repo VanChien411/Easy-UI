@@ -1,38 +1,40 @@
+html, body {
+  height: 100%;
+  margin: 0;  /* Đảm bảo không có margin mặc định */
+}
 .App {
   text-align: center;
+  height: 100vh;
+  width: 100%;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+main {
+  display: grid;
+  grid-template-areas:
+  "side head head head"
+  "side content content content"
+  "foot foot foot foot";
+  grid-template-rows: 50px auto 50px;
+  height: 100%; /* Thêm chiều cao cho main */
   }
-}
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+  header { grid-area: head; background-color: aquamarine; }
+  article { grid-area: content; }
+  aside { 
+    grid-area: side; 
   }
-  to {
-    transform: rotate(360deg);
+  footer { grid-area: foot; }
+  
+  /* Media query để ẩn sidebar khi màn hình nhỏ */
+  @media screen and (max-width: 768px) {
+    main {
+      grid-template-areas:
+        "head head head head"
+        "content content content content"
+        "foot foot foot foot";
+    }
+  
+    aside {
+      display: none; /* Ẩn sidebar khi màn hình nhỏ */
+    }
   }
-}
