@@ -1,4 +1,5 @@
 import React from "react";
+import Sidebar from "../../components/Layout/Sidebar";
 
 function PageHome() {
   return (
@@ -7,9 +8,10 @@ function PageHome() {
 
       <article> Content </article>
 
-      <aside> Sidebar </aside>
+      <Sidebar />
+      {/* <aside> Sidebar </aside> */}
 
-      <footer> Footer </footer>
+      {/* <footer> Footer </footer> */}
     </main>
   );
 }

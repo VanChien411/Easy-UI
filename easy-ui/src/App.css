@@ -1,6 +1,14 @@
+@import url(https://fonts.googleapis.com/css2?family=Baloo+Bhai+2:wght@400&display=swap);
+@import url(https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.css);
+
 html, body {
   height: 100%;
   margin: 0;  /* Đảm bảo không có margin mặc định */
+  color: #e0e0e0; /* Màu chữ xám nhạt để tương phản với nền tối */
+  background-color: #1a1a1a; /* Màu nền tối hơn cho content */
+  background: #4B0082;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #201629, #000000, #201629);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #201629, #000000, #201629); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
 .App {
   text-align: center;
@@ -12,29 +20,174 @@ main {
   display: grid;
   grid-template-areas:
   "side head head head"
-  "side content content content"
-  "foot foot foot foot";
-  grid-template-rows: 50px auto 50px;
+  "side content content content";
+  grid-template-rows: 50px auto;
+  grid-template-columns: 300px auto; /* Đặt chiều rộng của aside là 300px */
   height: 100%; /* Thêm chiều cao cho main */
+}
+
+header { 
+  grid-area: head; 
+  background-color: rgba(0, 0, 0, 0.2); /* Màu nền đen nhạt hơn với độ trong suốt cao hơn */
+  padding: 10px; /* Thêm khoảng cách bên trong header */
+  border-radius: 5px; /* Bo tròn các góc */
+}
+article { 
+  grid-area: content; 
+  padding: 10px; /* Thêm khoảng cách bên trong content */
+  border-radius: 5px; /* Bo tròn các góc */
+}
+aside { 
+  grid-area: side; 
+  width: 300px; /* Đặt chiều rộng cố định cho sidebar */
+  padding: 10px; /* Thêm khoảng cách bên trong sidebar */
+  border-radius: 5px; /* Bo tròn các góc */
+  position: fixed;
+  min-height: 100vh;
+  /* background: linear-gradient(0deg, black, #1f314b); */
+  color: white;
+  transition: .3s;
+  box-shadow: 0px 0px 15px 0px #00000073;
+  z-index: 1;
+}
+.collapsed aside {
+  width: 40px; /* Đặt chiều rộng khi thu nhỏ */
+}
+
+.menu-btn {
+  /* color: white; */
+  position: absolute;
+  top: 45%;
+  right: -15px; /* Điều chỉnh vị trí của nút menu */
+  padding: 8px;
+  border: none;
+  font-size: 10px;
+  aspect-ratio: 1;
+  border-radius: 5px;
+  cursor: pointer;
+  opacity: 0.2;
+}
+
+.menu-btn:hover {
+  opacity: 1;
+}
+.logo-wrapper {
+  display: flex;
+  overflow: hidden;
+  white-space: nowrap;
+  align-items: center;
+  gap: 15px;
+  padding: 10px;
+}
+
+a {
+  text-decoration: none;
+  color: white;
+}
+
+.fa-uikit:before {
+  font-size: 25px;
+}
+
+.brand-name {
+  font-size: 20px;
+  transition: .3s;
+}
+
+.collapsed .brand-name {
+  width: 0;
+  visibility: hidden;
+  transition-delay: .3s;
+}
+
+.separator {
+  width: 100%;
+  height: 1px;
+  background-color: rgb(171 171 171 / 21%);
+}
+
+ul {
+  list-style: none;
+  padding: 0; /* Xóa khoảng cách lề trái */
+}
+
+.menu-items a {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 10px;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+
+.menu-items a:hover {
+  color: #daddff;
+  background: #00000017;
+  border-radius: 10px;
+}
+
+.menu-items li {
+  position: relative;
+}
+
+.icon {
+  font-size: 20px;
+}
+
+.item-name {
+  transition: .3s;
+}
+
+.collapsed .item-name {
+  width: 0;
+  visibility: hidden;
+  transition-delay: .3s;
+}
+
+.tooltip {
+  position: absolute;
+  right: -25px;
+  top: 50%;
+  color: white;
+  padding: 5px 15px;
+  font-size: 15px;
+  line-height: 1.5;
+  border-radius: 5px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .3s;
+  background-color: rgb(22, 22, 22);
+  transform: translate(100%, -50%);
+}
+
+.collapsed .menu-items a:hover+.tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+
+.tooltip::before {
+  content: "\f0d9";
+  font-family: 'Font Awesome 6 Free';
+  position: absolute;
+  font-weight: 900;
+  left: 0;
+  top: 50%;
+  font-size: 30px;
+  color: #161616;
+  transform: translate(-50%, -50%);
+}
+
+/* Bỏ phần footer đi */
+  
+/* Media query để ẩn sidebar khi màn hình nhỏ */
+@media screen and (max-width: 668px) {
+  main {
+    grid-template-areas:
+      "head head head head"
+      "content content content content";
   }
 
-  header { grid-area: head; background-color: aquamarine; }
-  article { grid-area: content; }
-  aside { 
-    grid-area: side; 
+  aside {
+    display: none; /* Ẩn sidebar khi màn hình nhỏ */
   }
-  footer { grid-area: foot; }
-  
-  /* Media query để ẩn sidebar khi màn hình nhỏ */
-  @media screen and (max-width: 768px) {
-    main {
-      grid-template-areas:
-        "head head head head"
-        "content content content content"
-        "foot foot foot foot";
-    }
-  
-    aside {
-      display: none; /* Ẩn sidebar khi màn hình nhỏ */
-    }
-  }
+}
