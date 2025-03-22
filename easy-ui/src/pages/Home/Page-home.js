@@ -1,10 +1,11 @@
 import React from "react";
 import Sidebar from "../../components/Layout/Sidebar";
+import Header from "../../components/Layout/Header";
 
 function PageHome() {
   return (
     <main>
-      <header> Headerdfdg </header>
+      <Header />
 
       <article> Content </article>
 

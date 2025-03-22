@@ -1,8 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 
 function Sidebar() {
+  const handleMenuClickRef = useRef(null);
+
   useEffect(() => {
     const menuBtn = document.querySelector(".menu-btn");
+
     const handleMenuClick = (e) => {
       document.body.classList.toggle("collapsed");
       e.currentTarget.classList.toggle("fa-chevron-right");
@@ -14,11 +17,36 @@ function Sidebar() {
       });
     };
 
-    menuBtn.addEventListener("click", handleMenuClick);
+    // Lưu tham chiếu tới handleMenuClick vào ref
+    handleMenuClickRef.current = handleMenuClick;
 
-    // Cleanup event listener on component unmount
+    // Handle window resize
+    const handleResize = () => {
+      if (window.innerWidth <= 668) {
+        if (!document.body.classList.contains("collapsed")) {
+          if (menuBtn) {
+            handleMenuClickRef.current({ currentTarget: menuBtn });
+          }
+        }
+      } else {
+        if (document.body.classList.contains("collapsed")) {
+          if (menuBtn) {
+            handleMenuClickRef.current({ currentTarget: menuBtn });
+          }
+        }
+      }
+    };
+
+    menuBtn.addEventListener("click", handleMenuClick);
+    window.addEventListener("resize", handleResize);
+
+    // Initial check
+    handleResize();
+
+    // Cleanup event listeners on component unmount
     return () => {
       menuBtn.removeEventListener("click", handleMenuClick);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
@@ -26,8 +54,15 @@ function Sidebar() {
     e.preventDefault();
     const dropdown = e.currentTarget.parentElement;
     dropdown.classList.toggle("active");
-  };
 
+    // Gọi handleMenuClick trong handleDropdownClick
+    if (document.body.classList.contains("collapsed")) {
+      const menuBtn = document.querySelector(".menu-btn");
+      if (handleMenuClickRef.current) {
+        handleMenuClickRef.current({ currentTarget: menuBtn });
+      }
+    }
+  };
   return (
     <aside>
       <button className="menu-btn fa fa-chevron-left"></button>
