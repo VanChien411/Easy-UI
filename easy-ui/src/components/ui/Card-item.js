@@ -6,7 +6,7 @@ function CardItem() {
       <style>
         {`
           .card {
-            border: 1px solid #ccc;
+            border: 1px solid var(--text-color);
             padding: 16px;
             width: 100%;
             max-width: 250px;

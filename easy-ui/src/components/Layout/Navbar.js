@@ -170,7 +170,7 @@ function Navbar() {
             margin-left: 10px; /* Add margin to separate from search input */
           }
 
-          @media screen and (max-width: 768px) {
+          @media screen and (max-width: 868px) {
             .search-container {
               flex: 1;
               display: flex;
