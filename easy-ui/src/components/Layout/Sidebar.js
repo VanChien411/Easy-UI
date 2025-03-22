@@ -7,6 +7,11 @@ function Sidebar() {
       document.body.classList.toggle("collapsed");
       e.currentTarget.classList.toggle("fa-chevron-right");
       e.currentTarget.classList.toggle("fa-chevron-left");
+
+      // Hide all dropdowns by removing 'active' class
+      document.querySelectorAll(".dropdown").forEach((dropdown) => {
+        dropdown.classList.remove("active");
+      });
     };
 
     menuBtn.addEventListener("click", handleMenuClick);
@@ -16,6 +21,12 @@ function Sidebar() {
       menuBtn.removeEventListener("click", handleMenuClick);
     };
   }, []);
+
+  const handleDropdownClick = (e) => {
+    e.preventDefault();
+    const dropdown = e.currentTarget.parentElement;
+    dropdown.classList.toggle("active");
+  };
 
   return (
     <aside>
@@ -40,11 +51,26 @@ function Sidebar() {
           </a>
           <span className="tooltip">Dashboard</span>
         </li>
-        <li>
-          <a href="https://example.com">
+        <li className="dropdown">
+          <a href="#" onClick={handleDropdownClick}>
             <span className="icon fa fa-chart-line"></span>
             <span className="item-name">Analytics</span>
+            <span className="dropdown-icon fa fa-chevron-down"></span>
           </a>
+          <ul className="dropdown-menu menu-items">
+            <li>
+              <a href="https://example.com">
+                <span className="icon fa fa-chart-pie"></span>
+                <span className="item-name">Sub-item 1</span>
+              </a>
+            </li>
+            <li>
+              <a href="https://example.com">
+                <span className="icon fa fa-chart-bar"></span>
+                <span className="item-name">Sub-item 2</span>
+              </a>
+            </li>
+          </ul>
           <span className="tooltip">Analytics</span>
         </li>
         <li>

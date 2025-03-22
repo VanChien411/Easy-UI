@@ -39,19 +39,24 @@ article {
 }
 aside { 
   grid-area: side; 
-  width: 300px; /* Đặt chiều rộng cố định cho sidebar */
   padding: 10px; /* Thêm khoảng cách bên trong sidebar */
   border-radius: 5px; /* Bo tròn các góc */
   position: fixed;
   min-height: 100vh;
-  /* background: linear-gradient(0deg, black, #1f314b); */
+  width: 280px; /* Đặt chiều rộng của aside là 300px */
   color: white;
   transition: .3s;
   box-shadow: 0px 0px 15px 0px #00000073;
   z-index: 1;
 }
+/* Khi sidebar (aside) thu nhỏ với class 'collapsed' */
+.collapsed main {
+  grid-template-columns: 60px auto; /* Đặt chiều rộng của sidebar (side) thành 40px */
+  transition: .3s;
+}
+
 .collapsed aside {
-  width: 40px; /* Đặt chiều rộng khi thu nhỏ */
+  width: 40px; /* Đặt chiều rộng của sidebar khi thu nhỏ */
 }
 
 .menu-btn {
@@ -122,7 +127,7 @@ ul {
 
 .menu-items a:hover {
   color: #daddff;
-  background: #00000017;
+  background: #6a6a6b17;
   border-radius: 10px;
 }
 
@@ -177,17 +182,54 @@ ul {
   transform: translate(-50%, -50%);
 }
 
+.dropdown {
+  position: relative;
+}
+
+.dropdown a {
+  display: flex;
+  align-items: center;
+  padding-left: 10px; /* Canh lề trái như các phần khác */
+}
+
+.dropdown-icon {
+  margin-left: auto; 
+}
+
+.dropdown-menu {
+  display: none;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.dropdown.active .dropdown-menu {
+  display: block;
+}
+
+.dropdown-menu li a {
+  padding: 10px;
+  padding-left: 40px; /* Cách lề trái 30px */
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  color: #e0e0e0;
+}
+
+.dropdown-menu li a:hover {
+  background-color: #6a6a6b17;
+  border-radius: 10px;
+}
+
 /* Bỏ phần footer đi */
   
 /* Media query để ẩn sidebar khi màn hình nhỏ */
 @media screen and (max-width: 668px) {
   main {
-    grid-template-areas:
-      "head head head head"
-      "content content content content";
+    grid-template-columns: 100px auto; /* Giảm chiều rộng của sidebar (side) khi màn hình nhỏ */
   }
 
   aside {
-    display: none; /* Ẩn sidebar khi màn hình nhỏ */
+    width: 100px; /* Đặt chiều rộng của sidebar khi màn hình nhỏ */
   }
 }
