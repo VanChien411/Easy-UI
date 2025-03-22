@@ -14,6 +14,7 @@ html, body {
   margin: 0;  /* Đảm bảo không có margin mặc định */
   color: var(--text-color);
   background: var(--background-color); /* Use CSS variable for background color */
+  overflow-y: auto;
 }
 .App {
   text-align: center;
@@ -37,7 +38,7 @@ header {
   background-color: rgba(89, 19, 76, 0.2); /* Màu nền đen nhạt hơn với độ trong suốt cao hơn */
   align-content: center;
   border-radius: 5px; /* Bo tròn các góc */
-  position: sticky;
+    position: sticky;
   top: 0;  /* Dính ở trên cùng khi cuộn trang */
   z-index: 1000;  /* Đảm bảo phần tử luôn ở trên cùng */
 }

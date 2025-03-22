@@ -1,17 +1,18 @@
 import React from "react";
 import Sidebar from "../../components/Layout/Sidebar";
 import Header from "../../components/Layout/Header";
+import ListItem from "./List-item";
 
 function PageHome() {
   return (
     <main>
       <Header />
 
-      <article> Content </article>
+      <article>
+        <ListItem />
+      </article>
 
       <Sidebar />
-      {/* <aside> Sidebar </aside> */}
-
       {/* <footer> Footer </footer> */}
     </main>
   );
