@@ -53,25 +53,25 @@ function Navbar() {
             border: 2px solid #6c4f94; /* Màu tím nhạt */
           }
 
-          .search-button {
-            position: absolute;
-            right: 4px; /* Move button closer to the right */
-            top: 50%;
-            transform: translateY(-50%);
-            background: #201629;
-            border: none;
-            color: white;
-            padding: 4px 8px;
-            border-radius: 4px;
-            cursor: pointer;
-            opacity: 0;
-            transition: opacity 0.3s;
-            height: 70%; /* Reduce height */
-          }
+         .search-button {
+          position: absolute;
+          right: 4px; /* Di chuyển nút gần bên phải */
+          top: 50%;
+          transform: translateY(-50%);
+          background: #201629;
+          border: none;
+          color: white;
+          padding: 4px 8px;
+          border-radius: 4px;
+          cursor: pointer;
+          display: none; /* Ẩn nút ban đầu */
+          height: 70%; /* Giảm chiều cao */
+          transition: display 0.3s; /* Thêm transition cho việc thay đổi display */
+        }
 
-          .search-input:focus + .search-button {
-            opacity: 1; /* Show button when input is focused */
-          }
+        .search-input:focus + .search-button {
+          display: block; /* Hiển thị nút khi input được focus */
+        }
 
           .navbar-menu-items {
             display: flex;

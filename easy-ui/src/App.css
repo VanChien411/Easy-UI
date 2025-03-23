@@ -24,6 +24,7 @@ html, body {
   color: var(--text-color);
   background: var(--background-color); /* Use CSS variable for background color */
   overflow-y: auto;
+  overflow-x: hidden;  /* Ẩn thanh cuộn ngang nếu không cần thiết */
 }
 .App {
   text-align: center;

@@ -1,16 +1,14 @@
 import React from "react";
 import Sidebar from "../../components/Layout/Sidebar";
 import Header from "../../components/Layout/Header";
-import ListItem from "./List-item";
 import Footer from "../../components/Layout/Footer";
 
-function PageHome() {
+function PageHome({ children }) {
   return (
     <main>
       <Header />
-
       <article>
-        <ListItem />
+        {children} {/* Nội dung của các route sẽ được render ở đây */}
       </article>
 
       <Sidebar />
