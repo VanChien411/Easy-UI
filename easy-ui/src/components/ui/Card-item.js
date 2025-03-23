@@ -6,32 +6,33 @@ function CardItem() {
       <style>
         {`
           .card {
-            border: 1px solid var(--text-color);
-            padding: 16px;
-            width: 100%;
-            max-width: 250px;
-            transition: transform 0.3s;
+            border: 1px solid var(--card-border-color);
+            padding: 10px; /* 20% smaller */
+            width: 100%; /* 20% smaller */
+            max-width: 400px; /* 20% smaller */
+            min-width: 200px; /* 20% smaller */
+            transition: transform 0.3s, box-shadow 0.3s;
             cursor: pointer;
-            border-radius: 12px;
+            border-radius: 9.6px; /* 20% smaller */
             display: flex;
             flex-direction: column;
+            flex: 1 1 200px; /* Mỗi card sẽ chiếm ít nhất 300px */
+            background-color: var(--background-color-rgba);
           }
-
+          
           .card:hover {
-            transform: scale(1.01);
+            box-shadow: 0 0 15px var(--card-border-color); /* Tăng độ mạnh của bóng */
           }
 
           .row {
             display: flex;
             flex-direction: row;
-            margin-bottom: 16px;
-          }
-
          
+          }
 
           .left-column {
             flex: 1;
-            padding-right: 8px;
+            padding-right: 6.4px; /* 20% smaller */
           }
 
           .right-column {
@@ -39,7 +40,7 @@ function CardItem() {
           }
 
           .image {
-            width: 100%;
+            width: 100%; /* 20% smaller */
           }
 
           .button-container {
@@ -47,30 +48,42 @@ function CardItem() {
             display: flex;
             flex-wrap: wrap;
             align-content: center;
-            gap: 8px;
+            gap: 6.4px; /* 20% smaller */
           }
 
-          .button {
-            padding: 8px 16px;
+          .button-hashtag {
+            padding: 3px 10px; /* 20% smaller */
             cursor: pointer;
-            border-radius: 12px;
+            border-radius: 9.6px; /* 20% smaller */
             transition: background-color 0.3s;
+            border: none;
           }
 
-          .button:hover {
-            background-color: #ddd;
+          .button-html {
+            background-color: var(--button-html-color);
+            color: white;
+        
+          }
+
+          .button-js {
+            background-color: var(--button-js-color);
+            color: black;
+          }
+
+          .button-css {
+            background-color: var(--button-css-color);
+            color: white;
           }
 
           .divider {
-            margin: 16px 0;
+            margin: 10px 0; /* 20% smaller */
           }
         `}
       </style>
       <div className="card">
         <div className="row">
           <div className="left-column">
-            <h2>Product Title</h2>
-            <p>Product description goes here.</p>
+            <p>Product description </p>
           </div>
           <div className="right-column">
             <img
@@ -82,10 +95,10 @@ function CardItem() {
         </div>
         <hr className="divider" />
         <div className="button-container">
-          <button className="button">Buy Now</button>
-          <button className="button">Buy Now</button>
-          <button className="button">Buy Now</button>
-          <button className="button">Buy Now</button>
+          <button className="button-hashtag button-html">Html</button>
+          <button className="button-hashtag button-js">JavaScript</button>
+          <button className="button-hashtag button-css">Css</button>
+          <button className="button-hashtag">Buy Now</button>
         </div>
       </div>
     </>
