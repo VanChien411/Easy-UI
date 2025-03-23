@@ -63,6 +63,14 @@ function Sidebar() {
       }
     }
   };
+
+  const handleMenuItemClick = (e) => {
+    document.querySelectorAll(".menu-items a").forEach((item) => {
+      item.classList.remove("selected");
+    });
+    e.currentTarget.classList.add("selected");
+  };
+
   return (
     <aside>
       <button className="menu-btn fa fa-chevron-left"></button>
@@ -73,34 +81,40 @@ function Sidebar() {
       <div className="separator"></div>
       <ul className="menu-items">
         <li>
-          <a href="https://example.com">
+          <a href="https://example.com" onClick={handleMenuItemClick}>
             <span className="icon fa fa-house"></span>
             <span className="item-name">Home</span>
           </a>
           <span className="tooltip">Home</span>
         </li>
         <li>
-          <a href="https://example.com">
+          <a href="https://example.com" onClick={handleMenuItemClick}>
             <span className="icon fa fa-layer-group"></span>
             <span className="item-name">Dashboard</span>
           </a>
           <span className="tooltip">Dashboard</span>
         </li>
         <li className="dropdown">
-          <a href="#" onClick={handleDropdownClick}>
+          <a
+            href="#"
+            onClick={(e) => {
+              handleDropdownClick(e);
+              handleMenuItemClick(e);
+            }}
+          >
             <span className="icon fa fa-chart-line"></span>
             <span className="item-name">Analytics</span>
             <span className="dropdown-icon fa fa-chevron-down"></span>
           </a>
           <ul className="dropdown-menu menu-items">
             <li>
-              <a href="https://example.com">
+              <a href="#" onClick={handleMenuItemClick}>
                 <span className="icon fa fa-chart-pie"></span>
                 <span className="item-name">Sub-item 1</span>
               </a>
             </li>
             <li>
-              <a href="https://example.com">
+              <a href="https://example.com" onClick={handleMenuItemClick}>
                 <span className="icon fa fa-chart-bar"></span>
                 <span className="item-name">Sub-item 2</span>
               </a>
@@ -109,28 +123,28 @@ function Sidebar() {
           <span className="tooltip">Analytics</span>
         </li>
         <li>
-          <a href="https://example.com">
+          <a href="https://example.com" onClick={handleMenuItemClick}>
             <span className="icon fa fa-chart-simple"></span>
             <span className="item-name">Leaderboard</span>
           </a>
           <span className="tooltip">Leaderboard</span>
         </li>
         <li>
-          <a href="https://example.com">
+          <a href="https://example.com" onClick={handleMenuItemClick}>
             <span className="icon fa fa-user"></span>
             <span className="item-name">Account</span>
           </a>
           <span className="tooltip">Account</span>
         </li>
         <li>
-          <a href="https://example.com">
+          <a href="https://example.com" onClick={handleMenuItemClick}>
             <span className="icon fa fa-gear"></span>
             <span className="item-name">Settings</span>
           </a>
           <span className="tooltip">Settings</span>
         </li>
         <li>
-          <a href="https://example.com">
+          <a href="https://example.com" onClick={handleMenuItemClick}>
             <span className="icon fa fa-comment-dots"></span>
             <span className="item-name">Contact</span>
           </a>

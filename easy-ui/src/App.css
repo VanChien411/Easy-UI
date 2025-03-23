@@ -24,6 +24,7 @@ html, body {
   color: var(--text-color);
   background: var(--background-color); /* Use CSS variable for background color */
   overflow-y: auto;
+  overflow-x: hidden;  /* Ẩn thanh cuộn ngang nếu không cần thiết */
 }
 .App {
   text-align: center;
@@ -35,7 +36,8 @@ main {
   display: grid;
   grid-template-areas:
   "side head head head"
-  "side content content content";
+  "side content content content"
+  "side footer footer footer";
   grid-template-rows: 48px auto;
   grid-template-columns: 240px auto; /* Đặt chiều rộng của aside là 300px */
   height: 80%; /* Thêm chiều cao cho main */
@@ -54,7 +56,10 @@ header {
 article { 
   grid-area: content; 
   padding: 8px; /* Thêm khoảng cách bên trong content */
-  border-radius: 4px; /* Bo tròn các góc */
+}
+footer { 
+  grid-area: footer; 
+
 }
 aside { 
   grid-area: side; 
@@ -151,6 +156,12 @@ ul {
   color: var(--text-color-follow-hover); /* Use CSS variable for text color */
   background: var(--background-color-follow);
   border-radius: 8px;
+}
+
+.menu-items a.selected {
+  background-color: var(--background-color-follow);
+  border-radius: 8px;
+  color: var(--text-color-follow-hover);
 }
 
 .menu-items li {
@@ -277,4 +288,54 @@ ul {
     visibility: visible;
   }
 }
+.footer {
+  grid-area: footer;
+  background-color: var(--background-color-navbar);
+  color: var(--text-color);
+  padding: 32px;
+  text-align: center;
+  border-top: 1px solid var(--card-border-color);
+}
+
+.footer-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); /* Cân đối các phần tử */
+  gap: 32px;
+  justify-items: center; /* Căn giữa các phần tử */
+}
+
+.footer-section h3 {
+  margin-bottom: 12px;
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+.footer-section p, .footer-section ul, .footer-section li {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--text-color);
+  text-align: start;
+}
+
+.social-icons {
+  display: flex;
+  gap: 16px;
+}
+
+.social-icons a {
+  color: var(--text-color);
+  font-size: 20px;
+  transition: color 0.3s;
+}
+
+.social-icons a:hover {
+  color: var(--button-html-color);
+}
+
+.footer-bottom {
+  margin-top: 32px;
+  font-size: 0.875rem;
+  color: var(--text-color);
+}
+
 

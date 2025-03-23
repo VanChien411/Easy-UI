@@ -8,15 +8,11 @@ function CardItem() {
           .card {
             border: 1px solid var(--card-border-color);
             padding: 10px; /* 20% smaller */
-            width: 100%; /* 20% smaller */
             max-width: 400px; /* 20% smaller */
             min-width: 200px; /* 20% smaller */
             transition: transform 0.3s, box-shadow 0.3s;
             cursor: pointer;
-            border-radius: 9.6px; /* 20% smaller */
-            display: flex;
-            flex-direction: column;
-            flex: 1 1 200px; /* Mỗi card sẽ chiếm ít nhất 300px */
+            border-radius: 9.6px; /* 20% smaller */  
             background-color: var(--background-color-rgba);
           }
           

@@ -1,18 +1,29 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import userAvatar from "../../assets/images/avata3d.jpg"; // Import the image
 import { applyTheme, lightTheme, darkTheme } from "../../config/theme"; // Import themes
 
 function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(true); // State for theme toggle
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    // Load theme from localStorage or default to true
+    const savedTheme = localStorage.getItem("isDarkMode");
+    return savedTheme ? JSON.parse(savedTheme) : true;
+  });
+
+  useEffect(() => {
+    // Apply the theme on component mount
+    applyTheme(isDarkMode ? darkTheme : lightTheme);
+  }, [isDarkMode]);
 
   const handleMenuToggle = () => {
     setMenuOpen(!menuOpen);
   };
 
   const handleThemeToggle = () => {
-    setIsDarkMode(!isDarkMode);
-    applyTheme(isDarkMode ? lightTheme : darkTheme);
+    const newTheme = !isDarkMode;
+    setIsDarkMode(newTheme);
+    applyTheme(newTheme ? darkTheme : lightTheme);
+    localStorage.setItem("isDarkMode", JSON.stringify(newTheme)); // Save theme to localStorage
   };
 
   return (
@@ -53,25 +64,25 @@ function Navbar() {
             border: 2px solid #6c4f94; /* Màu tím nhạt */
           }
 
-          .search-button {
-            position: absolute;
-            right: 4px; /* Move button closer to the right */
-            top: 50%;
-            transform: translateY(-50%);
-            background: #201629;
-            border: none;
-            color: white;
-            padding: 4px 8px;
-            border-radius: 4px;
-            cursor: pointer;
-            opacity: 0;
-            transition: opacity 0.3s;
-            height: 70%; /* Reduce height */
-          }
+         .search-button {
+          position: absolute;
+          right: 4px; /* Di chuyển nút gần bên phải */
+          top: 50%;
+          transform: translateY(-50%);
+          background: #201629;
+          border: none;
+          color: white;
+          padding: 4px 8px;
+          border-radius: 4px;
+          cursor: pointer;
+          display: none; /* Ẩn nút ban đầu */
+          height: 70%; /* Giảm chiều cao */
+          transition: display 0.3s; /* Thêm transition cho việc thay đổi display */
+        }
 
-          .search-input:focus + .search-button {
-            opacity: 1; /* Show button when input is focused */
-          }
+        .search-input:focus + .search-button {
+          display: block; /* Hiển thị nút khi input được focus */
+        }
 
           .navbar-menu-items {
             display: flex;
@@ -202,7 +213,7 @@ function Navbar() {
           .fa-moon.theme-toggle {
               color: #4a4a4a; /* Dark gray for moon icon */
           }
-
+         
           @media screen and (max-width: 868px) {
             .search-container {
               flex: 1;
@@ -210,8 +221,7 @@ function Navbar() {
               align-items: center;
               justify-content: space-between; /* Ensure children are spaced evenly */
             }
-            
-          
+           
             .navbar-menu-items , .user-info{
               flex: 100%; /* Make each section take full width */
               justify-content: center; /* Center align each section */
@@ -229,16 +239,22 @@ function Navbar() {
                 menuOpen ? "flex" : "none"
               }; /* Toggle visibility based on menuOpen state */
             }
-
+           
             .user-info {
               display: ${
                 menuOpen ? "flex" : "none"
               }; /* Toggle visibility based on menuOpen state */
             }
-
+            article {
+               filter:  ${
+                 menuOpen ? "blur(2px)" : "none"
+               }; /* Add blur effect to content */
+            }
+          
             .menu-icon {
               display: block; /* Show menu icon on small screens */
             }
+            
           }
         `}
       </style>
