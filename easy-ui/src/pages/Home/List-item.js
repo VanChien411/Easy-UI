@@ -12,11 +12,6 @@ function ListItem() {
     { id: 1, name: "Item 1" },
   ]); // Example items
 
-  const sortItems = () => {
-    // Sorting by id
-    setItems([...items].sort((a, b) => a.id - b.id));
-  };
-
   return (
     <div>
       <style>
@@ -24,10 +19,12 @@ function ListItem() {
           .container {
             display: flex;
             flex-wrap: wrap;
+            flex-direction: row;
             justify-content: center;
             gap: 10px;
             padding: 10px;
             align-content: stretch;
+           
           }
        
           .sort-button {

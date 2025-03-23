@@ -6,6 +6,15 @@
   --background-color: linear-gradient(45deg, #201629, #000000, #201629);
   --background-color-rgba: rgba(32, 22, 41, 1);  
   --text-color: white;
+  --card-border-color: var(--text-color);
+  --button-html-color: #f06529;
+  --button-js-color: #f7df1e;
+  --button-css-color: #2965f1;
+  --background-color-navbar: rgba(101, 101, 237, 0.09);
+  --text-color-follow: #ffffff;
+  --text-color-follow-hover: #ffffff;
+  --background-color-follow: rgba(32, 22, 41, 1);
+
 }
 
 html, body {
@@ -18,7 +27,7 @@ html, body {
 }
 .App {
   text-align: center;
-  height: 100vh;
+  height: 80vh;
   width: 100%;
 }
 
@@ -27,9 +36,9 @@ main {
   grid-template-areas:
   "side head head head"
   "side content content content";
-  grid-template-rows: 60px auto;
-  grid-template-columns: 300px auto; /* Đặt chiều rộng của aside là 300px */
-  height: 100%; /* Thêm chiều cao cho main */
+  grid-template-rows: 48px auto;
+  grid-template-columns: 240px auto; /* Đặt chiều rộng của aside là 300px */
+  height: 80%; /* Thêm chiều cao cho main */
   position: relative; /* Ensure main content is positioned relative */
 }
 
@@ -37,52 +46,53 @@ header {
   grid-area: head; 
   background-color: rgba(89, 19, 76, 0.2); /* Màu nền đen nhạt hơn với độ trong suốt cao hơn */
   align-content: center;
-  border-radius: 5px; /* Bo tròn các góc */
+  border-radius: 4px; /* Bo tròn các góc */
     position: sticky;
   top: 0;  /* Dính ở trên cùng khi cuộn trang */
-  z-index: 1000;  /* Đảm bảo phần tử luôn ở trên cùng */
+  z-index: 4;  /* Đảm bảo phần tử luôn ở trên cùng */
 }
 article { 
   grid-area: content; 
-  padding: 10px; /* Thêm khoảng cách bên trong content */
-  border-radius: 5px; /* Bo tròn các góc */
+  padding: 8px; /* Thêm khoảng cách bên trong content */
+  border-radius: 4px; /* Bo tròn các góc */
 }
 aside { 
   grid-area: side; 
-  padding: 10px; /* Thêm khoảng cách bên trong sidebar */
-  border-radius: 5px; /* Bo tròn các góc */
+  padding: 8px; /* Thêm khoảng cách bên trong sidebar */
+  border-radius: 4px; /* Bo tròn các góc */
   position: fixed;
   min-height: 100vh;
-  width: 280px; /* Đặt chiều rộng của aside là 300px */
-  color: var(--text-color); /* Use CSS variable for text color */
+  width: 224px; /* Đặt chiều rộng của aside là 300px */
   transition: .3s;
-  box-shadow: 0px 0px 15px 0px #00000073;
-  z-index: 2; /* Ensure sidebar is above main content */
+  box-shadow: 0px 0px 7px 0px #00000073;
+  z-index: 5; /* Ensure sidebar is above main content */
   background: var(--background-color); /* Ensure sidebar has a background */
+ 
 }
 /* Khi sidebar (aside) thu nhỏ với class 'collapsed' */
 .collapsed main {
-  grid-template-columns: 60px auto; /* Đặt chiều rộng của sidebar (side) thành 40px */
+  grid-template-columns: 48px auto; /* Đặt chiều rộng của sidebar (side) thành 40px */
   transition: .3s;
 }
 
 .collapsed aside {
-  width: 40px; /* Đặt chiều rộng của sidebar khi thu nhỏ */
+  width: 32px; /* Đặt chiều rộng của sidebar khi thu nhỏ */
 }
 
 .menu-btn {
   /* color: var(--text-color); */
   position: absolute;
-  top: 45%;
-  right: -15px; /* Điều chỉnh vị trí của nút menu */
-  padding: 8px;
+  top: 36%;
+  right: -12px; /* Điều chỉnh vị trí của nút menu */
+  padding: 6.4px;
   border: none;
-  font-size: 10px;
+  font-size: 8px;
   aspect-ratio: 1;
-  border-radius: 5px;
+  border-radius: 4px;
   cursor: pointer;
   opacity: 0.2;
   z-index: 3; /* Ensure menu button is above sidebar */
+
 }
 
 .menu-btn:hover {
@@ -93,21 +103,21 @@ aside {
   overflow: hidden;
   white-space: nowrap;
   align-items: center;
-  gap: 15px;
-  padding: 10px;
+  gap: 12px;
+  padding: 8px;
 }
 
 a {
   text-decoration: none;
-  color: var(--text-color); /* Use CSS variable for text color */
+  color: var(--text-color-follow); /* Use CSS variable for text color */
 }
 
 .fa-uikit:before {
-  font-size: 25px;
+  font-size: 20px;
 }
 
 .brand-name {
-  font-size: 20px;
+  font-size: 16px;
   transition: .3s;
 }
 
@@ -119,7 +129,7 @@ a {
 
 .separator {
   width: 100%;
-  height: 1px;
+  height: 0.8px;
   background-color: rgb(171 171 171 / 21%);
 }
 
@@ -131,16 +141,16 @@ ul {
 .menu-items a {
   display: flex;
   align-items: center;
-  gap: 15px;
-  padding: 10px;
-  margin-bottom: 10px;
+  gap: 12px;
+  padding: 8px;
+  margin-bottom: 8px;
   overflow: hidden;
 }
 
 .menu-items a:hover {
-  color: #daddff;
-  background: #bdbdc017;
-  border-radius: 10px;
+  color: var(--text-color-follow-hover); /* Use CSS variable for text color */
+  background: var(--background-color-follow);
+  border-radius: 8px;
 }
 
 .menu-items li {
@@ -148,7 +158,7 @@ ul {
 }
 
 .icon {
-  font-size: 20px;
+  font-size: 16px;
 }
 
 .item-name {
@@ -163,13 +173,13 @@ ul {
 
 .tooltip {
   position: absolute;
-  right: -25px;
+  right: -20px;
   top: 50%;
   color: var(--text-color); /* Use CSS variable for text color */
-  padding: 5px 15px;
-  font-size: 15px;
+  padding: 4px 12px;
+  font-size: 12px;
   line-height: 1.5;
-  border-radius: 5px;
+  border-radius: 4px;
   opacity: 0;
   visibility: hidden;
   transition: opacity .3s;
@@ -189,7 +199,7 @@ ul {
   font-weight: 900;
   left: 0;
   top: 50%;
-  font-size: 30px;
+  font-size: 24px;
   color: #161616;
   transform: translate(-50%, -50%);
 }
@@ -201,7 +211,7 @@ ul {
 .dropdown a {
   display: flex;
   align-items: center;
-  padding-left: 10px; /* Canh lề trái như các phần khác */
+  padding-left: 8px; /* Canh lề trái như các phần khác */
 }
 
 .dropdown-icon {
@@ -220,18 +230,15 @@ ul {
 }
 
 .dropdown-menu li a {
-  padding: 10px;
-  padding-left: 40px; /* Cách lề trái 30px */
+  padding: 8px;
+  padding-left: 32px; /* Cách lề trái 30px */
   display: flex;
   align-items: center;
-  gap: 15px;
-  color: var(--text-color); /* Use CSS variable for text color */
+  gap: 12px;
+ 
 }
 
-.dropdown-menu li a:hover {
-  background-color: #6a6a6b17;
-  border-radius: 10px;
-}
+
 
 /* Bỏ phần footer đi */
   
@@ -256,15 +263,15 @@ ul {
 /* Media query để hiển thị sidebar khi màn hình lớn */
 @media screen and (min-width: 669px) {
   main {
-    grid-template-columns: 300px auto; /* Đặt chiều rộng của sidebar (side) khi màn hình lớn */
+    grid-template-columns: 240px auto; /* Đặt chiều rộng của sidebar (side) khi màn hình lớn */
   }
   .collapsed main {
-    grid-template-columns: 60px auto; /* Đặt chiều rộng của sidebar (side) khi thu nhỏ */
+    grid-template-columns: 48px auto; /* Đặt chiều rộng của sidebar (side) khi thu nhỏ */
     transition: .3s;
   }
   
   .collapsed aside {
-    width: 40px; /* Đặt chiều rộng của sidebar khi thu nhỏ */
+    width: 32px; /* Đặt chiều rộng của sidebar khi thu nhỏ */
   }
   .collapsed aside a {
     visibility: visible;

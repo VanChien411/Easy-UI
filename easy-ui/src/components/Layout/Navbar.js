@@ -1,11 +1,18 @@
 import React, { useState } from "react";
 import userAvatar from "../../assets/images/avata3d.jpg"; // Import the image
+import { applyTheme, lightTheme, darkTheme } from "../../config/theme"; // Import themes
 
 function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(true); // State for theme toggle
 
   const handleMenuToggle = () => {
     setMenuOpen(!menuOpen);
+  };
+
+  const handleThemeToggle = () => {
+    setIsDarkMode(!isDarkMode);
+    applyTheme(isDarkMode ? lightTheme : darkTheme);
   };
 
   return (
@@ -16,29 +23,29 @@ function Navbar() {
             display: flex;
             justify-content: center;
             align-items: center; /* Center vertically */
-            padding: 5px 10px; /* Reduce padding to make the navbar smaller */
+            padding: 4px 8px; /* Reduce padding to make the navbar smaller */
             margin: 0;
-            height: 80%; /* Reduce height */
+            height: 64%; /* Reduce height */
             flex-wrap: wrap; /* Allow wrapping for responsive design */
             z-index: 1;
           }
           .search-container {
               position: relative;
               width: 100%; /* Đặt chiều rộng là 100% để phần tử co dãn */
-              max-width: 350px; /* Đặt chiều rộng tối đa */
-              margin: 0px 30px;
+              max-width: 280px; /* Đặt chiều rộng tối đa */
+              margin: 0px 24px;
               flex: 1;
-              font-size: 14px;
+              font-size: 11.2px;
               display: flex; /* Ensure children are aligned horizontally */
               align-items: center; /* Center align children vertically */
           }
 
           .search-input {
             width: 100%;
-            padding: 5px 15px; /* Adjust padding */
+            padding: 4px 12px; /* Adjust padding */
             border: 1px solid #ccc;
-            border-radius: 5px;
-            height: 25px; /* Reduce height */
+            border-radius: 4px;
+            height: 20px; /* Reduce height */
             transition: width 0.3s;
           }
 
@@ -48,18 +55,18 @@ function Navbar() {
 
           .search-button {
             position: absolute;
-            right: 5px; /* Move button closer to the right */
+            right: 4px; /* Move button closer to the right */
             top: 50%;
             transform: translateY(-50%);
             background: #201629;
             border: none;
             color: white;
-            padding: 5px 10px;
-            border-radius: 5px;
+            padding: 4px 8px;
+            border-radius: 4px;
             cursor: pointer;
             opacity: 0;
             transition: opacity 0.3s;
-            height: 75%; /* Reduce height */
+            height: 70%; /* Reduce height */
           }
 
           .search-input:focus + .search-button {
@@ -68,11 +75,11 @@ function Navbar() {
 
           .navbar-menu-items {
             display: flex;
-            gap: 10px; /* Reduce gap between menu items */
+            gap: 8px; /* Reduce gap between menu items */
             list-style: none;
             padding: 0;
             margin: 0;
-            height: 100%; /* Make menu items take full height */
+            height: 80%; /* Make menu items take full height */
             align-items: center; /* Center vertically */
             flex: 0; /* Do not allow menu items to grow */
             justify-content: center; /* Center menu items */
@@ -80,7 +87,7 @@ function Navbar() {
 
           .navbar-menu-items li {
             position: relative;
-            width: 40px; /* Initial width */
+            width: 32px; /* Initial width */
             overflow: hidden;
             transition: width 0.3s; /* Smooth transition for width */
           }
@@ -92,20 +99,20 @@ function Navbar() {
           .navbar-menu-items li a {
             display: flex;
             align-items: center;
-            gap: 10px; /* Reduce gap between icon and text */
-            padding: 5px; /* Reduce padding inside menu items */
-            color: var(--text-color);
+            gap: 8px; /* Reduce gap between icon and text */
+            padding: 4px; /* Reduce padding inside menu items */
+            color: var(--text-color-follow);
             text-decoration: none;
           }
 
           .navbar-menu-items li a:hover {
-            color: var(--text-color);
-            background: rgba(101, 101, 237, 0.09);
-            border-radius: 10px;
+            color: var(--text-color-follow-hover);
+            background: var(--background-color-navbar);
+            border-radius: 8px;
           }
 
           .navbar-menu-items li i {
-            font-size: 1.2em; /* Reduce icon size */
+            font-size: 0.96em; /* Reduce icon size */
             transition: 300ms;
             transition-delay: 150ms;
           }
@@ -117,57 +124,83 @@ function Navbar() {
           }
 
           .navbar-menu-items li .text {
-            color: var(--text-color);
-            font-size: 1em; /* Reduce text size */
+            color: var(--text-color-follow);
+            font-size: 0.8em; /* Reduce text size */
             z-index: 1;
-            letter-spacing: 0.024em;
+            letter-spacing: 0.0192em;
             opacity: 0;
             padding-left: 0; /* Adjust padding */
             transition: opacity 0.3s, padding-left 0.3s;
-            letter-spacing: -0.125px;
+            letter-spacing: -0.1px;
           }
 
           .navbar-menu-items li:hover .text {
             opacity: 1; /* Show text on hover */
-            padding: 7px 15px 7px 7px; /* Add padding when hovered */
+            padding: 5.6px 12px 5.6px 5.6px; /* Add padding when hovered */
           }
 
           .user-info {
             display: flex;
             align-items: center;
-            gap: 10px; /* Reduce gap between user avatar and name */
+            gap: 8px; /* Reduce gap between user avatar and name */
             flex: 1; /* Allow user info to grow */
             justify-content: flex-end; /* Align user info to the right */
-            min-width: 200px; /* Minimum width for user info */
+            min-width: 160px; /* Minimum width for user info */
             cursor: pointer;
             z-index: 2; /* Ensure user-info is above other content */
+            margin-right: 10px; /* Add margin to separate from menu items */
           }
 
           .user-avatar:hover {
             background-color: rgba(101, 101, 237, 0.09); /* Add background color on hover */
-            border-radius: 10px; /* Add border radius on hover */
+            border-radius: 8px; /* Add border radius on hover */
             transform: scale(1.05); /* Slightly scale up on hover */
           }
 
           .user-avatar {
-            width: 30px; /* Reduce avatar size */
-            height: 30px; /* Reduce avatar size */
+            width: 27px; /* Reduce avatar size */
+            height: 27px; /* Reduce avatar size */
             border-radius: 50%;
             transition: background-color 0.3s, transform 0.3s; /* Add transition for hover effect */
           }
 
           .user-name {
             color: var(--text-color);
-            font-size: 16px; /* Tăng kích thước font để dễ nhìn */
+            font-size: 12.8px; /* Tăng kích thước font để dễ nhìn */
             font-weight: 500; /* Thêm đậm cho các mục */
           }
 
           .menu-icon {
             display: none; /* Hide menu icon by default */
-            font-size: 1.5em;
+            font-size: 1.2em;
             cursor: pointer;
-            color: var(--text-color);
-            margin-left: 10px; /* Add margin to separate from search input */
+            margin-left: 8px; /* Add margin to separate from search input */
+          }
+          .theme-toggle-container {
+            width: 20px; /* Initial width */
+            height: 100%; /* Initial height */
+          }
+          .theme-toggle {
+              font-size: 1.2em;
+              cursor: pointer;
+              transition: 300ms;
+              width: 100%; /* Initial width */
+
+              }
+
+          .theme-toggle:hover {
+              // background: var(--text-color); /* Màu nền từ biến --text-color */
+              box-shadow: 0 0 15px 2px var(--text-color); /* Bóng từ trong ra ngoài */
+      
+              border-radius: 50%; /* Bo tròn góc */
+              transition: box-shadow 0.3s ease, background 0.3s ease; /* Thêm hiệu ứng chuyển đổi */
+              }
+          .fa-sun.theme-toggle {
+              color: #ffcc00; /* Bright yellow for sun icon */
+          }
+
+          .fa-moon.theme-toggle {
+              color: #4a4a4a; /* Dark gray for moon icon */
           }
 
           @media screen and (max-width: 868px) {
@@ -182,8 +215,8 @@ function Navbar() {
             .navbar-menu-items , .user-info{
               flex: 100%; /* Make each section take full width */
               justify-content: center; /* Center align each section */
-              padding: 10px; /* Add margin between sections */   
-              top: 60px; /* Position below the navbar */
+              padding: 8px; /* Add margin between sections */   
+              top: 48px; /* Position below the navbar */
               height: auto; /* Allow height to grow */
           
               z-index: 3; /* Ensure menu items are above other content */
@@ -247,6 +280,13 @@ function Navbar() {
               <span className="text">Contact</span>
             </a>
           </li>
+          <span className="theme-toggle-container">
+            <i
+              className={`fa ${isDarkMode ? "fa-sun" : "fa-moon"} theme-toggle`}
+              title={`${isDarkMode ? "Sáng" : "Tối"}`}
+              onClick={handleThemeToggle}
+            ></i>
+          </span>
         </ul>
         <div className="user-info">
           <img src={userAvatar} alt="User Avatar" className="user-avatar" />
