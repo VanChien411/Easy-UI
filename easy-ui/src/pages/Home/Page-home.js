@@ -2,6 +2,7 @@ import React from "react";
 import Sidebar from "../../components/Layout/Sidebar";
 import Header from "../../components/Layout/Header";
 import ListItem from "./List-item";
+import Footer from "../../components/Layout/Footer";
 
 function PageHome() {
   return (
@@ -13,7 +14,7 @@ function PageHome() {
       </article>
 
       <Sidebar />
-      {/* <footer> Footer </footer> */}
+      <Footer />
     </main>
   );
 }

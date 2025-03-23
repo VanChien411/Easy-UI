@@ -17,13 +17,14 @@ function ListItem() {
       <style>
         {`
           .container {
-            display: flex;
+            display: grid;
             flex-wrap: wrap;
             flex-direction: row;
             justify-content: center;
             gap: 10px;
             padding: 10px;
             align-content: stretch;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Cân đối các phần tử */
            
           }
        
