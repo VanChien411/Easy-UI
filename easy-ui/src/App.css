@@ -158,6 +158,12 @@ ul {
   border-radius: 8px;
 }
 
+.menu-items a.selected {
+  background-color: var(--background-color-follow);
+  border-radius: 8px;
+  color: var(--text-color-follow-hover);
+}
+
 .menu-items li {
   position: relative;
 }
