@@ -15,7 +15,7 @@ export const lightTheme = {
 export const darkTheme = {
   backgroundColor: "linear-gradient(45deg, #201629, #000000, #201629)",
   textColor: "#ffffff",
-  cardBorderColor: "#e0e0e0",
+  cardBorderColor: "#dcdcdc",
   buttonHtmlColor: "#f06529",
   buttonJsColor: "#f7df1e",
   buttonCssColor: "#2965f1",

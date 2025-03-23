@@ -6,7 +6,7 @@
   --background-color: linear-gradient(45deg, #201629, #000000, #201629);
   --background-color-rgba: rgba(32, 22, 41, 1);  
   --text-color: white;
-  --card-border-color: var(--text-color);
+  --card-border-color: #dcdcdc;
   --button-html-color: #f06529;
   --button-js-color: #f7df1e;
   --button-css-color: #2965f1;
