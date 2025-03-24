@@ -9,6 +9,8 @@ function Navbar() {
     const savedTheme = localStorage.getItem("isDarkMode");
     return savedTheme ? JSON.parse(savedTheme) : true;
   });
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchSuggestions, setSearchSuggestions] = useState([]);
 
   useEffect(() => {
     // Apply the theme on component mount
@@ -24,6 +26,15 @@ function Navbar() {
     setIsDarkMode(newTheme);
     applyTheme(newTheme ? darkTheme : lightTheme);
     localStorage.setItem("isDarkMode", JSON.stringify(newTheme)); // Save theme to localStorage
+  };
+
+  const handleSearchChange = (e) => {
+    const query = e.target.value;
+    setSearchQuery(query);
+    // Mock search suggestions
+    setSearchSuggestions(
+      query ? ["Suggestion 1", "Suggestion 2", "Suggestion 3"] : []
+    );
   };
 
   return (
@@ -72,7 +83,7 @@ function Navbar() {
           background: #201629;
           border: none;
           color: white;
-          padding: 4px 8px;
+          padding: 4px 12px;
           border-radius: 4px;
           cursor: pointer;
           display: none; /* Ẩn nút ban đầu */
@@ -82,6 +93,32 @@ function Navbar() {
 
         .search-input:focus + .search-button {
           display: block; /* Hiển thị nút khi input được focus */
+        }
+
+        .search-suggestions {
+          position: absolute;
+          top: 120%;
+          left: 0;
+          width: 100%;
+          background: white;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);     
+          z-index: 4;
+          color: black;
+          font-size: 1.1em;
+          text-align: left;
+          font-weight: 500; /* Thêm đậm cho các mục */
+          display: ${searchQuery ? "block" : "none"};
+        }
+
+        .search-suggestion {
+          padding: 8px;
+          cursor: pointer;  
+        }
+
+        .search-suggestion:hover {
+          background: #f0f0f0;
         }
 
           .navbar-menu-items {
@@ -260,8 +297,21 @@ function Navbar() {
       </style>
       <nav className="navbar">
         <div className="search-container">
-          <input type="text" className="search-input" placeholder="Search..." />
+          <input
+            type="text"
+            className="search-input"
+            placeholder="Search..."
+            value={searchQuery}
+            onChange={handleSearchChange}
+          />
           <button className="search-button">Search</button>
+          <div className="search-suggestions">
+            {searchSuggestions.map((suggestion, index) => (
+              <div key={index} className="search-suggestion">
+                {suggestion}
+              </div>
+            ))}
+          </div>
         </div>
         <i className="fa fa-bars menu-icon" onClick={handleMenuToggle}></i>
 
