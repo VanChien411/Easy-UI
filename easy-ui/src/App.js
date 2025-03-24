@@ -19,7 +19,7 @@ function App() {
         {/* Các route của ứng dụng */}
         <Routes>
           {/* Các route không có layout */}
-          {/* <Route path="/LoginSignup/:action" element={<LoginSignup />} /> */}
+          <Route path="/LoginSignup/:action" element={<LoginSignup />} />
           <Route path="*" element={<PageNotFound />} />
 
           {/* PageHome chứa layout và các route con */}

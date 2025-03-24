@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
-// import "../../../assets/styles/LoginSignup.css";
-import "font-awesome/css/font-awesome.min.css"; // Ensure this line is uncommented
+import "../../../assets/styles/LoginSignup.css";
 
 function LoginSignup() {
   const { action } = useParams();
@@ -65,16 +64,16 @@ function LoginSignup() {
             <p>or login with social platforms</p>
             <div className="social-icons">
               <a href="#" className="google">
-                <i className="fa fa-google"></i>
+                <i class="fa-brands fa-google"></i>
               </a>
               <a href="#" className="facebook">
-                <i className="fa fa-facebook"></i>
+                <i className="fa-brands fa-facebook"></i>
               </a>
               <a href="#" className="github">
-                <i className="fa fa-github"></i>
+                <i className="fa-brands fa-github"></i>
               </a>
               <a href="#" className="linkedin">
-                <i className="fa fa-linkedin"></i>
+                <i class="fa-brands fa-linkedin-in"></i>
               </a>
             </div>
           </form>
@@ -101,16 +100,16 @@ function LoginSignup() {
             <p>or register with social platforms</p>
             <div className="social-icons">
               <a href="#" className="google">
-                <i className="fa fa-google"></i>
+                <i class="fa-brands fa-google"></i>
               </a>
               <a href="#" className="facebook">
-                <i className="fa fa-facebook"></i>
+                <i className="fa-brands fa-facebook"></i>
               </a>
               <a href="#" className="github">
-                <i className="fa fa-github"></i>
+                <i className="fa-brands fa-github"></i>
               </a>
               <a href="#" className="linkedin">
-                <i className="fa fa-linkedin"></i>
+                <i class="fa-brands fa-linkedin-in"></i>
               </a>
             </div>
           </form>
