@@ -1,4 +1,5 @@
 import "./App.css";
+import LoginSignup from "./components/ui/LoginSignup/LoginSignup";
 import PageNotFound from "./components/ui/PageNotFound";
 import ListItem from "./pages/Home/List-item";
 import PageHome from "./pages/Home/Page-home";
@@ -18,7 +19,7 @@ function App() {
         {/* Các route của ứng dụng */}
         <Routes>
           {/* Các route không có layout */}
-          <Route path="/11" element={<PageNotFound />} />
+          <Route path="/LoginSignup/:action" element={<LoginSignup />} />
           <Route path="*" element={<PageNotFound />} />
 
           {/* PageHome chứa layout và các route con */}
