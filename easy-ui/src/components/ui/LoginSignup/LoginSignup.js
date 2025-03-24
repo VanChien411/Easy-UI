@@ -50,11 +50,11 @@ function LoginSignup() {
             <h1>Login</h1>
             <div className="input-box">
               <input type="text" placeholder="Username" required />
-              <i className="bx bxs-user"></i>
+              <i className="fa fa-user "></i>
             </div>
             <div className="input-box">
               <input type="password" placeholder="Password" required />
-              <i className="bx bxs-lock-alt"></i>
+              <i className="fa fa-lock"></i>
             </div>
             <div className="forgot-link">
               <a href="#">Forgot Password?</a>
@@ -85,15 +85,15 @@ function LoginSignup() {
             <h1>Registration</h1>
             <div className="input-box">
               <input type="text" placeholder="Username" required />
-              <i className="bx bxs-user"></i>
+              <i className="fa fa-user "></i>
             </div>
             <div className="input-box">
               <input type="email" placeholder="Email" required />
-              <i className="bx bxs-envelope"></i>
+              <i className="fa fa-envelope"></i>
             </div>
             <div className="input-box">
               <input type="password" placeholder="Password" required />
-              <i className="bx bxs-lock-alt"></i>
+              <i className="fa fa-lock"></i>
             </div>
             <button type="submit" className="btn">
               Register

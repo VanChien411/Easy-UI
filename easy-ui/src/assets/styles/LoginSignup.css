@@ -81,6 +81,7 @@
 .login-signup .input-box {
     position: relative;
     margin: 30px 0;
+  
 }
 
 .login-signup .input-box input {
@@ -106,6 +107,8 @@
     top: 50%;
     transform: translateY(-50%);
     font-size: 20px;
+    width: 20px;
+    pointer-events: none;
 }
 
 .login-signup .forgot-link {
