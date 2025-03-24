@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
-import "../../../assets/styles/LoginSignup.css";
+// import "../../../assets/styles/LoginSignup.css";
 import "font-awesome/css/font-awesome.min.css"; // Ensure this line is uncommented
 
 function LoginSignup() {
