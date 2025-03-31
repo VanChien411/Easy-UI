@@ -59,8 +59,8 @@ article {
 }
 footer { 
   grid-area: footer; 
-
 }
+
 aside { 
   grid-area: side; 
   padding: 8px; /* Thêm khoảng cách bên trong sidebar */
@@ -287,34 +287,38 @@ ul {
   .collapsed aside a {
     visibility: visible;
   }
+
 }
 .footer {
   grid-area: footer;
   background-color: var(--background-color-navbar);
   color: var(--text-color);
-  padding: 32px;
+  padding: 3px 70px;
   text-align: center;
   border-top: 1px solid var(--card-border-color);
 }
 
 .footer-content {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); /* Cân đối các phần tử */
-  gap: 32px;
-  justify-items: center; /* Căn giữa các phần tử */
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); 
+  column-gap: 70px; /* Chỉ chỉnh khoảng cách ngang */
+  justify-items: stretch; /* Đảm bảo các phần tử mở rộng hết chiều ngang */
+  align-items: start; /* Giữ tất cả các phần tử bắt đầu từ trên cùng */
 }
 
 .footer-section h3 {
-  margin-bottom: 12px;
-  font-size: 1.25rem;
-  font-weight: bold;
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+  text-align: start;
 }
 
 .footer-section p, .footer-section ul, .footer-section li {
-  font-size: 0.9rem;
-  line-height: 1.6;
+  font-size: 1rem;
+  line-height: 1.5;
   color: var(--text-color);
-  text-align: start;
+  text-align: justify;
+  text-justify: inter-word;
+
 }
 
 .social-icons {
@@ -333,7 +337,7 @@ ul {
 }
 
 .footer-bottom {
-  margin-top: 32px;
+  margin-top: 2px;
   font-size: 0.875rem;
   color: var(--text-color);
 }

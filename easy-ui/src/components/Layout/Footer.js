@@ -67,6 +67,7 @@ function Footer() {
           </div>
         </div>
       </div>
+      <hr></hr>
       <div className="footer-bottom">
         <p>&copy; 2023 Easy-UI. All rights reserved.</p>
       </div>
