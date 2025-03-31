@@ -1,12 +1,13 @@
 export const lightTheme = {
-  backgroundColor: "rgb(255, 255, 255)",
+  backgroundColor: "rgb(235,236,240)",
   textColor: "#000000",
-  cardBorderColor: "#e0e0e0", // Changed to a lighter color
+  cardBorderColor: "rgb(224, 79, 173)", // Changed to a lighter color
   buttonHtmlColor: "#f06529",
   buttonJsColor: "#f7df1e",
   buttonCssColor: "#2965f1",
   backgroundColorRgba: " #ffffff",
-  backgroundColorNavbar: "linear-gradient(45deg, #ffffff, #f0f0f0)",
+  backgroundColorNavbar:
+    "linear-gradient(to right, rgb(224, 79, 173), rgb(255, 105, 180))",
   textColorFollow: "rgb(104, 29, 66)", // Changed to a lighter pink color
   textColorFollowHover: "rgb(255, 105, 180)", // Changed to a lighter hover color
   backgroundColorFollow: "rgb(255, 105, 180)", // Changed to a lighter background color

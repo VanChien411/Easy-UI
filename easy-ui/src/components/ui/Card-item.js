@@ -54,6 +54,9 @@ function CardItem() {
             transition: background-color 0.3s;
             border: none;
           }
+            .button-hashtag:hover {
+            box-shadow: 0 0 10px 2px var(--card-border-color); /* Bóng từ trong ra ngoài */
+          }
 
           .button-html {
             background-color: var(--button-html-color);
