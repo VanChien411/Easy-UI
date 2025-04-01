@@ -1,6 +1,6 @@
 import React from "react";
 
-function CardItem({ name, buttonClass, html, css }) {
+function CardItem({ name, html, css, js }) {
   return (
     <>
       <style>{css}</style>
@@ -19,12 +19,15 @@ function CardItem({ name, buttonClass, html, css }) {
         </div>
         <hr className="divider" />
         <div className="button-container">
-          <button className="button-hashtag button-html">Html</button>
-          <button className="button-hashtag button-js">JavaScript</button>
-          <button className="button-hashtag button-css">Css</button>
+          {html && <button className="button-hashtag button-html">Html</button>}
+          {js && (
+            <button className="button-hashtag button-js">JavaScript</button>
+          )}
+          {css && <button className="button-hashtag button-css">Css</button>}
           <button className="button-hashtag buy">Buy Now</button>
         </div>
       </div>
+      <script>{js}</script>
     </>
   );
 }

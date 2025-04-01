@@ -89,7 +89,10 @@ function ListItem({ items }) {
             background-color: var(--button-css-color);
             color: white;
           }
-
+          .button-hashtag.buy{
+            background-color:rgb(18, 193, 26);
+            color: white;
+          }
           .divider {
             margin: 10px 0; /* 20% smaller */
           }
@@ -98,7 +101,13 @@ function ListItem({ items }) {
       </style>
       <div className="container">
         {items.map((item, index) => (
-          <CardItem key={index} {...item} html={item.html} css={item.css} />
+          <CardItem
+            key={index}
+            {...item}
+            html={item.html}
+            css={item.css}
+            js={item.js}
+          />
         ))}
       </div>
     </div>

@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 import userAvatar from "../../assets/images/avata3d.jpg"; // Import the image
 import { applyTheme, lightTheme, darkTheme } from "../../config/theme"; // Import themes
 
 function Navbar() {
+  const navigate = useNavigate(); // Initialize useNavigate
   const [menuOpen, setMenuOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(() => {
     // Load theme from localStorage or default to true
@@ -357,7 +359,10 @@ function Navbar() {
             ></i>
           </span>
         </ul>
-        <div className="user-info">
+        <div
+          className="user-info"
+          onClick={() => navigate("/LoginSignup/login")} // Navigate to the route
+        >
           <img src={userAvatar} alt="User Avatar" className="user-avatar" />
           <span className="user-name">John Doe</span>
         </div>
