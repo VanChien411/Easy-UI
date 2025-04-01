@@ -71,9 +71,18 @@ aside {
   transition: .3s;
   box-shadow: 0px 0px 7px 0px #00000073;
   z-index: 5; /* Ensure sidebar is above main content */
-  background: var(--background-color); /* Ensure sidebar has a background */
- 
+  background: var(--background-color) ; /* Ensure sidebar has a background */
+  overflow-y: auto; /* Enable vertical scrolling */
+  max-height: 100vh; /* Ensure the sidebar does not exceed the viewport height */
+  scrollbar-width: none; /* For Firefox */
+  -ms-overflow-style: none; /* For Internet Explorer and Edge */
 }
+
+/* For Webkit-based browsers (Chrome, Edge, Safari) */
+aside::-webkit-scrollbar {
+  display: none; /* For Webkit-based browsers (Chrome, Edge, Safari) */
+}
+
 /* Khi sidebar (aside) thu nhỏ với class 'collapsed' */
 .collapsed main {
   grid-template-columns: 48px auto; /* Đặt chiều rộng của sidebar (side) thành 40px */
@@ -83,25 +92,34 @@ aside {
 .collapsed aside {
   width: 32px; /* Đặt chiều rộng của sidebar khi thu nhỏ */
 }
-
-.menu-btn {
-  /* color: var(--text-color); */
+.close-sidebar {
   position: absolute;
-  top: 36%;
-  right: -12px; /* Điều chỉnh vị trí của nút menu */
-  padding: 6.4px;
-  border: none;
-  font-size: 8px;
-  aspect-ratio: 1;
-  border-radius: 4px;
+  top: 50%; /* Center vertically */
+  right: 0px; /* Align with the logo-wrapper */
+  transform: translateY(-50%); /* Adjust for centering */
+  width: 32px; /* Circular size */
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%; /* Make it circular */
+  background-color: transparent; /* Default background */
   cursor: pointer;
-  opacity: 0.2;
-  z-index: 3; /* Ensure menu button is above sidebar */
-
+  transition: background-color 0.3s ease;
 }
 
-.menu-btn:hover {
-  opacity: 1;
+.close-sidebar:hover {
+  background-color: rgba(0, 0, 0, 0.1); /* Light background on hover */
+}
+
+.close-sidebar i {
+  font-size: 20px; /* Increase the icon size */
+}
+
+.menu-btn{
+  background-color: transparent;
+  border: 0;
+  cursor: pointer;
 }
 .logo-wrapper {
   display: flex;
@@ -112,7 +130,14 @@ aside {
   padding: 8px;
 }
 
-a {
+.logo-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Space between logo and close button */
+  position: relative;
+}
+
+a, .menu-btn {
   text-decoration: none;
   color: var(--text-color-follow); /* Use CSS variable for text color */
 }
@@ -256,18 +281,21 @@ ul {
 /* Media query để ẩn sidebar khi màn hình nhỏ */
 @media screen and (max-width: 668px) {
   main {
-    grid-template-columns: 0px auto; /* Giảm chiều rộng của sidebar (side) khi màn hình nhỏ */
+    grid-template-columns: 0 auto; /* Fully hide the sidebar */
+  }
+  .collapsed aside {
+    width: 0; /* Fully collapse the sidebar */
+    visibility: hidden; /* Hide the sidebar content */
+  }
+  .collapsed aside .close-sidebar {
+    display: none; /* Hide the close button */
   }
   .collapsed main {
-    grid-template-columns: 0 auto; /* Đặt chiều rộng của sidebar (side) thành 40px */
-    transition: .3s;
+    grid-template-columns: 0px auto; /* Đặt chiều rộng của sidebar (side) khi thu nhỏ */
+   
   }
-  
-  .collapsed aside {
-    width: 0px; /* Đặt chiều rộng của sidebar khi thu nhỏ */
-  }
-  .collapsed aside a {
-    visibility: hidden;
+  .collapsed .handle-sidebar{
+    display: block; /* Hide the close button */
   }
 }
 
@@ -284,10 +312,18 @@ ul {
   .collapsed aside {
     width: 32px; /* Đặt chiều rộng của sidebar khi thu nhỏ */
   }
+  .collapsed aside .close-sidebar{
+    visibility: hidden;
+}
   .collapsed aside a {
     visibility: visible;
   }
 
+
+
+}
+.handle-sidebar{
+  display: none; /* Hide the close button */
 }
 .footer {
   grid-area: footer;
@@ -332,7 +368,7 @@ ul {
   transition: color 0.3s;
 }
 
-.social-icons a:hover {
+social-icons a:hover {
   color: var(--button-html-color);
 }
 

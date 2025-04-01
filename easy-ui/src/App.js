@@ -1,9 +1,10 @@
 import "./App.css";
 import LoginSignup from "./components/ui/LoginSignup/LoginSignup";
 import PageNotFound from "./components/ui/PageNotFound";
-import ListItem from "./pages/Home/List-item";
+import ListItem from "./components/ui/List-item";
 import PageHome from "./pages/Home/Page-home";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
+import Buttons from "./components/ui/Buttons/Buttons";
 
 function App() {
   return (
@@ -23,16 +24,23 @@ function App() {
           <Route path="*" element={<PageNotFound />} />
 
           {/* PageHome chứa layout và các route con */}
-          <Route
+          {/* <Route
             path="/"
             element={
               <PageHome>
                 <ListItem />
               </PageHome>
             }
+          /> */}
+          <Route
+            path="/"
+            element={
+              <PageHome>
+                <Buttons />
+              </PageHome>
+            }
           />
-          {/* <Route path="/login" element={<PageHome><Login /></PageHome>} />
-          <Route path="/about" element={<PageHome><About /></PageHome>} /> */}
+          {/* <Route path="/about" element={<PageHome><About /></PageHome>} /> */}
         </Routes>
       </Router>
     </div>
