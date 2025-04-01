@@ -109,7 +109,7 @@
 }
 
 .login-signup .forgot-link {
-    margin: -15px 0 15px;
+    margin: 10px;
 }
 
 .login-signup .forgot-link a {
@@ -396,3 +396,22 @@
     font-family: "Rubik", sans-serif;
     transition: color 600ms;
 }
+.remember-me {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Thêm khoảng cách giữa checkbox và label */
+  }
+  
+  .remember-me input[type="checkbox"] {
+    margin-right: 0px;
+    cursor: pointer;
+    accent-color: blue; /* Đổi màu checkbox sang xanh */
+    width: 16px; /* Tăng kích thước nếu cần */
+    height: 16px;
+  }
+  
+  .remember-me label {
+    font-size: 14px;
+    color: rgb(86, 86, 86);
+    cursor: pointer;
+  }
