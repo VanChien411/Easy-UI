@@ -296,6 +296,9 @@ function Navbar() {
         `}
       </style>
       <nav className="navbar">
+        <button className="logo-wrapper menu-btn handle-sidebar">
+          <span className="fa-brands fa-uikit"></span>
+        </button>
         <div className="search-container">
           <input
             type="text"

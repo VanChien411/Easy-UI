@@ -6,8 +6,7 @@ export const lightTheme = {
   buttonJsColor: "#f7df1e",
   buttonCssColor: "#2965f1",
   backgroundColorRgba: " #ffffff",
-  backgroundColorNavbar:
-    "linear-gradient(to right, rgb(224, 79, 173), rgb(255, 105, 180))",
+  backgroundColorNavbar: "#D1C4E9",
   textColorFollow: "rgb(104, 29, 66)", // Changed to a lighter pink color
   textColorFollowHover: "rgb(255, 105, 180)", // Changed to a lighter hover color
   backgroundColorFollow: "rgb(255, 105, 180)", // Changed to a lighter background color

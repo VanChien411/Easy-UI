@@ -1,26 +1,21 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 function Sidebar() {
   const handleMenuClickRef = useRef(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     const menuBtn = document.querySelector(".menu-btn");
 
     const handleMenuClick = (e) => {
       document.body.classList.toggle("collapsed");
-      e.currentTarget.classList.toggle("fa-chevron-right");
-      e.currentTarget.classList.toggle("fa-chevron-left");
-
-      // Hide all dropdowns by removing 'active' class
       document.querySelectorAll(".dropdown").forEach((dropdown) => {
         dropdown.classList.remove("active");
       });
     };
 
-    // Lưu tham chiếu tới handleMenuClick vào ref
     handleMenuClickRef.current = handleMenuClick;
 
-    // Handle window resize
     const handleResize = () => {
       if (window.innerWidth <= 668) {
         if (!document.body.classList.contains("collapsed")) {
@@ -40,10 +35,8 @@ function Sidebar() {
     menuBtn.addEventListener("click", handleMenuClick);
     window.addEventListener("resize", handleResize);
 
-    // Initial check
     handleResize();
 
-    // Cleanup event listeners on component unmount
     return () => {
       menuBtn.removeEventListener("click", handleMenuClick);
       window.removeEventListener("resize", handleResize);
@@ -54,13 +47,8 @@ function Sidebar() {
     e.preventDefault();
     const dropdown = e.currentTarget.parentElement;
     dropdown.classList.toggle("active");
-
-    // Gọi handleMenuClick trong handleDropdownClick
     if (document.body.classList.contains("collapsed")) {
-      const menuBtn = document.querySelector(".menu-btn");
-      if (handleMenuClickRef.current) {
-        handleMenuClickRef.current({ currentTarget: menuBtn });
-      }
+      handleMenuClickRef.current();
     }
   };
 
@@ -71,84 +59,221 @@ function Sidebar() {
     e.currentTarget.classList.add("selected");
   };
 
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
   return (
     <aside>
-      <button className="menu-btn fa fa-chevron-left"></button>
-      <a href="/" className="logo-wrapper">
-        <span className="fa-brands fa-uikit"></span>
-        <span className="brand-name">Smart UI Studio</span>
-      </a>
+      <div className="logo-container">
+        <a href="#" className="logo-wrapper">
+          <span
+            className="fa-brands fa-uikit"
+            onClick={() => handleMenuClickRef.current()}
+          ></span>
+          <span className="brand-name">Smart UI Studio</span>
+        </a>
+        <i
+          className="fa-solid fa-xmark close-sidebar"
+          onClick={() => handleMenuClickRef.current()}
+        ></i>
+      </div>
       <div className="separator"></div>
+      {/* <div className="search-bar">
+        <input
+          type="text"
+          placeholder="Search components..."
+          value={searchQuery}
+          onChange={handleSearchChange}
+        />
+        <span className="fa fa-search"></span>
+      </div> */}
       <ul className="menu-items">
-        <li>
-          <a href="https://example.com" onClick={handleMenuItemClick}>
-            <span className="icon fa fa-house"></span>
-            <span className="item-name">Home</span>
+        <li className="dropdown">
+          <a href="#" onClick={handleDropdownClick}>
+            <span className="icon fa fa-cube"></span>
+            <span className="item-name">Components</span>
+            <span className="dropdown-icon fa fa-chevron-down"></span>
           </a>
-          <span className="tooltip">Home</span>
-        </li>
-        <li>
-          <a href="https://example.com" onClick={handleMenuItemClick}>
-            <span className="icon fa fa-layer-group"></span>
-            <span className="item-name">Dashboard</span>
-          </a>
-          <span className="tooltip">Dashboard</span>
+          <ul className="dropdown-menu menu-items">
+            <li>
+              <a href="#" onClick={handleMenuItemClick}>
+                <span className="icon fa fa-square"></span>
+                <span className="item-name">Buttons</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" onClick={handleMenuItemClick}>
+                <span className="icon fa fa-clone"></span>
+                <span className="item-name">Cards</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" onClick={handleMenuItemClick}>
+                <span className="icon fa fa-edit"></span>
+                <span className="item-name">Forms & Inputs</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" onClick={handleMenuItemClick}>
+                <span className="icon fa fa-window-maximize"></span>
+                <span className="item-name">Modals & Dialogs</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" onClick={handleMenuItemClick}>
+                <span className="icon fa fa-table"></span>
+                <span className="item-name">Tables</span>
+              </a>
+            </li>
+          </ul>
         </li>
         <li className="dropdown">
-          <a
-            href="#"
-            onClick={(e) => {
-              handleDropdownClick(e);
-              handleMenuItemClick(e);
-            }}
-          >
-            <span className="icon fa fa-chart-line"></span>
+          <a href="#" onClick={handleDropdownClick}>
+            <span className="icon fa fa-paint-brush"></span>
+            <span className="item-name">Styles</span>
+            <span className="dropdown-icon fa fa-chevron-down"></span>
+          </a>
+          <ul className="dropdown-menu menu-items">
+            <li>
+              <a href="#" onClick={handleMenuItemClick}>
+                <span className="icon fa fa-palette"></span>
+                <span className="item-name">Colors & Themes</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" onClick={handleMenuItemClick}>
+                <span className="icon fa fa-border-style"></span>
+                <span className="item-name">Borders & Shadows</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" onClick={handleMenuItemClick}>
+                <span className="icon fa fa-font"></span>
+                <span className="item-name">Typography</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" onClick={handleMenuItemClick}>
+                <span className="icon fa fa-icons"></span>
+                <span className="item-name">Icons</span>
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li className="dropdown">
+          <a href="#" onClick={handleDropdownClick}>
+            <span className="icon fa fa-tools"></span>
+            <span className="item-name">Utilities</span>
+            <span className="dropdown-icon fa fa-chevron-down"></span>
+          </a>
+          <ul className="dropdown-menu menu-items">
+            <li>
+              <a href="#" onClick={handleMenuItemClick}>
+                <span className="icon fa fa-th"></span>
+                <span className="item-name">Grid System</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" onClick={handleMenuItemClick}>
+                <span className="icon fa fa-arrows-alt"></span>
+                <span className="item-name">Flexbox Helpers</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" onClick={handleMenuItemClick}>
+                <span className="icon fa fa-expand"></span>
+                <span className="item-name">Spacing & Sizing</span>
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li className="dropdown">
+          <a href="#" onClick={handleDropdownClick}>
+            <span className="icon fa fa-link"></span>
+            <span className="item-name">Templates</span>
+            <span className="dropdown-icon fa fa-chevron-down"></span>
+          </a>
+          <ul className="dropdown-menu menu-items">
+            <li>
+              <a href="#" onClick={handleMenuItemClick}>
+                <span className="icon fa fa-sign-in-alt"></span>
+                <span className="item-name">Login Forms</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" onClick={handleMenuItemClick}>
+                <span className="icon fa fa-tachometer-alt"></span>
+                <span className="item-name">Dashboards</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" onClick={handleMenuItemClick}>
+                <span className="icon fa fa-rocket"></span>
+                <span className="item-name">Landing Pages</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" onClick={handleMenuItemClick}>
+                <span className="icon fa fa-shopping-cart"></span>
+                <span className="item-name">E-commerce UI</span>
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li className="dropdown">
+          <a href="#" onClick={handleDropdownClick}>
+            <span className="icon fa fa-chart-bar"></span>
             <span className="item-name">Analytics</span>
             <span className="dropdown-icon fa fa-chevron-down"></span>
           </a>
           <ul className="dropdown-menu menu-items">
             <li>
               <a href="#" onClick={handleMenuItemClick}>
-                <span className="icon fa fa-chart-pie"></span>
-                <span className="item-name">Sub-item 1</span>
+                <span className="icon fa fa-star"></span>
+                <span className="item-name">Popular Components</span>
               </a>
             </li>
             <li>
-              <a href="https://example.com" onClick={handleMenuItemClick}>
-                <span className="icon fa fa-chart-bar"></span>
-                <span className="item-name">Sub-item 2</span>
+              <a href="#" onClick={handleMenuItemClick}>
+                <span className="icon fa fa-download"></span>
+                <span className="item-name">User Downloads</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" onClick={handleMenuItemClick}>
+                <span className="icon fa fa-comment"></span>
+                <span className="item-name">Feedback & Ratings</span>
               </a>
             </li>
           </ul>
-          <span className="tooltip">Analytics</span>
         </li>
-        <li>
-          <a href="https://example.com" onClick={handleMenuItemClick}>
-            <span className="icon fa fa-chart-simple"></span>
-            <span className="item-name">Leaderboard</span>
-          </a>
-          <span className="tooltip">Leaderboard</span>
-        </li>
-        <li>
-          <a href="https://example.com" onClick={handleMenuItemClick}>
-            <span className="icon fa fa-user"></span>
-            <span className="item-name">Account</span>
-          </a>
-          <span className="tooltip">Account</span>
-        </li>
-        <li>
-          <a href="https://example.com" onClick={handleMenuItemClick}>
-            <span className="icon fa fa-gear"></span>
+        <li className="dropdown">
+          <a href="#" onClick={handleDropdownClick}>
+            <span className="icon fa fa-cog"></span>
             <span className="item-name">Settings</span>
+            <span className="dropdown-icon fa fa-chevron-down"></span>
           </a>
-          <span className="tooltip">Settings</span>
-        </li>
-        <li>
-          <a href="https://example.com" onClick={handleMenuItemClick}>
-            <span className="icon fa fa-comment-dots"></span>
-            <span className="item-name">Contact</span>
-          </a>
-          <span className="tooltip">Contact</span>
+          <ul className="dropdown-menu menu-items">
+            <li>
+              <a href="#" onClick={handleMenuItemClick}>
+                <span className="icon fa fa-user"></span>
+                <span className="item-name">Profile</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" onClick={handleMenuItemClick}>
+                <span className="icon fa fa-credit-card"></span>
+                <span className="item-name">Subscription Plans</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" onClick={handleMenuItemClick}>
+                <span className="icon fa fa-key"></span>
+                <span className="item-name">API Access</span>
+              </a>
+            </li>
+          </ul>
         </li>
       </ul>
     </aside>
