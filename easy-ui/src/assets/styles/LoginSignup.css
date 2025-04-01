@@ -105,7 +105,7 @@
     transform: translateY(-50%);
     font-size: 20px;
     width: 20px;
-    pointer-events: none;
+    /* pointer-events: none; */
 }
 
 .login-signup .forgot-link {
@@ -415,3 +415,11 @@
     color: rgb(86, 86, 86);
     cursor: pointer;
   }
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none; /* Ẩn icon mắt trên trình duyệt Edge */
+}
+
+input[type="password"]::-webkit-credentials-auto-fill-button {
+  visibility: hidden; /* Ẩn trên Chrome */
+}
