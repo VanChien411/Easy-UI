@@ -1,0 +1,120 @@
+.add-ui-container {
+    display: flex;
+    height: 80vh; /* Giới hạn chiều cao để tránh tràn */
+    gap: 16px;
+    overflow: hidden; /* Ngăn nội dung bên trong tràn */
+  }
+  
+  .left-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    overflow: hidden; /* Ngăn chặn tràn */
+  }
+  
+  .tabs {
+    display: flex;
+    align-items: center; /* Align items vertically */
+    margin-bottom: 12px;
+  }
+  
+  .tabs button {
+    padding: 10px;
+    cursor: pointer;
+    border: none;
+    background: #f0f0f0;
+    transition: background 0.3s;
+    width: 55px;
+  }
+
+  .tabs button:nth-child(1) {
+    background: var(--button-html-color); /* Light red for HTML */
+  }
+
+  .tabs button:nth-child(2) {
+    background: var(--button-css-color); /* Light green for CSS */
+  }
+
+  .tabs button:nth-child(3) {
+    background: var(--button-js-color); /* Light blue for JS */
+  }
+
+  .componentName {
+    padding: 10px;
+    width: 150px; /* Giữ khoảng cách với viền */
+    margin-left: auto; /* Push input to the right */
+    transition: border-color 0.3s, box-shadow 0.3s;
+    outline: none; /* Loại bỏ viền focus mặc định */
+  }  
+  
+  .componentName:focus {
+    border-color: #007bff; /* Blue border on focus */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Blue glow on focus */
+  }
+  
+  .tabs button.active {
+  transform: scale(1.1); /* Phóng to nhẹ khi active */
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3); /* Hiệu ứng đổ bóng */
+  z-index: 1;
+  }
+  
+  .editor {
+    flex: 1;
+    padding: 0;
+  }
+  
+  .editor pre {
+    margin: 0;
+    width: 95%;
+    height: 100%;
+    padding: 10px;
+    font-family: monospace;
+    background: #1F1F1F;
+    color: #f8f8f2;
+    overflow: auto;
+    max-height: 60vh; /* Giới hạn chiều cao để không tràn */
+  }
+  
+  .right-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    row-gap: 20px;
+    overflow: hidden; /* Tránh tràn nội dung */
+  }
+  
+  iframe {
+    width: 100%;
+    height: 100%;
+    border: 1px solid #ccc;
+    margin-bottom: 12px;
+    overflow: auto;
+  }
+  
+  .actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  
+  .actions button {
+    padding: 10px 20px;
+    cursor: pointer;
+    border: none;
+    background: #007bff;
+    color: white;
+    transition: background 0.3s;
+    width: 100px;
+  }
+  
+  .actions button:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+  }
+  
+  .actions button:hover:not(:disabled) {
+    background: #0056b3;
+  }
+

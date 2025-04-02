@@ -361,10 +361,20 @@ function Navbar() {
         </ul>
         <div
           className="user-info"
-          onClick={() => navigate("/LoginSignup/login")} // Navigate to the route
+          // Navigate to the route
         >
-          <img src={userAvatar} alt="User Avatar" className="user-avatar" />
-          <span className="user-name">John Doe</span>
+          <img
+            src={userAvatar}
+            alt="User Avatar"
+            className="user-avatar"
+            onClick={() => navigate("/LoginSignup/login")}
+          />
+          <span
+            className="user-name"
+            onClick={() => navigate("/LoginSignup/login")}
+          >
+            John Doe
+          </span>
         </div>
       </nav>
     </>

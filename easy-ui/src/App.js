@@ -5,6 +5,7 @@ import ListItem from "./components/ui/List-item";
 import PageHome from "./pages/Home/Page-home";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import Buttons from "./components/ui/Buttons/Buttons"; // Ensure this path is correct
+import AddUi from "./components/ui/Develop/AddUi";
 
 function App() {
   return (
@@ -24,16 +25,24 @@ function App() {
           <Route path="*" element={<PageNotFound />} />
 
           {/* PageHome chứa layout và các route con */}
-          {/* <Route
+          <Route
+            path="/AddUi"
+            element={
+              <PageHome>
+                <AddUi></AddUi>
+              </PageHome>
+            }
+          />
+          <Route
             path="/"
             element={
               <PageHome>
-                <ListItem />
+                <Buttons />
               </PageHome>
             }
-          /> */}
+          />
           <Route
-            path="/"
+            path="/Buttons"
             element={
               <PageHome>
                 <Buttons />

@@ -11,3 +11,15 @@ export const fetchUIComponents = async () => {
     throw new Error(errorMessage);
   }
 };
+
+export const saveUIComponent = async (data) => {
+  try {
+    const response = await apiClient.post("/UIComponent", data);
+    return response.data;
+  } catch (error) {
+    const errorMessage =
+      error.response?.data?.message || "Failed to save UI component!";
+    console.error(errorMessage);
+    throw new Error(errorMessage);
+  }
+};
