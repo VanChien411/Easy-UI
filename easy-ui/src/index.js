@@ -1,10 +1,23 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import App from "./App";
+import reportWebVitals from "./reportWebVitals";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const resizeObserverErrorHandler = () => {
+  // Suppress ResizeObserver errors
+};
+window.addEventListener("error", (e) => {
+  if (
+    e.message ===
+    "ResizeObserver loop completed with undelivered notifications."
+  ) {
+    e.stopImmediatePropagation();
+  }
+});
+window.addEventListener("unhandledrejection", resizeObserverErrorHandler);
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <App />
