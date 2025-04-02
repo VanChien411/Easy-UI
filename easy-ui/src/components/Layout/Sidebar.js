@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom"; // Add this import
 
 function Sidebar() {
+  const navigate = useNavigate(); // Initialize useNavigate
   const handleMenuClickRef = useRef(null);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -52,11 +54,13 @@ function Sidebar() {
     }
   };
 
-  const handleMenuItemClick = (e) => {
+  const handleMenuItemClick = (e, path) => {
+    e.preventDefault();
     document.querySelectorAll(".menu-items a").forEach((item) => {
       item.classList.remove("selected");
     });
     e.currentTarget.classList.add("selected");
+    if (path) navigate(path); // Navigate to the specified path
   };
 
   const handleSearchChange = (e) => {
@@ -97,7 +101,7 @@ function Sidebar() {
           </a>
           <ul className="dropdown-menu menu-items">
             <li>
-              <a href="#" onClick={handleMenuItemClick}>
+              <a href="#" onClick={(e) => handleMenuItemClick(e, "/Buttons")}>
                 <span className="icon fa fa-square"></span>
                 <span className="item-name">Buttons</span>
               </a>
@@ -244,6 +248,33 @@ function Sidebar() {
               <a href="#" onClick={handleMenuItemClick}>
                 <span className="icon fa fa-comment"></span>
                 <span className="item-name">Feedback & Ratings</span>
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li className="dropdown">
+          <a href="#" onClick={handleDropdownClick}>
+            <span className="fa-brands fa-connectdevelop fa-spin fa-spin-reverse"></span>
+            <span className="item-name">Develop</span>
+            <span className="dropdown-icon fa fa-chevron-down"></span>
+          </a>
+          <ul className="dropdown-menu menu-items">
+            <li>
+              <a href="#" onClick={(e) => handleMenuItemClick(e, "/AddUi")}>
+                <span className="icon fa fa-code"></span>
+                <span className="item-name">Add UI</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" onClick={handleMenuItemClick}>
+                <span className="icon fa fa-terminal"></span>
+                <span className="item-name">CLI Tools</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" onClick={handleMenuItemClick}>
+                <span className="icon fa fa-database"></span>
+                <span className="item-name">Database Tools</span>
               </a>
             </li>
           </ul>

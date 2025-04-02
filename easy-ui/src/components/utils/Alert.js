@@ -3,7 +3,7 @@ import "../../assets/styles/Alert.css";
 import { v4 as uuidv4 } from "uuid"; // Import UUID for unique identifiers
 
 let alertQueue = [];
-let setAlertQueue;
+let setAlertQueue = () => {}; // Initialize as a no-op function to avoid runtime errors
 
 function Alert() {
   const [alerts, setAlerts] = useState([]);
@@ -53,7 +53,7 @@ export function showAlert({ title, message, type = "success", icon }) {
         : "fa-check";
   }
   alertQueue.push({ id: uuidv4(), title, message, type, icon }); // Use UUID for unique ID
-  setAlertQueue([...alertQueue]);
+  setAlertQueue([...alertQueue]); // Ensure setAlertQueue is always callable
 }
 
 export default Alert;

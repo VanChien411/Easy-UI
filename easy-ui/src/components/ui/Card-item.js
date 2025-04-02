@@ -1,36 +1,43 @@
 import React from "react";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { materialDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 function CardItem({ name, html, css, js }) {
-  console.log(html);
-  console.log(css);
   return (
-    <>
-      <style>{css}</style>
-      <div className="card">
-        <div className="row">
-          <div className="left-column">
-            <p dangerouslySetInnerHTML={{ __html: html }}></p>
-          </div>
-          <div className="right-column">
-            <img
-              src="/assets/images/avata3d.jpg"
-              alt="Product"
-              className="image"
-            />
-          </div>
-        </div>
-        <hr className="divider" />
-        <div className="button-container">
-          {html && <button className="button-hashtag button-html">Html</button>}
-          {js && (
-            <button className="button-hashtag button-js">JavaScript</button>
-          )}
-          {css && <button className="button-hashtag button-css">Css</button>}
-          <button className="button-hashtag buy">Buy Now</button>
-        </div>
+    <div className="card">
+      <div className="card-header">
+        <h3>{name}</h3>
       </div>
-      <script>{js}</script>
-    </>
+      <div className="card-content">
+        {html && (
+          <div className="code-section">
+            <h4>HTML</h4>
+            <SyntaxHighlighter language="html" style={materialDark}>
+              {html}
+            </SyntaxHighlighter>
+          </div>
+        )}
+        {css && (
+          <div className="code-section">
+            <h4>CSS</h4>
+            <SyntaxHighlighter language="css" style={materialDark}>
+              {css}
+            </SyntaxHighlighter>
+          </div>
+        )}
+        {js && (
+          <div className="code-section">
+            <h4>JavaScript</h4>
+            <SyntaxHighlighter language="javascript" style={materialDark}>
+              {js}
+            </SyntaxHighlighter>
+          </div>
+        )}
+      </div>
+      <div className="card-footer">
+        <button className="button-hashtag buy">Buy Now</button>
+      </div>
+    </div>
   );
 }
 
