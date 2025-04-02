@@ -19,7 +19,7 @@ function LoginSignup() {
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [isPasswordTyped, setIsPasswordTyped] = useState(false);
+  const [isPasswordTyped, setIsPasswordTyped] = useState(true);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -76,7 +76,7 @@ function LoginSignup() {
   const handlePasswordChange = (e) => {
     const { value } = e.target;
     setFormData((prev) => ({ ...prev, password: value }));
-    setIsPasswordTyped(value.length > 0);
+    setIsPasswordTyped(true);
   };
 
   const togglePasswordVisibility = () => {
