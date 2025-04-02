@@ -2,6 +2,7 @@ import React from "react";
 import CardItem from "./Card-item";
 
 function ListItem({ items }) {
+  console.log(items);
   return (
     <div>
       <style>
