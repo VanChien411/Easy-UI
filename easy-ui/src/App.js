@@ -4,7 +4,7 @@ import PageNotFound from "./components/ui/PageNotFound";
 import ListItem from "./components/ui/List-item";
 import PageHome from "./pages/Home/Page-home";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
-import Buttons from "./components/ui/Buttons/Buttons";
+import Buttons from "./components/ui/Buttons/Buttons"; // Ensure this path is correct
 
 function App() {
   return (

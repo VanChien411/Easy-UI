@@ -1,6 +1,8 @@
 import React from "react";
 
 function CardItem({ name, html, css, js }) {
+  console.log(html);
+  console.log(css);
   return (
     <>
       <style>{css}</style>

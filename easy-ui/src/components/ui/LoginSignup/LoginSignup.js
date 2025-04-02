@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom"; // Import useNavigate
-import { register, login } from "../../../services/userService";
+import { register, login } from "../../../services/userService"; // Ensure this path is correct
 import Spinner from "../../utils/Spinner"; // Import the Spinner component
 import Alert, { showAlert } from "../../utils/Alert";
 import "../../../assets/styles/LoginSignup.css";
