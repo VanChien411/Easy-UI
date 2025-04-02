@@ -1,24 +1,40 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../../../assets/styles/Develop/AddUi.css";
 import { saveUIComponent } from "../../../services/uiComponentsService";
 import { showAlert } from "../../utils/Alert";
 import Spinner from "../../utils/Spinner";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { materialDark } from "react-syntax-highlighter/dist/esm/styles/prism";
+import MonacoEditor from "@monaco-editor/react";
 
 function AddUi() {
   const [name, setName] = useState("");
-  const [html, setHtml] = useState("/*html*/");
-  const [css, setCss] = useState("/*css*/");
-  const [js, setJs] = useState("/*js*/");
+  const [html, setHtml] = useState("");
+  const [css, setCss] = useState("");
+  const [js, setJs] = useState("");
   const [activeTab, setActiveTab] = useState("html");
   const [isSaving, setIsSaving] = useState(false);
   const [isPreviewing, setIsPreviewing] = useState(false);
 
+  useEffect(() => {
+    const resizeObserver = new ResizeObserver(() => {
+      setTimeout(() => {
+        // Handle resize logic here
+      }, 0);
+    });
+
+    const editorContainer = document.querySelector(".editor");
+    if (editorContainer) {
+      resizeObserver.observe(editorContainer);
+    }
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, []);
+
   const handleCodeChange = (value) => {
-    if (activeTab === "html") setHtml(value);
-    if (activeTab === "css") setCss(value);
-    if (activeTab === "js") setJs(value);
+    if (activeTab === "html") setHtml(value || "");
+    if (activeTab === "css") setCss(value || "");
+    if (activeTab === "js") setJs(value || "");
   };
 
   const handleSubmit = () => {
@@ -102,17 +118,20 @@ function AddUi() {
           </div>
 
           <div className="editor">
-            <SyntaxHighlighter
-              language={activeTab}
-              style={materialDark}
-              showLineNumbers
-              wrapLines
-              onChange={(e) => handleCodeChange(e.target.value)}
-              contentEditable
-              suppressContentEditableWarning
-            >
-              {activeTab === "html" ? html : activeTab === "css" ? css : js}
-            </SyntaxHighlighter>
+            <MonacoEditor
+              height="100%"
+              defaultLanguage={activeTab === "html" ? "html" : activeTab}
+              value={
+                activeTab === "html" ? html : activeTab === "css" ? css : js
+              }
+              onChange={handleCodeChange}
+              theme="vs-dark" // Set dark theme
+              options={{
+                fontSize: 14,
+                minimap: { enabled: false },
+                scrollBeyondLastLine: false,
+              }}
+            />
           </div>
         </div>
         <div className="right-panel">
