@@ -3,8 +3,9 @@
     height: 80vh; /* Giới hạn chiều cao để tránh tràn */
     gap: 16px;
     overflow: hidden; /* Ngăn nội dung bên trong tràn */
-    grid-template-columns: repeat(auto-fill, minmax(420px, 1fr)); /* Cân đối các phần tử */
-
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); /* Cân đối các phần tử */
+    width: 100%;
+    margin-bottom: 20px;
   }
   
   .left-panel {
@@ -13,6 +14,7 @@
     flex-direction: column;
     padding: 20px;
     overflow: hidden; /* Ngăn chặn tràn */
+  
   }
   
   .tabs {
@@ -44,7 +46,7 @@
 
   .componentName {
     padding: 10px;
-    width: 150px; /* Giữ khoảng cách với viền */
+    width: 100px; /* Giữ khoảng cách với viền */
     margin-left: auto; /* Push input to the right */
     transition: border-color 0.3s, box-shadow 0.3s;
     outline: none; /* Loại bỏ viền focus mặc định */
@@ -64,8 +66,10 @@
   .editor {
     flex: 1;
     padding: 5px 0px;
-    height: 60vh; /* Fixed height to avoid ResizeObserver loop */
+    max-height: 100vh; /* Fixed height to avoid ResizeObserver loop */
     overflow: hidden; /* Prevent unnecessary scrollbars */
+    min-height: 50vh;
+    margin: 0;
   }
   
   .right-panel {
@@ -111,3 +115,9 @@
   }
 
 
+  
+  @media (max-width: 768px) {
+    .add-ui-container {
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Cân đối các phần tử */
+    }
+  }

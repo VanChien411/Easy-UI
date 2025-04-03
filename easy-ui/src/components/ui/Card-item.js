@@ -1,23 +1,39 @@
 import React from "react";
+import AddUi from "../ui/Develop/AddUi";
 
-function CardItem({ name, html, css, js }) {
-  console.log(html);
-  console.log(css);
+function CardItem({ name, html, css, js, isExpanded, onExpand }) {
+  const iframeContent = `
+    <style>${css}</style>
+    ${html}
+    <script>${js}</script>
+  `;
+
   return (
     <>
-      <style>{css}</style>
-      <div className="card">
+      <div className={`card ${isExpanded ? "expanded" : ""}`}>
+        {/* Icon for expand/collapse */}
+        <div className="icon-expand" onClick={onExpand}>
+          <i
+            className={
+              isExpanded
+                ? "fa-solid fa-down-left-and-up-right-to-center"
+                : "fa-solid fa-up-right-and-down-left-from-center"
+            }
+          ></i>
+        </div>
         <div className="row">
-          <div className="left-column">
-            <p dangerouslySetInnerHTML={{ __html: html }}></p>
-          </div>
-          <div className="right-column">
-            <img
-              src="/assets/images/avata3d.jpg"
-              alt="Product"
-              className="image"
-            />
-          </div>
+          {isExpanded ? (
+            <AddUi html={html} css={css} js={js}></AddUi>
+          ) : (
+            <>
+              <iframe
+                srcDoc={iframeContent}
+                title="Preview"
+                sandbox="allow-scripts allow-same-origin"
+                style={{ border: "none", width: "100%", height: "100%" }}
+              ></iframe>
+            </>
+          )}
         </div>
         <hr className="divider" />
         <div className="button-container">
@@ -29,7 +45,6 @@ function CardItem({ name, html, css, js }) {
           <button className="button-hashtag buy">Buy Now</button>
         </div>
       </div>
-      <script>{js}</script>
     </>
   );
 }
