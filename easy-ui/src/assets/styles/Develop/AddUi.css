@@ -3,9 +3,9 @@
     height: 80vh; /* Giới hạn chiều cao để tránh tràn */
     gap: 16px;
     overflow: hidden; /* Ngăn nội dung bên trong tràn */
-    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); /* Cân đối các phần tử */
     width: 100%;
     margin-bottom: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); /* Cân đối các phần tử */
   }
   
   .left-panel {
