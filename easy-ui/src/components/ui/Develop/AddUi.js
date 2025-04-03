@@ -1,35 +1,24 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "../../../assets/styles/Develop/AddUi.css";
 import { saveUIComponent } from "../../../services/uiComponentsService";
 import { showAlert } from "../../utils/Alert";
 import Spinner from "../../utils/Spinner";
 import MonacoEditor from "@monaco-editor/react";
 
-function AddUi() {
+function AddUi({
+  html: initialHtml = "",
+  css: initialCss = "",
+  js: initialJs = "",
+}) {
   const [name, setName] = useState("");
-  const [html, setHtml] = useState("");
-  const [css, setCss] = useState("");
-  const [js, setJs] = useState("");
+  const [html, setHtml] = useState(initialHtml);
+  const [css, setCss] = useState(initialCss);
+  const [js, setJs] = useState(initialJs);
   const [activeTab, setActiveTab] = useState("html");
   const [isSaving, setIsSaving] = useState(false);
   const [isPreviewing, setIsPreviewing] = useState(false);
-
-  useEffect(() => {
-    const resizeObserver = new ResizeObserver(() => {
-      setTimeout(() => {
-        // Handle resize logic here
-      }, 0);
-    });
-
-    const editorContainer = document.querySelector(".editor");
-    if (editorContainer) {
-      resizeObserver.observe(editorContainer);
-    }
-
-    return () => {
-      resizeObserver.disconnect();
-    };
-  }, []);
+  const [uniqueId] = useState(`ui-${Math.random().toString(36).substr(2, 9)}`);
+  const editorRef = useRef(null);
 
   const handleCodeChange = (value) => {
     if (activeTab === "html") setHtml(value || "");
@@ -37,19 +26,79 @@ function AddUi() {
     if (activeTab === "js") setJs(value || "");
   };
 
+  const handleEditorDidMount = (editor) => {
+    editorRef.current = editor;
+    // Trigger layout update on window resize
+    const handleResize = () => editor.layout();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  };
+
+  // Reusable function to scope and sanitize user input
+  const getScopedContent = () => {
+    // Remove <style> and <script> tags from CSS and JS
+    const sanitizedCss = css.replace(/<style[^>]*>|<\/style>/gi, "");
+    const sanitizedJs = js.replace(/<script[^>]*>|<\/script>/gi, "");
+
+    // Add uniqueId to all classes in HTML
+    const scopedHtml = html.replace(
+      /class=['"]([\w-\s]+)['"]/g,
+      (match, classNames) =>
+        `class="${uniqueId} ${classNames
+          .split(" ")
+          .map((cls) => `${uniqueId}-${cls}`)
+          .join(" ")}"`
+    );
+
+    // Add uniqueId to all classes in CSS
+    const scopedCss = sanitizedCss.replace(/\.([\w-]+)/g, `.${uniqueId}-$1`);
+
+    // Add uniqueId to all class selectors in JS
+    const scopedJs = sanitizedJs
+      .replace(
+        /document\.querySelector\((['"`])(.*?)\1\)/g,
+        (match, quote, selector) =>
+          `document.querySelector(${quote}${selector.replace(
+            /\.([\w-]+)/g,
+            `.${uniqueId}-$1`
+          )}${quote})`
+      )
+      .replace(
+        /document\.querySelectorAll\((['"`])(.*?)\1\)/g,
+        (match, quote, selector) =>
+          `document.querySelectorAll(${quote}${selector.replace(
+            /\.([\w-]+)/g,
+            `.${uniqueId}-$1`
+          )}${quote})`
+      );
+
+    // Wrap user HTML in a container div
+    const wrappedHtml = `${scopedHtml}`;
+
+    return { wrappedHtml, scopedCss, scopedJs };
+  };
+
   const handleSubmit = () => {
     setIsPreviewing(true);
     setTimeout(() => {
       const iframe = document.getElementById("live-preview");
+      const { wrappedHtml, scopedCss, scopedJs } = getScopedContent();
+
       const documentContent = `
         <!DOCTYPE html>
         <html lang="en">
         <head>
-          <style>${css}</style>
+          <style>${scopedCss}</style>
         </head>
         <body>
-          ${html}
-          <script>${js}<\/script>
+          ${wrappedHtml}
+          <script>
+            try {
+              ${scopedJs}
+            } catch (error) {
+              console.error("Error in user-provided JavaScript:", error);
+            }
+          </script>
         </body>
         </html>
       `;
@@ -66,8 +115,18 @@ function AddUi() {
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      const payload = { name, html, css, js };
+      const { wrappedHtml, scopedCss, scopedJs } = getScopedContent();
+
+      // Save the scoped versions of HTML, CSS, and JS
+      const payload = {
+        name,
+        html: wrappedHtml,
+        css: scopedCss,
+        js: scopedJs,
+        uniqueId,
+      };
       await saveUIComponent(payload);
+
       showAlert({
         title: "Success",
         message: "UI Component saved successfully!",
@@ -86,65 +145,63 @@ function AddUi() {
   };
 
   return (
-    <div>
-      <div className="add-ui-container">
-        <div className="left-panel">
-          <div className="tabs">
-            <button
-              className={activeTab === "html" ? "active" : ""}
-              onClick={() => setActiveTab("html")}
-            >
-              HTML
-            </button>
-            <button
-              className={activeTab === "css" ? "active" : ""}
-              onClick={() => setActiveTab("css")}
-            >
-              CSS
-            </button>
-            <button
-              className={activeTab === "js" ? "active" : ""}
-              onClick={() => setActiveTab("js")}
-            >
-              JS
-            </button>
-            <input
-              className="componentName"
-              type="text"
-              placeholder="Component Name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-          </div>
+    <div className="add-ui-container">
+      <div className="left-panel">
+        <div className="tabs">
+          <button
+            className={activeTab === "html" ? "active" : ""}
+            onClick={() => setActiveTab("html")}
+          >
+            HTML
+          </button>
+          <button
+            className={activeTab === "css" ? "active" : ""}
+            onClick={() => setActiveTab("css")}
+          >
+            CSS
+          </button>
+          <button
+            className={activeTab === "js" ? "active" : ""}
+            onClick={() => setActiveTab("js")}
+          >
+            JS
+          </button>
+          <input
+            className="componentName"
+            type="text"
+            placeholder="Component Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+        </div>
 
-          <div className="editor">
-            <MonacoEditor
-              height="100%"
-              defaultLanguage={activeTab === "html" ? "html" : activeTab}
-              value={
-                activeTab === "html" ? html : activeTab === "css" ? css : js
-              }
-              onChange={handleCodeChange}
-              theme="vs-dark" // Set dark theme
-              options={{
-                fontSize: 14,
-                minimap: { enabled: false },
-                scrollBeyondLastLine: false,
-              }}
-            />
-          </div>
+        <div className="editor">
+          <MonacoEditor
+            key={activeTab} // Thêm key để ép MonacoEditor re-render khi tab thay đổi
+            height="100%"
+            defaultLanguage={activeTab === "html" ? "html" : activeTab}
+            value={activeTab === "html" ? html : activeTab === "css" ? css : js}
+            onChange={handleCodeChange}
+            theme="vs-dark"
+            options={{
+              fontSize: 14,
+              minimap: { enabled: false },
+              scrollBeyondLastLine: false,
+            }}
+            onMount={handleEditorDidMount} // Add onMount callback
+          />
         </div>
-        <div className="right-panel">
-          <div className="actions">
-            <button onClick={handleSubmit} disabled={isPreviewing}>
-              {isPreviewing ? <Spinner size={12} /> : "Preview"}
-            </button>
-            <button onClick={handleSave} disabled={isSaving}>
-              {isSaving ? <Spinner size={12} /> : "Save"}
-            </button>
-          </div>
-          <iframe id="live-preview" title="Live Preview"></iframe>
+      </div>
+      <div className="right-panel">
+        <div className="actions">
+          <button onClick={handleSubmit} disabled={isPreviewing}>
+            {isPreviewing ? <Spinner size={12} /> : "Preview"}
+          </button>
+          <button onClick={handleSave} disabled={isSaving}>
+            {isSaving ? <Spinner size={12} /> : "Save"}
+          </button>
         </div>
+        <iframe id="live-preview" title="Live Preview"></iframe>
       </div>
     </div>
   );

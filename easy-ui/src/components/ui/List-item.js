@@ -1,8 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import CardItem from "./Card-item";
 
 function ListItem({ items }) {
-  console.log(items);
+  const [expandedCard, setExpandedCard] = useState(null);
+
+  const handleExpand = (index) => {
+    setExpandedCard(expandedCard === index ? null : index);
+  };
+
   return (
     <div>
       <style>
@@ -16,7 +21,6 @@ function ListItem({ items }) {
             padding: 10px;
             align-content: stretch;
             grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); /* Cân đối các phần tử */
-           
           }
        
           .sort-button {
@@ -25,18 +29,41 @@ function ListItem({ items }) {
           .card {
             border: 1px solid var(--card-border-color);
             padding: 10px; /* 20% smaller */
-            max-width: 400px; /* 20% smaller */
+            max-width: 100%; /* 20% smaller */
             min-width: 200px; /* 20% smaller */
             transition: transform 0.3s, box-shadow 0.3s;
             cursor: pointer;
             border-radius: 9.6px; /* 20% smaller */  
             background-color: var(--background-color-rgba);
+            min-height: 50px;
+            max-height: 100%;
+            position: relative; /* Ensure the icon is positioned relative to the card */
           }
           
           .card:hover {
             box-shadow: 0 0 15px var(--card-border-color); /* Tăng độ mạnh của bóng */
           }
 
+          .card.expanded {
+            grid-column: span 3;
+            grid-row: span 2;
+            max-width: 90vw; /* Prevent overflow by limiting width */
+            max-height: 90vh; /* Prevent overflow by limiting height */
+            overflow: hidden; /* Add scrollbars if content overflows */
+          }
+
+          @media (max-width: 768px) {
+            .card.expanded {
+              grid-column: span 1; /* Adjust for smaller screens */
+              grid-row: span 2;
+              max-width: 100%; /* Use full width on smaller screens */
+              max-height: 80vh; /* Adjust height for smaller screens */
+            }
+              
+          }
+              .add-ui-container {
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Cân đối các phần tử */
+    }
           .row {
             display: flex;
             flex-direction: row;
@@ -46,14 +73,18 @@ function ListItem({ items }) {
           .left-column {
             flex: 1;
             padding-right: 6.4px; /* 20% smaller */
+            overflow: "hidden"
+            
           }
 
           .right-column {
             flex: 1;
+            cursor: pointer;
           }
 
           .image {
             width: 100%; /* 20% smaller */
+            object-fit: cover; /* Cắt ảnh để vừa với thẻ cha */
           }
 
           .button-container {
@@ -98,6 +129,23 @@ function ListItem({ items }) {
             margin: 10px 0; /* 20% smaller */
           }
 
+          .icon-expand {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            padding: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+            z-index: 2; /* Ensure it appears above other elements */
+          }
+
+          .icon-expand:hover {
+            background-color: rgba(200, 200, 200, 0.8);
+          }
+
         `}
       </style>
       <div className="container">
@@ -108,6 +156,8 @@ function ListItem({ items }) {
             html={item.html}
             css={item.css}
             js={item.js}
+            isExpanded={expandedCard === index}
+            onExpand={() => handleExpand(index)}
           />
         ))}
       </div>
