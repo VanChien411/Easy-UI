@@ -13,6 +13,7 @@ function AddUi() {
   const [activeTab, setActiveTab] = useState("html");
   const [isSaving, setIsSaving] = useState(false);
   const [isPreviewing, setIsPreviewing] = useState(false);
+  const [uniqueId] = useState(`ui-${Math.random().toString(36).substr(2, 9)}`);
 
   useEffect(() => {
     const resizeObserver = new ResizeObserver(() => {
@@ -41,15 +42,46 @@ function AddUi() {
     setIsPreviewing(true);
     setTimeout(() => {
       const iframe = document.getElementById("live-preview");
+
+      // Remove <style> and <script> tags from CSS and JS
+      const sanitizedCss = css.replace(/<style[^>]*>|<\/style>/gi, "");
+      const sanitizedJs = js.replace(/<script[^>]*>|<\/script>/gi, "");
+
+      // Add uniqueId to all classes in HTML
+      const scopedHtml = html.replace(
+        /class=['"]([\w-\s]+)['"]/g,
+        (match, classNames) =>
+          `class="${uniqueId} ${classNames
+            .split(" ")
+            .map((cls) => `${uniqueId}-${cls}`)
+            .join(" ")}"`
+      );
+
+      // Add uniqueId to all classes in CSS
+      const scopedCss = sanitizedCss.replace(/\.([\w-]+)/g, `.${uniqueId}-$1`);
+
+      // Add uniqueId to all class selectors in JS
+      const scopedJs = sanitizedJs
+        .replace(/document\.querySelector\((.*?)\)/g, (match, selector) =>
+          selector.includes(".")
+            ? `document.querySelector(${selector}.replace(/\\.([\w-]+)/g, ".${uniqueId}-$1"))`
+            : match
+        )
+        .replace(/document\.querySelectorAll\((.*?)\)/g, (match, selector) =>
+          selector.includes(".")
+            ? `document.querySelectorAll(${selector}.replace(/\\.([\w-]+)/g, ".${uniqueId}-$1"))`
+            : match
+        );
+
       const documentContent = `
         <!DOCTYPE html>
         <html lang="en">
         <head>
-          <style>${css}</style>
+          <style>${scopedCss}</style>
         </head>
         <body>
-          ${html}
-          <script>${js}<\/script>
+          ${scopedHtml}
+          <script>${scopedJs}<\/script>
         </body>
         </html>
       `;
@@ -66,7 +98,7 @@ function AddUi() {
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      const payload = { name, html, css, js };
+      const payload = { name, html, css, js, uniqueId };
       await saveUIComponent(payload);
       showAlert({
         title: "Success",
