@@ -1,11 +1,11 @@
 .add-ui-container {
-    display: grid;
+    display: flex;
     height: 80vh; /* Giới hạn chiều cao để tránh tràn */
     gap: 16px;
     overflow: hidden; /* Ngăn nội dung bên trong tràn */
     width: 100%;
     margin-bottom: 20px;
-    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); /* Cân đối các phần tử */
+    flex-direction: row;
   }
   
   .left-panel {
@@ -118,6 +118,7 @@
   
   @media (max-width: 768px) {
     .add-ui-container {
+      display: grid;
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Cân đối các phần tử */
     }
   }

@@ -5,6 +5,7 @@ import PageHome from "./pages/Home/Page-home";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import Buttons from "./components/ui/Buttons/Buttons"; // Ensure this path is correct
 import AddUi from "./components/ui/Develop/AddUi";
+import ShopCart from "./components/ui/ShopCart";
 
 function App() {
   return (
@@ -45,6 +46,14 @@ function App() {
             element={
               <PageHome>
                 <Buttons />
+              </PageHome>
+            }
+          />
+          <Route
+            path="/Cart"
+            element={
+              <PageHome>
+                <ShopCart />
               </PageHome>
             }
           />
