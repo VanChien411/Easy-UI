@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 import userAvatar from "../../assets/images/avata3d.jpg"; // Import the image
 import { applyTheme, lightTheme, darkTheme } from "../../config/theme"; // Import themes
+import CartService from "../../services/CartService"; // Import CartService
+import { setCart } from "../../redux/slices/cartSlice";
 
 function Navbar() {
   const navigate = useNavigate(); // Initialize useNavigate
+  const dispatch = useDispatch();
   const [menuOpen, setMenuOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(() => {
     // Load theme from localStorage or default to true
@@ -13,11 +17,28 @@ function Navbar() {
   });
   const [searchQuery, setSearchQuery] = useState("");
   const [searchSuggestions, setSearchSuggestions] = useState([]);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+
+  const { items, totalQuantity } = useSelector((state) => state.cart);
 
   useEffect(() => {
     // Apply the theme on component mount
     applyTheme(isDarkMode ? darkTheme : lightTheme);
   }, [isDarkMode]);
+
+  useEffect(() => {
+    // Fetch cart items from the API and update Redux store
+    const fetchCartItems = async () => {
+      try {
+        const cartItems = await CartService.getCartItems();
+        dispatch(setCart(cartItems)); // Update Redux store with fetched cart items
+      } catch (error) {
+        console.error("Failed to fetch cart items:", error);
+      }
+    };
+
+    fetchCartItems();
+  }, [dispatch]);
 
   const handleMenuToggle = () => {
     setMenuOpen(!menuOpen);
@@ -37,6 +58,14 @@ function Navbar() {
     setSearchSuggestions(
       query ? ["Suggestion 1", "Suggestion 2", "Suggestion 3"] : []
     );
+  };
+
+  const handleCartHover = () => {
+    setIsCartOpen(true);
+  };
+
+  const handleCartLeave = () => {
+    setIsCartOpen(false);
   };
 
   return (
@@ -253,6 +282,72 @@ function Navbar() {
               color: #4a4a4a; /* Dark gray for moon icon */
           }
          
+          .cart-container {
+            position: relative;
+            cursor: pointer;
+            margin: 0px 20px;
+
+          }
+
+          .cart-icon {
+            font-size: 1.5em;
+            position: relative;
+          }
+
+          .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: red;
+            color: white;
+            font-size: 0.8em;
+            border-radius: 50%;
+            padding: 2px 6px;
+          }
+
+          .cart-dropdown {
+            position: absolute;
+            top: 120%;
+            right: 0;
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 200px;
+            z-index: 5;
+            display: ${isCartOpen ? "block" : "none"};
+          }
+
+          .cart-item {
+            padding: 8px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px; /* Add gap between sections */
+          }
+
+          .cart-item:last-child {
+            border-bottom: none;
+          }
+
+          .cart-item-name {
+            flex: 2; /* Make name section longer */
+            font-size: 0.9em;
+            color: #333;
+            white-space: nowrap; /* Prevent text wrapping */
+            overflow: hidden; /* Hide overflowing text */
+            text-overflow: ellipsis; /* Add ellipsis for overflowing text */
+          }
+
+          .cart-item-quantity,
+          .cart-item-price {
+            flex: 1; /* Make quantity and price sections shorter */
+            font-size: 0.9em;
+            color: #666;
+            text-align: right; /* Align text to the right */
+          }
+
           @media screen and (max-width: 868px) {
             .search-container {
               flex: 1;
@@ -359,10 +454,36 @@ function Navbar() {
             ></i>
           </span>
         </ul>
+
         <div
           className="user-info"
           // Navigate to the route
         >
+          <div
+            className="cart-container"
+            onMouseEnter={handleCartHover}
+            onMouseLeave={handleCartLeave}
+          >
+            <span onClick={() => navigate("/Cart")}>
+              <span className="fa fa-shopping-cart cart-icon"></span>
+              <span className="cart-count">{totalQuantity}</span>
+              <div className="cart-dropdown">
+                {items.map((item) => (
+                  <div key={item.uiComponentId} className="cart-item">
+                    <span className="cart-item-name">
+                      {item.uiComponentName || "null"}
+                    </span>
+                    <span className="cart-item-quantity">
+                      Qty: {item.quantity || "0"}
+                    </span>
+                    <span className="cart-item-price">
+                      {item.price || "0"}$
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </span>
+          </div>
           <img
             src={userAvatar}
             alt="User Avatar"

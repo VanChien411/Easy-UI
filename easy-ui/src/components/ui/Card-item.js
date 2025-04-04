@@ -1,12 +1,50 @@
 import React from "react";
+import { useDispatch } from "react-redux";
+import { addItem } from "../../redux/slices/cartSlice";
 import AddUi from "../ui/Develop/AddUi";
+import { showAlert } from "../utils/Alert";
+import CartService from "../../services/CartService"; // Import CartService
 
-function CardItem({ name, html, css, js, isExpanded, onExpand }) {
+function CardItem({
+  name,
+  html,
+  css,
+  js,
+  uiComponentId,
+  isExpanded,
+  onExpand,
+}) {
+  const dispatch = useDispatch();
+
   const iframeContent = `
     <style>${css}</style>
     ${html}
     <script>${js}</script>
   `;
+
+  const handleBuyNow = async () => {
+    try {
+      // Send API request to add the item to the cart
+      await CartService.addToCart({ uiComponentId, quantity: 1 });
+
+      // Dispatch Redux action to update the cart state
+      dispatch(addItem({ uiComponentId, name, quantity: 1 }));
+
+      // Show success alert
+      showAlert({
+        title: "Success",
+        message: "cart successfully!",
+        type: "success",
+      });
+    } catch (error) {
+      // Show error alert if the API call fails
+      showAlert({
+        title: "Error",
+        message: error.message || "Failed to add item to cart!",
+        type: "error",
+      });
+    }
+  };
 
   return (
     <>
@@ -42,7 +80,9 @@ function CardItem({ name, html, css, js, isExpanded, onExpand }) {
             <button className="button-hashtag button-js">JavaScript</button>
           )}
           {css && <button className="button-hashtag button-css">Css</button>}
-          <button className="button-hashtag buy">Buy Now</button>
+          <button className="button-hashtag buy" onClick={handleBuyNow}>
+            Buy Now
+          </button>
         </div>
       </div>
     </>

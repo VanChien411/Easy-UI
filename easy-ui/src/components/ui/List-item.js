@@ -61,7 +61,8 @@ function ListItem({ items }) {
             }
               
           }
-              .add-ui-container {
+               .add-ui-container {
+      display: grid;
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Cân đối các phần tử */
     }
           .row {
@@ -135,7 +136,8 @@ function ListItem({ items }) {
             right: 10px;
             cursor: pointer;
             font-size: 16px;
-            background-color: rgba(255, 255, 255, 0.8);
+            background-color: var(--background-color);
+            
             border-radius: 50%;
             padding: 5px;
             box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
@@ -153,6 +155,8 @@ function ListItem({ items }) {
           <CardItem
             key={index}
             {...item}
+            name={item.name}
+            uiComponentId={item.id} // Pass the UI component ID
             html={item.html}
             css={item.css}
             js={item.js}
