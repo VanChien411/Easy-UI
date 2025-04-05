@@ -3,6 +3,7 @@ import Sidebar from "../../components/Layout/Sidebar";
 import Header from "../../components/Layout/Header";
 import Footer from "../../components/Layout/Footer";
 import Alert from "../../components/utils/Alert";
+import Chatbot from "../../components/ui/Chatbot";
 
 function PageHome({ children }) {
   return (
@@ -15,6 +16,7 @@ function PageHome({ children }) {
 
       <Sidebar />
       <Footer />
+      <Chatbot />
     </main>
   );
 }

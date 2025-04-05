@@ -7,7 +7,7 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 
 const observerErrorHandler = (event) => {
-  if (event.message.includes("ResizeObserver")) {
+  if (event?.message?.includes("ResizeObserver")) {
     event.stopImmediatePropagation();
   }
 };

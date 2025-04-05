@@ -61,7 +61,7 @@ function CardItem({
         </div>
         <div className="row">
           {isExpanded ? (
-            <AddUi html={html} css={css} js={js}></AddUi>
+            <AddUi html={html} css={css} js={js} name={name}></AddUi>
           ) : (
             <>
               <iframe
