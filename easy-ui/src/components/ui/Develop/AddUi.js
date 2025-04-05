@@ -9,11 +9,12 @@ function AddUi({
   html: initialHtml = "",
   css: initialCss = "",
   js: initialJs = "",
+  name: initialName = "",
 }) {
-  const [name, setName] = useState("");
-  const [html, setHtml] = useState(initialHtml);
-  const [css, setCss] = useState(initialCss);
-  const [js, setJs] = useState(initialJs);
+  const [name, setName] = useState(initialName || "");
+  const [html, setHtml] = useState(initialHtml || ""); // Ensure non-null value
+  const [css, setCss] = useState(initialCss || ""); // Ensure non-null value
+  const [js, setJs] = useState(initialJs || ""); // Ensure non-null value
   const [activeTab, setActiveTab] = useState("html");
   const [isSaving, setIsSaving] = useState(false);
   const [isPreviewing, setIsPreviewing] = useState(false);
@@ -36,12 +37,11 @@ function AddUi({
 
   // Reusable function to scope and sanitize user input
   const getScopedContent = () => {
-    // Remove <style> and <script> tags from CSS and JS
-    const sanitizedCss = css.replace(/<style[^>]*>|<\/style>/gi, "");
-    const sanitizedJs = js.replace(/<script[^>]*>|<\/script>/gi, "");
+    const sanitizedCss = (css || "").replace(/<style[^>]*>|<\/style>/gi, ""); // Ensure non-null value
+    const sanitizedJs = (js || "").replace(/<script[^>]*>|<\/script>/gi, ""); // Ensure non-null value
 
     // Add uniqueId to all classes in HTML
-    const scopedHtml = html.replace(
+    const scopedHtml = (html || "").replace(
       /class=['"]([\w-\s]+)['"]/g,
       (match, classNames) =>
         `class="${uniqueId} ${classNames
