@@ -286,6 +286,7 @@ function Navbar() {
             position: relative;
             cursor: pointer;
             margin: 0px 20px;
+            color: yellow;
 
           }
 

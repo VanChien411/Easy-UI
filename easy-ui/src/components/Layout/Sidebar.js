@@ -1,8 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom"; // Add this import
+import { useNavigate, useLocation } from "react-router-dom";
+import { ROUTES } from "../../constants/routes";
 
 function Sidebar() {
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate();
+  const location = useLocation();
   const handleMenuClickRef = useRef(null);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -45,6 +47,29 @@ function Sidebar() {
     };
   }, []);
 
+  useEffect(() => {
+    // Remove active class from all menu items
+    document.querySelectorAll(".menu-items a[data-route]").forEach((item) => {
+      item.classList.remove("selected");
+    });
+
+    // Find and activate the current route's menu item
+    const currentPath = location.pathname.toLowerCase(); // Convert to lowercase for case-insensitive comparison
+    const menuItems = document.querySelectorAll(".menu-items a[data-route]");
+
+    menuItems.forEach((item) => {
+      const href = item.getAttribute("data-route");
+      if (href && currentPath === href.toLowerCase()) {
+        item.classList.add("selected");
+        // If the item is in a dropdown, make sure the dropdown is expanded
+        const dropdown = item.closest(".dropdown");
+        if (dropdown) {
+          dropdown.classList.add("active");
+        }
+      }
+    });
+  }, [location.pathname]);
+
   const handleDropdownClick = (e) => {
     e.preventDefault();
     const dropdown = e.currentTarget.parentElement;
@@ -56,11 +81,7 @@ function Sidebar() {
 
   const handleMenuItemClick = (e, path) => {
     e.preventDefault();
-    document.querySelectorAll(".menu-items a").forEach((item) => {
-      item.classList.remove("selected");
-    });
-    e.currentTarget.classList.add("selected");
-    if (path) navigate(path); // Navigate to the specified path
+    if (path) navigate(path);
   };
 
   const handleSearchChange = (e) => {
@@ -101,31 +122,51 @@ function Sidebar() {
           </a>
           <ul className="dropdown-menu menu-items">
             <li>
-              <a href="#" onClick={(e) => handleMenuItemClick(e, "/Buttons")}>
+              <a
+                href="#"
+                onClick={(e) => handleMenuItemClick(e, ROUTES.BUTTONS)}
+                data-route={ROUTES.BUTTONS}
+              >
                 <span className="icon fa fa-square"></span>
                 <span className="item-name">Buttons</span>
               </a>
             </li>
             <li>
-              <a href="#" onClick={handleMenuItemClick}>
+              <a
+                href="#"
+                onClick={(e) => handleMenuItemClick(e, ROUTES.CARDS)}
+                data-route={ROUTES.CARDS}
+              >
                 <span className="icon fa fa-clone"></span>
                 <span className="item-name">Cards</span>
               </a>
             </li>
             <li>
-              <a href="#" onClick={handleMenuItemClick}>
+              <a
+                href="#"
+                onClick={(e) => handleMenuItemClick(e, ROUTES.FORMS)}
+                data-route={ROUTES.FORMS}
+              >
                 <span className="icon fa fa-edit"></span>
                 <span className="item-name">Forms & Inputs</span>
               </a>
             </li>
             <li>
-              <a href="#" onClick={handleMenuItemClick}>
+              <a
+                href="#"
+                onClick={(e) => handleMenuItemClick(e, ROUTES.MODALS)}
+                data-route={ROUTES.MODALS}
+              >
                 <span className="icon fa fa-window-maximize"></span>
                 <span className="item-name">Modals & Dialogs</span>
               </a>
             </li>
             <li>
-              <a href="#" onClick={handleMenuItemClick}>
+              <a
+                href="#"
+                onClick={(e) => handleMenuItemClick(e, ROUTES.TABLES)}
+                data-route={ROUTES.TABLES}
+              >
                 <span className="icon fa fa-table"></span>
                 <span className="item-name">Tables</span>
               </a>
@@ -140,25 +181,41 @@ function Sidebar() {
           </a>
           <ul className="dropdown-menu menu-items">
             <li>
-              <a href="#" onClick={handleMenuItemClick}>
+              <a
+                href="#"
+                onClick={(e) => handleMenuItemClick(e, ROUTES.COLORS)}
+                data-route={ROUTES.COLORS}
+              >
                 <span className="icon fa fa-palette"></span>
                 <span className="item-name">Colors & Themes</span>
               </a>
             </li>
             <li>
-              <a href="#" onClick={handleMenuItemClick}>
+              <a
+                href="#"
+                onClick={(e) => handleMenuItemClick(e, ROUTES.BORDERS)}
+                data-route={ROUTES.BORDERS}
+              >
                 <span className="icon fa fa-border-style"></span>
                 <span className="item-name">Borders & Shadows</span>
               </a>
             </li>
             <li>
-              <a href="#" onClick={handleMenuItemClick}>
+              <a
+                href="#"
+                onClick={(e) => handleMenuItemClick(e, ROUTES.TYPOGRAPHY)}
+                data-route={ROUTES.TYPOGRAPHY}
+              >
                 <span className="icon fa fa-font"></span>
                 <span className="item-name">Typography</span>
               </a>
             </li>
             <li>
-              <a href="#" onClick={handleMenuItemClick}>
+              <a
+                href="#"
+                onClick={(e) => handleMenuItemClick(e, ROUTES.ICONS)}
+                data-route={ROUTES.ICONS}
+              >
                 <span className="icon fa fa-icons"></span>
                 <span className="item-name">Icons</span>
               </a>
@@ -173,19 +230,31 @@ function Sidebar() {
           </a>
           <ul className="dropdown-menu menu-items">
             <li>
-              <a href="#" onClick={handleMenuItemClick}>
+              <a
+                href="#"
+                onClick={(e) => handleMenuItemClick(e, ROUTES.GRID)}
+                data-route={ROUTES.GRID}
+              >
                 <span className="icon fa fa-th"></span>
                 <span className="item-name">Grid System</span>
               </a>
             </li>
             <li>
-              <a href="#" onClick={handleMenuItemClick}>
+              <a
+                href="#"
+                onClick={(e) => handleMenuItemClick(e, ROUTES.FLEXBOX)}
+                data-route={ROUTES.FLEXBOX}
+              >
                 <span className="icon fa fa-arrows-alt"></span>
                 <span className="item-name">Flexbox Helpers</span>
               </a>
             </li>
             <li>
-              <a href="#" onClick={handleMenuItemClick}>
+              <a
+                href="#"
+                onClick={(e) => handleMenuItemClick(e, ROUTES.SPACING)}
+                data-route={ROUTES.SPACING}
+              >
                 <span className="icon fa fa-expand"></span>
                 <span className="item-name">Spacing & Sizing</span>
               </a>
@@ -200,25 +269,41 @@ function Sidebar() {
           </a>
           <ul className="dropdown-menu menu-items">
             <li>
-              <a href="#" onClick={handleMenuItemClick}>
+              <a
+                href="#"
+                onClick={(e) => handleMenuItemClick(e, ROUTES.LOGIN)}
+                data-route={ROUTES.LOGIN}
+              >
                 <span className="icon fa fa-sign-in-alt"></span>
                 <span className="item-name">Login Forms</span>
               </a>
             </li>
             <li>
-              <a href="#" onClick={handleMenuItemClick}>
+              <a
+                href="#"
+                onClick={(e) => handleMenuItemClick(e, ROUTES.DASHBOARDS)}
+                data-route={ROUTES.DASHBOARDS}
+              >
                 <span className="icon fa fa-tachometer-alt"></span>
                 <span className="item-name">Dashboards</span>
               </a>
             </li>
             <li>
-              <a href="#" onClick={handleMenuItemClick}>
+              <a
+                href="#"
+                onClick={(e) => handleMenuItemClick(e, ROUTES.LANDING)}
+                data-route={ROUTES.LANDING}
+              >
                 <span className="icon fa fa-rocket"></span>
                 <span className="item-name">Landing Pages</span>
               </a>
             </li>
             <li>
-              <a href="#" onClick={handleMenuItemClick}>
+              <a
+                href="#"
+                onClick={(e) => handleMenuItemClick(e, ROUTES.ECOMMERCE)}
+                data-route={ROUTES.ECOMMERCE}
+              >
                 <span className="icon fa fa-shopping-cart"></span>
                 <span className="item-name">E-commerce UI</span>
               </a>

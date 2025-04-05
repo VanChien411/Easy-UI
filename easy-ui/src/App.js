@@ -6,6 +6,8 @@ import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import Buttons from "./components/ui/Buttons/Buttons"; // Ensure this path is correct
 import AddUi from "./components/ui/Develop/AddUi";
 import ShopCart from "./components/ui/ShopCart";
+import Cards from "./components/ui/Cards/Cards";
+import Forms from "./components/ui/Forms/Forms";
 
 function App() {
   return (
@@ -46,6 +48,22 @@ function App() {
             element={
               <PageHome>
                 <Buttons />
+              </PageHome>
+            }
+          />
+          <Route
+            path="/cards"
+            element={
+              <PageHome>
+                <Cards />
+              </PageHome>
+            }
+          />
+          <Route
+            path="/forms"
+            element={
+              <PageHome>
+                <Forms />
               </PageHome>
             }
           />

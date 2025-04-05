@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { addItem } from "../../redux/slices/cartSlice";
 import AddUi from "../ui/Develop/AddUi";
@@ -15,6 +15,7 @@ function CardItem({
   onExpand,
 }) {
   const dispatch = useDispatch();
+  const [isBuying, setIsBuying] = useState(false); // State to track loading
 
   const iframeContent = `
     <style>${css}</style>
@@ -23,6 +24,7 @@ function CardItem({
   `;
 
   const handleBuyNow = async () => {
+    setIsBuying(true); // Show spinner
     try {
       // Send API request to add the item to the cart
       await CartService.addToCart({ uiComponentId, quantity: 1 });
@@ -43,6 +45,8 @@ function CardItem({
         message: error.message || "Failed to add item to cart!",
         type: "error",
       });
+    } finally {
+      setIsBuying(false); // Hide spinner
     }
   };
 
@@ -61,7 +65,13 @@ function CardItem({
         </div>
         <div className="row">
           {isExpanded ? (
-            <AddUi html={html} css={css} js={js} name={name}></AddUi>
+            <AddUi
+              html={html}
+              css={css}
+              js={js}
+              name={name}
+              isEdit={false}
+            ></AddUi>
           ) : (
             <>
               <iframe
@@ -75,14 +85,24 @@ function CardItem({
         </div>
         <hr className="divider" />
         <div className="button-container">
-          {html && <button className="button-hashtag button-html">Html</button>}
-          {js && (
-            <button className="button-hashtag button-js">JavaScript</button>
-          )}
-          {css && <button className="button-hashtag button-css">Css</button>}
-          <button className="button-hashtag buy" onClick={handleBuyNow}>
-            Buy Now
-          </button>
+          <div className="button-hashtags">
+            {html && (
+              <button className="button-hashtag button-html">Html</button>
+            )}
+            {js && (
+              <button className="button-hashtag button-js">JavaScript</button>
+            )}
+            {css && <button className="button-hashtag button-css">Css</button>}
+          </div>
+          <div className="button-buy">
+            <button
+              className="button-hashtag buy"
+              onClick={handleBuyNow}
+              disabled={isBuying}
+            >
+              {isBuying ? <i className="fa fa-spinner fa-spin"></i> : "Buy"}
+            </button>
+          </div>
         </div>
       </div>
     </>
