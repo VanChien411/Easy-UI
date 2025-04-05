@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "../../assets/styles/Alert.css";
+import styles from "../../assets/styles/Alert.module.css"; // Import as styles for CSS Modules
 import { v4 as uuidv4 } from "uuid"; // Import UUID for unique identifiers
 
 let alertQueue = [];
@@ -13,25 +13,32 @@ function Alert() {
   };
 
   return (
-    <div className="alert-container">
+    <div className={styles["alert-container"]}>
       {alerts.map((alert) => (
-        <div key={alert.id} className={`toast ${alert.type} active`}>
-          <div className="toast-content">
-            <i className={`fas ${alert.icon} check`}></i>
-            <div className="message">
-              <span className="text text-1">{alert.title}</span>
-              <span className="text text-2">{alert.message}</span>
+        <div
+          key={alert.id}
+          className={`${styles.toast} ${styles[alert.type]} ${styles.active}`}
+        >
+          <div className={styles["toast-content"]}>
+            <i className={`fas ${alert.icon} ${styles.check}`}></i>
+            <div className={styles.message}>
+              <span className={`${styles.text} ${styles["text-1"]}`}>
+                {alert.title}
+              </span>
+              <span className={`${styles.text} ${styles["text-2"]}`}>
+                {alert.message}
+              </span>
             </div>
           </div>
           <i
-            className="fa-solid fa-xmark close"
+            className={`fa-solid fa-xmark ${styles.close}`}
             onClick={() => {
               const updatedAlerts = alertQueue.filter((a) => a.id !== alert.id); // Remove by ID
               setAlertQueue(updatedAlerts);
             }}
           ></i>
           <div
-            className="progress active"
+            className={`${styles.progress} ${styles.active}`}
             onAnimationEnd={() => {
               const updatedAlerts = alertQueue.filter((a) => a.id !== alert.id); // Remove by ID
               setAlertQueue(updatedAlerts);

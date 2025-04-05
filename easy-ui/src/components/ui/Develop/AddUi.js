@@ -1,25 +1,47 @@
 import React, { useState, useEffect, useRef } from "react";
 import "../../../assets/styles/Develop/AddUi.css";
 import { saveUIComponent } from "../../../services/uiComponentsService";
+import { fetchCategories } from "../../../services/categoriesService";
 import { showAlert } from "../../utils/Alert";
 import Spinner from "../../utils/Spinner";
 import MonacoEditor from "@monaco-editor/react";
+import apiClient from "../../../config/axios";
 
 function AddUi({
   html: initialHtml = "",
   css: initialCss = "",
   js: initialJs = "",
   name: initialName = "",
+  isEdit = true,
 }) {
   const [name, setName] = useState(initialName || "");
-  const [html, setHtml] = useState(initialHtml || ""); // Ensure non-null value
-  const [css, setCss] = useState(initialCss || ""); // Ensure non-null value
-  const [js, setJs] = useState(initialJs || ""); // Ensure non-null value
+  const [html, setHtml] = useState(initialHtml || "");
+  const [css, setCss] = useState(initialCss || "");
+  const [js, setJs] = useState(initialJs || "");
+  const [price, setPrice] = useState(0);
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [categories, setCategories] = useState([]);
   const [activeTab, setActiveTab] = useState("html");
   const [isSaving, setIsSaving] = useState(false);
   const [isPreviewing, setIsPreviewing] = useState(false);
   const [uniqueId] = useState(`ui-${Math.random().toString(36).substr(2, 9)}`);
   const editorRef = useRef(null);
+
+  useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        const data = await fetchCategories();
+        setCategories(data);
+      } catch (error) {
+        showAlert({
+          title: "Error",
+          message: "Failed to load categories",
+          type: "error",
+        });
+      }
+    };
+    loadCategories();
+  }, []);
 
   const handleCodeChange = (value) => {
     if (activeTab === "html") setHtml(value || "");
@@ -113,6 +135,15 @@ function AddUi({
   };
 
   const handleSave = async () => {
+    if (!selectedCategory) {
+      showAlert({
+        title: "Error",
+        message: "Please enter select a category",
+        type: "error",
+      });
+      return;
+    }
+
     setIsSaving(true);
     try {
       const { wrappedHtml, scopedCss, scopedJs } = getScopedContent();
@@ -124,8 +155,16 @@ function AddUi({
         css: scopedCss,
         js: scopedJs,
         uniqueId,
+        price: parseFloat(price),
       };
-      await saveUIComponent(payload);
+
+      // First save the component
+      const savedComponent = await saveUIComponent(payload);
+
+      // Then associate it with the category
+      await apiClient.post(`/Category/${selectedCategory}/components`, {
+        componentIds: [savedComponent.id],
+      });
 
       showAlert({
         title: "Success",
@@ -145,65 +184,95 @@ function AddUi({
   };
 
   return (
-    <div className="add-ui-container">
-      <div className="left-panel">
-        <div className="tabs">
-          <button
-            className={activeTab === "html" ? "active" : ""}
-            onClick={() => setActiveTab("html")}
-          >
-            HTML
-          </button>
-          <button
-            className={activeTab === "css" ? "active" : ""}
-            onClick={() => setActiveTab("css")}
-          >
-            CSS
-          </button>
-          <button
-            className={activeTab === "js" ? "active" : ""}
-            onClick={() => setActiveTab("js")}
-          >
-            JS
-          </button>
-          <input
-            className="componentName"
-            type="text"
-            placeholder="Component Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-        </div>
+    <>
+      <div className="add-ui-container">
+        <div className="left-panel">
+          <div className="tabs">
+            <button
+              className={activeTab === "html" ? "active" : ""}
+              onClick={() => setActiveTab("html")}
+            >
+              HTML
+            </button>
+            <button
+              className={activeTab === "css" ? "active" : ""}
+              onClick={() => setActiveTab("css")}
+            >
+              CSS
+            </button>
+            <button
+              className={activeTab === "js" ? "active" : ""}
+              onClick={() => setActiveTab("js")}
+            >
+              JS
+            </button>
+            <input
+              className="componentName"
+              type="text"
+              placeholder="Component Name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </div>
 
-        <div className="editor">
-          <MonacoEditor
-            key={activeTab} // Thêm key để ép MonacoEditor re-render khi tab thay đổi
-            height="100%"
-            defaultLanguage={activeTab === "html" ? "html" : activeTab}
-            value={activeTab === "html" ? html : activeTab === "css" ? css : js}
-            onChange={handleCodeChange}
-            theme="vs-dark"
-            options={{
-              fontSize: 14,
-              minimap: { enabled: false },
-              scrollBeyondLastLine: false,
-            }}
-            onMount={handleEditorDidMount} // Add onMount callback
-          />
+          <div className="editor">
+            <MonacoEditor
+              key={activeTab}
+              height="100%"
+              defaultLanguage={activeTab === "html" ? "html" : activeTab}
+              value={
+                activeTab === "html" ? html : activeTab === "css" ? css : js
+              }
+              onChange={handleCodeChange}
+              theme="vs-dark"
+              options={{
+                fontSize: 14,
+                minimap: { enabled: false },
+                scrollBeyondLastLine: false,
+              }}
+              onMount={handleEditorDidMount}
+            />
+          </div>
+        </div>
+        <div className="right-panel">
+          <div className="actions">
+            <button onClick={handleSubmit} disabled={isPreviewing}>
+              {isPreviewing ? <Spinner size={12} /> : "Preview"}
+            </button>
+            <button onClick={handleSave} disabled={isSaving}>
+              {isSaving ? <Spinner size={12} /> : "Save"}
+            </button>
+          </div>
+          <iframe id="live-preview" title="Live Preview"></iframe>
         </div>
       </div>
-      <div className="right-panel">
-        <div className="actions">
-          <button onClick={handleSubmit} disabled={isPreviewing}>
-            {isPreviewing ? <Spinner size={12} /> : "Preview"}
-          </button>
-          <button onClick={handleSave} disabled={isSaving}>
-            {isSaving ? <Spinner size={12} /> : "Save"}
-          </button>
-        </div>
-        <iframe id="live-preview" title="Live Preview"></iframe>
+      <div
+        className="price-category-container"
+        style={{ display: isEdit ? "flex" : "none" }}
+      >
+        <input
+          type="number"
+          className="price-input"
+          placeholder="Enter price"
+          value={price}
+          onChange={(e) => setPrice(e.target.value)}
+          min="0"
+          step="0.01"
+        />
+        <select
+          className="category-select"
+          value={selectedCategory}
+          onChange={(e) => setSelectedCategory(e.target.value)}
+        >
+          <option value="">Select a category</option>
+          {categories.map((category) => (
+            <option key={category.id} value={category.id}>
+              {category.name}
+            </option>
+          ))}
+        </select>
       </div>
-    </div>
+    </>
   );
 }
 

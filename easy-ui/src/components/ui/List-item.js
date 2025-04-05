@@ -153,9 +153,10 @@ function ListItem({ items }) {
           .button-container {
             text-align: center;
             display: flex;
-            flex-wrap: wrap;
             align-content: center;
             gap: 6.4px; /* 20% smaller */
+            justify-content: space-between;
+            align-items: center;
           }
 
           .button-hashtag {
@@ -164,6 +165,7 @@ function ListItem({ items }) {
             border-radius: 9.6px; /* 20% smaller */
             transition: background-color 0.3s;
             border: none;
+
           }
             .button-hashtag:hover {
             box-shadow: 0 0 10px 2px var(--card-border-color); /* Bóng từ trong ra ngoài */
@@ -188,6 +190,31 @@ function ListItem({ items }) {
             background-color:rgb(18, 193, 26);
             color: white;
           }
+             .button-container {
+              display: flex;
+              align-items: center;
+             flex-direction: row;
+            }
+
+            .button-hashtags {
+              display: flex;
+              gap: 6.4px; /* Space between hashtag buttons */
+              flex-wrap: wrap;
+            }
+
+            .button-buy {
+              display: flex;
+              justify-content: flex-end; /* Align to the right */
+              align-items: center;
+              width: 50px;
+              height: 50px;
+            }
+
+            .button-hashtag.buy {
+              width: 100%;
+              height: 100%;
+              font-size: 16px; /* Adjust font size for better readability */
+            }
           .divider {
             margin: 10px 0; /* 20% smaller */
           }
