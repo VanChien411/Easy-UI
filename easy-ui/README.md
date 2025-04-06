@@ -1,70 +1,109 @@
-# Getting Started with Create React App
+# Easy UI
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Easy UI is a powerful and modern React library that provides beautiful and easy-to-use UI components. The project not only offers pre-built UI components but also allows users to customize and create their own interfaces.
 
-## Available Scripts
+## 🚀 Key Features
 
-In the project directory, you can run:
+- **Modern Interface**: Beautifully designed and user-friendly components.
+- **Flexible Customization**: Enables users to create and customize interfaces as needed.
+- **Code Editing Support**: Integrated Monaco Editor for direct code editing.
+- **Powerful State Management**: Uses Redux Toolkit for efficient state management.
+- **Easy Routing**: Integrated React Router DOM for routing management.
+- **Code Syntax Highlighting**: Supports syntax highlighting for code.
+- **Rich Icons**: Integrated Font Awesome for icon usage.
+- **TypeScript Support**: Enhances code reliability and maintainability.
 
-### `npm start`
+## 📋 System Requirements
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- **Node.js**: Version 14 or higher.
+- **npm** or **yarn**: For dependency management.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 🛠️ Installation
 
-### `npm test`
+1. **Clone the repository**:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+   ```bash
+   git clone [URL_REPOSITORY]
+   cd easy-ui
+   ```
 
-### `npm run build`
+2. **Install dependencies**:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+   ```bash
+   npm install
+   # or
+   yarn install
+   ```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+3. **Configure environment variables**:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+   - Create a `.env` file from the `.env.example` template:
 
-### `npm run eject`
+     ```bash
+     cp .env.example .env
+     ```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+   - Open the `.env` file and update the necessary environment variables. For example:
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+     ```env
+     REACT_APP_API_URL=https://api.example.com
+     REACT_APP_FEATURE_FLAG=true
+     ```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+     - `REACT_APP_API_URL`: URL of the backend API.
+     - `REACT_APP_FEATURE_FLAG`: Enable or disable experimental features.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## 🚀 Running the Project
 
-## Learn More
+### Development Mode
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```bash
+npm start
+# or
+yarn start
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Visit [http://localhost:3000](http://localhost:3000) to view the application.
 
-### Code Splitting
+### Production Build
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+```bash
+npm run build
+# or
+yarn build
+```
 
-### Analyzing the Bundle Size
+The `build` folder will contain files ready for deployment.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## 🧪 Testing
 
-### Making a Progressive Web App
+```bash
+npm test
+# or
+yarn test
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## 📦 Technologies Used
 
-### Advanced Configuration
+- React 19
+- Redux Toolkit
+- React Router DOM
+- Monaco Editor
+- Axios
+- Font Awesome
+- TypeScript
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## 🤝 Contributions
 
-### Deployment
+All contributions are welcome! Please create an issue or pull request to contribute to the project.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+## 📧 Contact
 
-### `npm run build` fails to minify
+For questions and issues, please contact:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- **phuthienchien3@gmail.com**
+- **tienbanket@gmail.com**
+
+## 📄 License
+
+This project is licensed under the MIT License. See the `LICENSE` file for more details.
