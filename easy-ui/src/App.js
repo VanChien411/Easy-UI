@@ -8,6 +8,7 @@ import AddUi from "./components/ui/Develop/AddUi";
 import ShopCart from "./components/ui/ShopCart";
 import Cards from "./components/ui/Cards/Cards";
 import Forms from "./components/ui/Forms/Forms";
+import Content from "./components/ui/Contents/Content";
 
 function App() {
   return (
@@ -39,7 +40,7 @@ function App() {
             path="/"
             element={
               <PageHome>
-                <Buttons />
+                <Content />
               </PageHome>
             }
           />
