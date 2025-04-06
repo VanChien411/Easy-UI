@@ -96,7 +96,12 @@ function Sidebar() {
             className="fa-brands fa-uikit"
             onClick={() => handleMenuClickRef.current()}
           ></span>
-          <span className="brand-name">Smart UI Studio</span>
+          <span
+            className="brand-name"
+            onClick={(e) => handleMenuItemClick(e, "/")}
+          >
+            Smart UI Studio
+          </span>
         </a>
         <i
           className="fa-solid fa-xmark close-sidebar"

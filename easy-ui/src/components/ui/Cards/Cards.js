@@ -10,11 +10,9 @@ function Cards() {
   useEffect(() => {
     const loadCards = async () => {
       try {
-        const components = await fetchUIComponents();
+        const components = await fetchUIComponents(COMPONENT_TYPES.CARDS);
         setCardData(
-          components
-            .filter((component) => component.type === COMPONENT_TYPES.CARDS)
-            .map((component) => UIComponent.fromJson(component))
+          components.map((component) => UIComponent.fromJson(component))
         );
       } catch (error) {
         console.error("Error loading cards:", error.message);

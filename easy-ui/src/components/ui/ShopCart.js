@@ -1,13 +1,15 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setCart } from "../../redux/slices/cartSlice";
 import CartService from "../../services/CartService";
 import "../../assets/styles/ShopCart.css";
+import SkeletonShopCart from "../utils/Skeleton/SkeletonShopCart";
 
 const ShopCart = () => {
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart.items);
   const totalQuantity = useSelector((state) => state.cart.totalQuantity);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     fetchCartItems();
@@ -15,10 +17,13 @@ const ShopCart = () => {
 
   const fetchCartItems = async () => {
     try {
-      const items = await CartService.getCartItems(); // Now returns plain objects
-      dispatch(setCart(items)); // Dispatch plain objects to Redux
+      setIsLoading(true);
+      const items = await CartService.getCartItems();
+      dispatch(setCart(items));
     } catch (error) {
       console.error("Error fetching cart items:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -47,6 +52,10 @@ const ShopCart = () => {
   const handleCheckout = () => {
     alert("Proceeding to checkout...");
   };
+
+  if (isLoading) {
+    return <SkeletonShopCart />;
+  }
 
   return (
     <div className="shop-cart">

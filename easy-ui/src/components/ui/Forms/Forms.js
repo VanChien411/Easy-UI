@@ -10,11 +10,9 @@ function Forms() {
   useEffect(() => {
     const loadForms = async () => {
       try {
-        const components = await fetchUIComponents();
+        const components = await fetchUIComponents(COMPONENT_TYPES.FORMS);
         setFormData(
-          components
-            .filter((component) => component.type === COMPONENT_TYPES.FORMS)
-            .map((component) => UIComponent.fromJson(component))
+          components.map((component) => UIComponent.fromJson(component))
         );
       } catch (error) {
         console.error("Error loading forms:", error.message);

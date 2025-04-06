@@ -1,30 +1,29 @@
 import React, { useEffect, useState } from "react";
 import ListItem from "../List-item";
-import { fetchUIComponents } from "../../../services/uiComponentsService";
+import { fetchUIComponentsAll } from "../../../services/uiComponentsService";
 import UIComponent from "../../../models/UIComponents";
-import { COMPONENT_TYPES } from "../../../constants/routes";
 import Skeleton from "../../utils/Skeleton/SkeletonCard";
 
-function Buttons() {
-  const [buttonData, setButtonData] = useState([]);
+function Content() {
+  const [contentData, setContentData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const loadButtons = async () => {
+    const loadContents = async () => {
       try {
         setIsLoading(true);
-        const components = await fetchUIComponents(COMPONENT_TYPES.BUTTONS);
-        setButtonData(
+        const components = await fetchUIComponentsAll();
+        setContentData(
           components.map((component) => UIComponent.fromJson(component))
         );
       } catch (error) {
-        console.error("Error loading buttons:", error.message);
+        console.error("Error loading Contents:", error.message);
       } finally {
         setIsLoading(false);
       }
     };
 
-    loadButtons();
+    loadContents();
   }, []);
 
   if (isLoading) {
@@ -37,7 +36,7 @@ function Buttons() {
     );
   }
 
-  return <ListItem items={buttonData} />;
+  return <ListItem items={contentData} />;
 }
 
-export default Buttons;
+export default Content;
