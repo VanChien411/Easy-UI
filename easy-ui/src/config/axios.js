@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const apiClient = axios.create({
-  baseURL: process.env.REACT_APP_API_BASE_URL || "https://api.example.com", // Replace with your API base URL
+  baseURL: process.env.REACT_APP_API_URL || "https://localhost:44319/api",
   timeout: 10000, // Request timeout in milliseconds
   headers: {
     "Content-Type": "application/json",
@@ -17,6 +17,12 @@ apiClient.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+    // Ensure CORS headers are sent
+    config.headers = {
+      ...config.headers,
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
+    };
     return config;
   },
   (error) => Promise.reject(error)
@@ -30,6 +36,23 @@ apiClient.interceptors.response.use(
     if (error.response?.status === 401) {
       // Handle unauthorized errors (e.g., redirect to login)
       console.error("Unauthorized! Redirecting to login...");
+    }
+    if (error.response) {
+      // Handle specific error cases
+      switch (error.response.status) {
+        case 404:
+          console.error('Resource not found');
+          break;
+        case 500:
+          console.error('Server error');
+          break;
+        default:
+          console.error('API error:', error.response.data);
+      }
+    } else if (error.request) {
+      console.error('No response received:', error.request);
+    } else {
+      console.error('Error setting up request:', error.message);
     }
     return Promise.reject(error);
   }

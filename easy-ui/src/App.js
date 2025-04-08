@@ -9,6 +9,7 @@ import ShopCart from "./components/ui/ShopCart";
 import Cards from "./components/ui/Cards/Cards";
 import Forms from "./components/ui/Forms/Forms";
 import Content from "./components/ui/Contents/Content";
+import PaymentCallback from "./components/payment/PaymentCallback";
 
 function App() {
   return (
@@ -73,6 +74,14 @@ function App() {
             element={
               <PageHome>
                 <ShopCart />
+              </PageHome>
+            }
+          />
+          <Route
+            path="/payment/callback"
+            element={
+              <PageHome>
+                <PaymentCallback />
               </PageHome>
             }
           />
