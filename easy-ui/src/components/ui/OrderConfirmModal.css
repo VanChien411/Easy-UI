@@ -1,0 +1,141 @@
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-header {
+  padding: 20px;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header h2 {
+  margin: 0;
+  color: #333;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #666;
+}
+
+.modal-body {
+  padding: 20px;
+}
+
+.order-items {
+  margin-bottom: 20px;
+}
+
+.order-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.item-info {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.item-info img {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  margin-right: 15px;
+  border-radius: 4px;
+}
+
+.item-details h4 {
+  margin: 0 0 5px 0;
+  color: #333;
+}
+
+.item-details p {
+  margin: 0;
+  color: #666;
+}
+
+.item-price {
+  font-weight: bold;
+  color: #333;
+}
+
+.order-summary {
+  background: #f9f9f9;
+  padding: 15px;
+  border-radius: 4px;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.summary-row:last-child {
+  margin-bottom: 0;
+  padding-top: 10px;
+  border-top: 1px solid #eee;
+  font-weight: bold;
+}
+
+.modal-footer {
+  padding: 20px;
+  border-top: 1px solid #eee;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.cancel-btn, .confirm-btn {
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  border: none;
+  font-weight: bold;
+}
+
+.cancel-btn {
+  background: #f1f1f1;
+  color: #333;
+}
+
+.confirm-btn {
+  background: #28a745;
+  color: white;
+}
+
+.confirm-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.confirm-btn i {
+  margin-right: 8px;
+} 
