@@ -10,6 +10,8 @@ export const lightTheme = {
   textColorFollow: "rgb(104, 29, 66)", // Changed to a lighter pink color
   textColorFollowHover: "rgb(255, 105, 180)", // Changed to a lighter hover color
   backgroundColorFollow: "rgb(255, 105, 180)", // Changed to a lighter background color
+  '--background-color-hover': '#f5f5f5',
+  '--border-color': '#e0e0e0',
 };
 
 export const darkTheme = {
@@ -24,6 +26,8 @@ export const darkTheme = {
   textColorFollow: "#ffffff",
   textColorFollowHover: "#ffffff",
   backgroundColorFollow: "rgba(32, 22, 41, 1)",
+  '--background-color-hover': '#2d2d2d',
+  '--border-color': '#404040',
 };
 
 export function applyTheme(theme) {
