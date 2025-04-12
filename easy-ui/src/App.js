@@ -10,6 +10,7 @@ import Cards from "./components/ui/Cards/Cards";
 import Forms from "./components/ui/Forms/Forms";
 import Content from "./components/ui/Contents/Content";
 import PaymentCallback from "./components/payment/PaymentCallback";
+import PurchasedProducts from './components/PurchasedProducts/PurchasedProducts';
 
 function App() {
   return (
@@ -85,6 +86,7 @@ function App() {
               </PageHome>
             }
           />
+          <Route path="/purchased-products" element={<PurchasedProducts />} />
           {/* <Route path="/about" element={<PageHome><About /></PageHome>} /> */}
         </Routes>
       </Router>

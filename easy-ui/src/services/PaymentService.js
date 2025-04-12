@@ -15,6 +15,16 @@ class PaymentService {
     }
   }
 
+  static async processMomoCallback(callbackData) {
+    try {
+      const response = await apiClient.post('/Payment/momo/ipn', callbackData);
+      return response.data;
+    } catch (error) {
+      console.error("Error processing Momo callback:", error);
+      throw error;
+    }
+  }
+
   static async getPaymentStatus(orderId) {
     try {
       const response = await apiClient.get(`/Payment/status/${orderId}`);

@@ -5,6 +5,7 @@ import userAvatar from "../../assets/images/avata3d.jpg"; // Import the image
 import { applyTheme, lightTheme, darkTheme } from "../../config/theme"; // Import themes
 import CartService from "../../services/CartService"; // Import CartService
 import { setCart } from "../../redux/slices/cartSlice";
+import { logout } from '../../redux/slices/authSlice'; // Tạo action logout trong authSlice
 
 function Navbar() {
   const navigate = useNavigate(); // Initialize useNavigate
@@ -18,6 +19,7 @@ function Navbar() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchSuggestions, setSearchSuggestions] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
 
   const { items, totalQuantity } = useSelector((state) => state.cart);
 
@@ -40,6 +42,10 @@ function Navbar() {
     fetchCartItems();
   }, [dispatch]);
 
+  useEffect(() => {
+    console.log('Dropdown visibility:', showDropdown);
+  }, [showDropdown]);
+  
   const handleMenuToggle = () => {
     setMenuOpen(!menuOpen);
   };
@@ -66,6 +72,15 @@ function Navbar() {
 
   const handleCartLeave = () => {
     setIsCartOpen(false);
+  };
+
+  const handleLogout = () => {
+    // Xóa token từ localStorage
+    localStorage.removeItem('token');
+    // Dispatch action logout
+    dispatch(logout());
+    // Chuyển hướng về trang login
+    navigate('/LoginSignup/login');
   };
 
   return (
@@ -391,6 +406,109 @@ function Navbar() {
             }
             
           }
+
+          .user-profile-container {
+            position: relative;
+            cursor: pointer;
+          }
+
+          .user-profile-trigger {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 8px;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+          }
+
+          .user-profile-trigger:hover {
+            background: var(--background-color-navbar);
+          }
+
+          .user-dropdown {
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            background: var(--background-color);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            min-width: 200px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+          }
+
+          .user-profile-container:hover .user-dropdown {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+          }
+
+          .dropdown-item {
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+          }
+
+          .dropdown-item:hover {
+            background: var(--background-color-navbar);
+          }
+
+          .dropdown-item i {
+            width: 20px;
+            font-size: 16px;
+            color: var(--text-color);
+          }
+
+          .dropdown-item span {
+            color: var(--text-color);
+            font-size: 14px;
+          }
+
+          .dropdown-item:first-child {
+            border-bottom: 1px solid var(--border-color);
+          }
+
+          /* Arrow pointer */
+          .user-dropdown::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            right: 20px;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-bottom: 8px solid var(--background-color);
+            z-index: 2;
+          }
+
+          .user-dropdown::after {
+            content: '';
+            position: absolute;
+            top: -9px;
+            right: 20px;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-bottom: 8px solid var(--border-color);
+            z-index: 1;
+          }
+
+          .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+          }
+
+          .user-name {
+            color: var(--text-color);
+            font-size: 14px;
+            font-weight: 500;
+          }
         `}
       </style>
       <nav className="navbar">
@@ -456,47 +574,40 @@ function Navbar() {
           </span>
         </ul>
 
-        <div
-          className="user-info"
-          // Navigate to the route
-        >
-          <div
-            className="cart-container"
-            onMouseEnter={handleCartHover}
-            onMouseLeave={handleCartLeave}
-          >
+        <div className="user-info">
+          <div className="cart-container" onMouseEnter={handleCartHover} onMouseLeave={handleCartLeave}>
             <span onClick={() => navigate("/Cart")}>
               <span className="fa fa-shopping-cart cart-icon"></span>
               <span className="cart-count">{totalQuantity}</span>
               <div className="cart-dropdown">
                 {items.map((item) => (
                   <div key={item.uiComponentId} className="cart-item">
-                    <span className="cart-item-name">
-                      {item.uiComponentName || "null"}
-                    </span>
-                    <span className="cart-item-quantity">
-                      Qty: {item.quantity || "0"}
-                    </span>
-                    <span className="cart-item-price">
-                      {item.price || "0"}$
-                    </span>
+                    <span className="cart-item-name">{item.uiComponentName || "null"}</span>
+                    <span className="cart-item-quantity">Qty: {item.quantity || "0"}</span>
+                    <span className="cart-item-price">{item.price || "0"}$</span>
                   </div>
                 ))}
               </div>
             </span>
           </div>
-          <img
-            src={userAvatar}
-            alt="User Avatar"
-            className="user-avatar"
-            onClick={() => navigate("/LoginSignup/login")}
-          />
-          <span
-            className="user-name"
-            onClick={() => navigate("/LoginSignup/login")}
-          >
-            John Doe
-          </span>
+
+          <div className="user-profile-container">
+            <div className="user-profile-trigger">
+              <img src={userAvatar} alt="User Avatar" className="user-avatar" />
+              <span className="user-name">John Doe</span>
+            </div>
+            
+            <div className="user-dropdown">
+              <div className="dropdown-item" onClick={() => navigate('/purchased-products')}>
+                <i className="fas fa-shopping-bag"></i>
+                <span>Sản phẩm đã mua</span>
+              </div>
+              <div className="dropdown-item" onClick={handleLogout}>
+                <i className="fas fa-sign-out-alt"></i>
+                <span>Đăng xuất</span>
+              </div>
+            </div>
+          </div>
         </div>
       </nav>
     </>

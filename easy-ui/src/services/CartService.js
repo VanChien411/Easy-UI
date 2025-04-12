@@ -50,6 +50,26 @@ class CartService {
       throw error;
     }
   }
+
+  static async clearCart() {
+    try {
+      // Lấy danh sách sản phẩm trong giỏ hàng
+      const cartItems = await this.getCartItems();
+      
+      // Xóa từng sản phẩm
+      const deletePromises = cartItems.map(item => 
+        this.removeCartItem(item.id)
+      );
+      
+      // Đợi tất cả các request xóa hoàn thành
+      await Promise.all(deletePromises);
+      
+      console.log('Cart cleared successfully');
+    } catch (error) {
+      console.error("Error clearing cart:", error);
+      throw error;
+    }
+  }
 }
 
 export default CartService;
