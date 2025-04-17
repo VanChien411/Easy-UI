@@ -1,62 +1,105 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './PurchasedProducts.css';
+import { IoEyeOutline } from "react-icons/io5";
+import { IoChevronBackOutline } from "react-icons/io5";
+import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const PurchasedProducts = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filterType, setFilterType] = useState('');
+  const navigate = useNavigate();
+  const isDarkMode = useSelector((state) => state.theme?.isDarkMode) ?? true;
+
+  const handleBack = () => {
+    navigate(-1);
+  };
+
+  // Dữ liệu mẫu
+  const orders = [
+    {
+      orderId: "ORD-12345",
+      date: "15/04/2023",
+      product: "iPhone 14 Pro Max 256GB",
+      total: "26.990.000",
+      status: "Đã giao hàng"
+    },
+    {
+      orderId: "ORD-12346",
+      date: "10/04/2023",
+      product: "Samsung Galaxy S23 Ultra",
+      total: "23.990.000",
+      status: "Đã giao hàng"
+    },
+    {
+      orderId: "ORD-12347",
+      date: "05/04/2023",
+      product: "MacBook Pro M2 14-inch",
+      total: "49.990.000",
+      status: "Đã giao hàng"
+    },
+    {
+      orderId: "ORD-12348",
+      date: "01/04/2023",
+      product: "Sony WH-1000XM5 Headphones",
+      total: "7.990.000",
+      status: "Đã giao hàng"
+    },
+    {
+      orderId: "ORD-12349",
+      date: "28/03/2023",
+      product: "iPad Air 5 64GB WiFi",
+      total: "14.990.000",
+      status: "Đã giao hàng"
+    }
+  ];
 
   return (
-    <div className="purchased-products">
-      <h1>Đơn hàng đã mua</h1>
-      
+    <div className={`purchased-products ${isDarkMode ? 'dark-theme' : 'light-theme'}`}>
+      <div className="header">
+        <button onClick={handleBack} className="back-button">
+          <IoChevronBackOutline />
+        </button>
+        <h1>Đơn hàng của tôi</h1>
+      </div>
+
       <div className="search-section">
-        <input
-          type="text"
-          placeholder="Nhập mã đơn hàng"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-        <select 
-          value={filterType}
-          onChange={(e) => setFilterType(e.target.value)}
-        >
-          <option value="">Mã đơn hàng</option>
-          <option value="date">Ngày mua</option>
-          <option value="status">Trạng thái</option>
-        </select>
-        <button className="search-btn">Tìm đơn hàng</button>
+        <div className="search-bar">
+          <input type="text" placeholder="Tìm kiếm đơn hàng..." />
+          <select>
+            <option>Tất cả</option>
+          </select>
+        </div>
       </div>
 
-      <div className="notice-section">
-        <h3>Xin lưu ý:</h3>
-        <ul>
-          <li>Bấm vào MÃ ĐƠN HÀNG để xem chi tiết sản phẩm đã mua!</li>
-          <li>Tạp Hóa MMO là sàn thương mại điện tử, vì vậy tính năng và chất lượng sản phẩm không thể nào rõ bằng người bán hàng, nếu có bất cứ thắc mắc gì về mặt hàng, xin liên hệ chủ shop để được giải quyết hoặc bảo hành.</li>
-          <li>Trong trường hợp chủ shop không giải quyết hoặc giải quyết không thỏa đáng, hãy bấm vào "Khiếu nại đơn hàng", để bên mình có thể giữ tiền đơn hàng đó (lâu hơn 3 ngày) trong lúc bạn đợi phản hồi từ người bán. Bạn hoàn toàn có thể Hủy khiếu nại sau đó.</li>
-          <li>Bên mình chỉ giữ tiền 3 ngày, trong trường hợp đơn hàng không có khiếu nại gì, tiền sẽ được chuyển cho người bán, vì vậy xin hãy KIỂM TRA KỸ SẢN PHẨM sau khi mua.</li>
-        </ul>
-      </div>
-
-      <div className="orders-table">
-        <table>
+      <div className="table-container">
+        <table className="orders-table">
           <thead>
             <tr>
-              <th>Thao tác</th>
               <th>Mã đơn hàng</th>
               <th>Ngày mua</th>
-              <th>Gian hàng</th>
-              <th>Mặt hàng</th>
-              <th>Người bán</th>
-              <th>Số lượng</th>
-              <th>Đơn giá</th>
-              <th>Giảm</th>
+              <th>Sản phẩm</th>
               <th>Tổng tiền</th>
-              <th>Hoàn tiền</th>
               <th>Trạng thái</th>
+              <th>Thao tác</th>
             </tr>
           </thead>
           <tbody>
-            {/* Render order items here */}
+            {orders.map((order) => (
+              <tr key={order.orderId}>
+                <td>{order.orderId}</td>
+                <td>{order.date}</td>
+                <td>{order.product}</td>
+                <td>{order.total} ₫</td>
+                <td>
+                  <span className="status-delivered">{order.status}</span>
+                </td>
+                <td>
+                  <button className="view-detail-btn">
+                    <IoEyeOutline />
+                    Xem chi tiết
+                  </button>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
