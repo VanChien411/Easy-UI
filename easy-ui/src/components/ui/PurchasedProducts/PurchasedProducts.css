@@ -1,7 +1,13 @@
-.purchased-products {
+.purchased-products-page {
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.purchased-products {
+  flex: 1;
   padding: 20px;
-  transition: all 0.3s ease;
+  background: var(--background-color);
 }
 
 /* Light theme styles */
@@ -76,7 +82,7 @@
   border: 1px solid var(--border-color);
   border-radius: 4px;
   background-color: var(--background-color-navbar);
-  color: var(--text-color);
+  color: #826f6f;
   min-width: 120px;
   font-size: 14px;
 }
@@ -189,7 +195,7 @@
 }
 
 .orders-table th {
-  background-color: #f5f5f5;
+  background-color: #819698;
 }
 
 .purchased-products-container {
@@ -293,7 +299,7 @@
 }
 
 .order-summary {
-  background: #f8f9fa;
+  background: #b9dcd2;
   padding: 16px;
   border-radius: 6px;
   margin-top: 24px;
@@ -317,4 +323,46 @@
 .summary-row.total span:last-child {
   color: #f53d2d;
   font-size: 18px;
+}
+
+/* Đảm bảo footer luôn ở dưới cùng */
+.footer {
+  margin-top: auto;
+}
+
+/* Thêm styles mới */
+.loading-spinner {
+  text-align: center;
+  padding: 20px;
+  color: var(--text-color);
+}
+
+.no-orders {
+  text-align: center;
+  padding: 40px;
+  color: var(--text-color);
+  background: var(--background-color-navbar);
+  border-radius: 8px;
+}
+
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.status-badge.completed {
+  background-color: rgba(30, 142, 62, 0.2);
+  color: #2ecc71;
+}
+
+.status-badge.pending {
+  background-color: rgba(241, 196, 15, 0.2);
+  color: #f1c40f;
+}
+
+.status-badge.cancelled {
+  background-color: rgba(231, 76, 60, 0.2);
+  color: #e74c3c;
 } 
