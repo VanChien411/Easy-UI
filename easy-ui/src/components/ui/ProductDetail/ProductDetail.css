@@ -1,0 +1,361 @@
+.product-detail-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  color: var(--text-color);
+}
+
+/* Header Styles */
+.product-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.back-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  color: var(--text-color);
+  cursor: pointer;
+  font-size: 16px;
+  padding: 8px 16px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.back-button:hover {
+  background-color: var(--background-color-navbar);
+}
+
+.product-title {
+  flex: 1;
+  font-size: 24px;
+  margin: 0;
+}
+
+.product-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.action-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background: none;
+  color: var(--text-color);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.action-button:hover {
+  background-color: var(--background-color-navbar);
+}
+
+.download-button {
+  background-color: #1a1a1a;
+  color: white;
+  border: none;
+}
+
+.liked {
+  color: #ff4757;
+}
+
+/* Main Content */
+.product-content {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 30px;
+}
+
+/* Tabs */
+.content-tabs {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.tab-button {
+  padding: 12px 24px;
+  background: none;
+  border: none;
+  color: var(--text-color);
+  cursor: pointer;
+  position: relative;
+  font-size: 16px;
+}
+
+.tab-button.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: #4a90e2;
+}
+
+/* Sidebar Styles */
+.product-sidebar {
+  background-color: var(--background-color-navbar);
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.price-section {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.current-price {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.original-price {
+  color: var(--text-color-follow);
+  text-decoration: line-through;
+  font-size: 14px;
+}
+
+.discount-badge {
+  background-color: #4cd137;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.creator-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.creator-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.creator-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.creator-name {
+  font-weight: 500;
+}
+
+.creator-label {
+  font-size: 12px;
+  color: var(--text-color-follow);
+}
+
+.product-stats {
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.stat-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.stat-label {
+  color: var(--text-color-follow);
+}
+
+.product-tags {
+  padding: 16px 0;
+}
+
+.tag-label {
+  margin-bottom: 8px;
+  color: var(--text-color-follow);
+}
+
+.tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag {
+  background-color: var(--background-color);
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.buy-now-button {
+  width: 100%;
+  padding: 12px;
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 16px;
+}
+
+.download-button-secondary {
+  width: 100%;
+  padding: 12px;
+  background: none;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  color: var(--text-color);
+  cursor: pointer;
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 16px;
+}
+
+/* Code View Styles */
+.source-code-view {
+  background-color: var(--background-color-navbar);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.code-tabs {
+  display: flex;
+  background-color: rgba(0, 0, 0, 0.1);
+  padding: 8px;
+}
+
+.code-tab {
+  padding: 8px 16px;
+  background: none;
+  border: none;
+  color: var(--text-color);
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.code-tab.active {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.code-content {
+  padding: 20px;
+}
+
+.code-content pre {
+  margin: 0;
+  font-family: 'Fira Code', monospace;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .product-content {
+    grid-template-columns: 1fr;
+  }
+
+  .product-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .product-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+
+.source-code-section {
+  margin-top: 30px;
+  background: var(--background-color-navbar);
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.source-code-section h3 {
+  margin-bottom: 16px;
+  color: var(--text-color);
+}
+
+.code-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 8px;
+}
+
+.code-tab {
+  padding: 8px 16px;
+  background: none;
+  border: none;
+  color: var(--text-color);
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.code-tab.active {
+  background: rgba(255, 255, 255, 0.1);
+  color: #4a90e2;
+}
+
+.preview-iframe {
+  background: white;
+  border-radius: 4px;
+  overflow: hidden;
+  min-height: 200px;
+}
+
+.preview-iframe iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.tags-section {
+  margin: 16px 0;
+  padding: 16px 0;
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.tag-group {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.code-tag {
+  padding: 4px 12px;
+  background: var(--background-color);
+  color: var(--text-color);
+  border-radius: 4px;
+  font-size: 14px;
+} 

@@ -37,6 +37,16 @@ class OrderService {
       throw error;
     }
   }
+
+  static async getPurchasedProducts() {
+    try {
+      const response = await apiClient.get('/Order/purchased-products');
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching purchased products:", error);
+      throw error;
+    }
+  }
 }
 
 export default OrderService; 
