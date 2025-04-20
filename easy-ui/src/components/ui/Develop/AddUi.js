@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import "../../../assets/styles/Develop/AddUi.css";
-import { saveUIComponent } from "../../../services/uiComponentsService";
+import { saveUIComponent } from '../../../services/uiComponentsService';
 import { fetchCategories } from "../../../services/categoriesService";
 import { showAlert } from "../../utils/Alert";
 import Spinner from "../../utils/Spinner";

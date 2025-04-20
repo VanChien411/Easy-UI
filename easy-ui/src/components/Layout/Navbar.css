@@ -28,4 +28,13 @@
 
 .dropdown-item i {
   width: 16px;
+}
+
+.user-profile-trigger {
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.user-profile-trigger:hover {
+  opacity: 0.8;
 } 

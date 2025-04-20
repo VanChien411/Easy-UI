@@ -219,22 +219,78 @@ function ListItem({ items }) {
             margin: 10px 0; /* 20% smaller */
           }
 
+          .button-hashtag.view-detail {
+            background-color: #2ecc71;
+            color: white;
+            width: 100%;
+            height: 100%;
+            font-size: 16px;
+          }
+
+          .button-hashtag.view-detail:hover {
+            background-color: #27ae60;
+            box-shadow: 0 0 10px 2px var(--card-border-color);
+          }
+
+          .button-hashtag.buy {
+            background-color: #e74c3c;
+            color: white;
+          }
+
+          .button-hashtag.buy:hover {
+            background-color: #c0392b;
+          }
+
+          .price-tag {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 500;
+          }
+
+          .free-label {
+            color: #2ecc71;
+            font-size: 14px;
+            background-color: rgba(46, 204, 113, 0.1);
+            padding: 4px 8px;
+            border-radius: 4px;
+          }
+
+          .price-label {
+            color: #e74c3c;
+            font-size: 14px;
+            background-color: rgba(231, 76, 60, 0.1);
+            padding: 4px 8px;
+            border-radius: 4px;
+          }
+
+          .button-hashtag i {
+            margin-right: 4px;
+          }
         `}
       </style>
       <div className="container">
-        {items.map((item, index) => (
-          <CardItem
-            key={index}
-            {...item}
-            name={item.name}
-            uiComponentId={item.id}
-            html={item.html}
-            css={item.css}
-            js={item.js}
-            isExpanded={expandedCard === index}
-            onExpand={() => handleExpand(index)}
-          />
-        ))}
+        {items.map((item, index) => {
+          // Log để debug
+          console.log('Item data:', item);
+          
+          return (
+            <CardItem
+              key={index}
+              {...item}
+              name={item.name}
+              uiComponentId={item.id}
+              price={item.price}
+              html={item.html}
+              css={item.css}
+              js={item.js}
+              isExpanded={expandedCard === index}
+              onExpand={() => handleExpand(index)}
+            />
+          );
+        })}
       </div>
     </div>
   );

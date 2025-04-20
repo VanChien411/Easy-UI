@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { addItem } from "../../redux/slices/cartSlice";
-import AddUi from "../ui/Develop/AddUi";
-import { showAlert } from "../utils/Alert";
-import CartService from "../../services/CartService"; // Import CartService
+import { useNavigate } from 'react-router-dom';
+import { addItem } from "../../../redux/slices/cartSlice";
+import AddUi from "../Develop/AddUi";
+import { showAlert } from "../../utils/Alert";
+import CartService from "../../../services/CartService";
+import { isFreeProduct } from "../../../services/uiComponentsService";
 
 function CardItem({
   name,
@@ -11,11 +13,17 @@ function CardItem({
   css,
   js,
   uiComponentId,
+  price,
   isExpanded,
   onExpand,
 }) {
   const dispatch = useDispatch();
-  const [isBuying, setIsBuying] = useState(false); // State to track loading
+  const navigate = useNavigate();
+  const [isBuying, setIsBuying] = useState(false);
+  
+  console.log('Product data:', { name, price, uiComponentId });
+  
+  const isFree = !price || price === 0;
 
   const iframeContent = `
     <style>${css}</style>
@@ -23,30 +31,34 @@ function CardItem({
     <script>${js}</script>
   `;
 
-  const handleBuyNow = async () => {
-    setIsBuying(true); // Show spinner
+  const handleAction = async () => {
+    if (isFree) {
+      navigate(`/product/${uiComponentId}`);
+      return;
+    }
+
+    setIsBuying(true);
     try {
-      // Send API request to add the item to the cart
       await CartService.addToCart({ uiComponentId, quantity: 1 });
-
-      // Dispatch Redux action to update the cart state
-      dispatch(addItem({ uiComponentId, name, quantity: 1 }));
-
-      // Show success alert
+      dispatch(addItem({ 
+        uiComponentId, 
+        name, 
+        price: price || 0,
+        quantity: 1 
+      }));
       showAlert({
         title: "Success",
-        message: "cart successfully!",
+        message: "Added to cart successfully!",
         type: "success",
       });
     } catch (error) {
-      // Show error alert if the API call fails
       showAlert({
         title: "Error",
         message: error.message || "Failed to add item to cart!",
         type: "error",
       });
     } finally {
-      setIsBuying(false); // Hide spinner
+      setIsBuying(false);
     }
   };
 
@@ -86,23 +98,36 @@ function CardItem({
         <hr className="divider" />
         <div className="button-container">
           <div className="button-hashtags">
-            {html && (
-              <button className="button-hashtag button-html">Html</button>
-            )}
-            {js && (
-              <button className="button-hashtag button-js">JavaScript</button>
-            )}
+            {html && <button className="button-hashtag button-html">Html</button>}
+            {js && <button className="button-hashtag button-js">JavaScript</button>}
             {css && <button className="button-hashtag button-css">Css</button>}
           </div>
           <div className="button-buy">
             <button
-              className="button-hashtag buy"
-              onClick={handleBuyNow}
+              className={`button-hashtag ${isFree ? 'view-detail' : 'buy'}`}
+              onClick={handleAction}
               disabled={isBuying}
             >
-              {isBuying ? <i className="fa fa-spinner fa-spin"></i> : "Buy"}
+              {isBuying ? (
+                <i className="fa fa-spinner fa-spin"></i>
+              ) : isFree ? (
+                <>
+                  <i className="fas fa-eye"></i> View
+                </>
+              ) : (
+                <>
+                  <i className="fas fa-shopping-cart"></i> Buy
+                </>
+              )}
             </button>
           </div>
+        </div>
+        <div className="price-tag">
+          {isFree ? (
+            <span className="free-label">Free</span>
+          ) : (
+            <span className="price-label">${Number(price).toFixed(2)}</span>
+          )}
         </div>
       </div>
     </>

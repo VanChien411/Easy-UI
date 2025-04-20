@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import ListItem from "../List-item";
+import ListItem from "../Product/List-item";
 import { fetchUIComponents } from "../../../services/uiComponentsService";
 import UIComponent from "../../../models/UIComponents";
 import { COMPONENT_TYPES } from "../../../constants/routes";
