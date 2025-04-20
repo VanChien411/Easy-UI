@@ -9,6 +9,7 @@ export default class UIComponent {
     previewUrl = null,
     type = null,
     framework = null,
+    price = 0,
     createdBy = null,
     createdAt,
     updatedAt,
@@ -24,6 +25,7 @@ export default class UIComponent {
     this.previewUrl = previewUrl;
     this.type = type;
     this.framework = framework;
+    this.price = price;
     this.createdBy = createdBy;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
@@ -42,6 +44,7 @@ export default class UIComponent {
       json.previewUrl,
       json.type,
       json.framework,
+      json.price,
       json.createdBy,
       json.createdAt,
       json.updatedAt,
@@ -61,6 +64,7 @@ export default class UIComponent {
       json.previewUrl,
       json.type,
       json.framework,
+      json.price,
       json.createdBy,
       null, // createdAt
       null, // updatedAt

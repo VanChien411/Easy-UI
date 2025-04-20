@@ -12,6 +12,9 @@ import Content from "./components/ui/Contents/Content";
 import PaymentCallback from "./components/payment/PaymentCallback";
 import PurchasedProducts from './components/ui/PurchasedProducts/PurchasedProducts';
 import ProductDetail from './components/ui/ProductDetail/ProductDetail';
+import Profile from './components/ui/Profile/Profile';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   return (
@@ -89,9 +92,18 @@ function App() {
           />
           <Route path="/purchased-products" element={<PurchasedProducts />} />
           <Route path="/product/:id" element={<ProductDetail />} />
+          <Route
+            path="/profile"
+            element={
+              <PageHome>
+                <Profile />
+              </PageHome>
+            }
+          />
           {/* <Route path="/about" element={<PageHome><About /></PageHome>} /> */}
         </Routes>
       </Router>
+      <ToastContainer />
     </div>
   );
 }

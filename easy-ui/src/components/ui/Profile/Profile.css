@@ -1,0 +1,161 @@
+.profile-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.profile-header {
+  margin-bottom: 30px;
+}
+
+.profile-header h1 {
+  color: var(--text-color);
+  font-size: 24px;
+}
+
+.profile-content {
+  display: grid;
+  grid-template-columns: 250px 1fr;
+  gap: 30px;
+}
+
+.profile-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.avatar-section {
+  text-align: center;
+}
+
+.profile-avatar {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 15px;
+}
+
+.avatar-upload-button {
+  display: inline-block;
+  padding: 8px 16px;
+  background: var(--background-color-navbar);
+  color: var(--text-color);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.avatar-upload-button:hover {
+  opacity: 0.8;
+}
+
+.profile-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.menu-item {
+  padding: 12px;
+  text-align: left;
+  background: none;
+  border: none;
+  color: var(--text-color);
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.menu-item:hover {
+  background: var(--background-color-navbar);
+}
+
+.menu-item.active {
+  background: var(--background-color-navbar);
+  font-weight: 500;
+}
+
+.profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  color: var(--text-color);
+}
+
+.form-group input {
+  padding: 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background: var(--background-color);
+  color: var(--text-color);
+}
+
+.save-button {
+  padding: 12px;
+  background: #4a90e2;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.save-button:hover {
+  opacity: 0.9;
+}
+
+.purchases-list,
+.favorites-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.purchase-item,
+.favorite-item {
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.purchase-item img,
+.favorite-item img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+}
+
+.item-info {
+  padding: 15px;
+}
+
+.item-info h3 {
+  margin: 0 0 10px 0;
+  color: var(--text-color);
+}
+
+.item-info p {
+  margin: 5px 0;
+  color: var(--text-color-follow);
+}
+
+@media (max-width: 768px) {
+  .profile-content {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-sidebar {
+    margin-bottom: 30px;
+  }
+} 

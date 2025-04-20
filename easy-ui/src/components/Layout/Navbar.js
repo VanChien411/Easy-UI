@@ -592,12 +592,19 @@ function Navbar() {
           </div>
 
           <div className="user-profile-container">
-            <div className="user-profile-trigger">
+            <div 
+              className="user-profile-trigger"
+              onClick={() => navigate('/profile')}
+            >
               <img src={userAvatar} alt="User Avatar" className="user-avatar" />
               <span className="user-name">John Doe</span>
             </div>
             
             <div className="user-dropdown">
+              <div className="dropdown-item" onClick={() => navigate('/profile')}>
+                <i className="fas fa-user"></i>
+                <span>Thông tin cá nhân</span>
+              </div>
               <div className="dropdown-item" onClick={() => navigate('/purchased-products')}>
                 <i className="fas fa-shopping-bag"></i>
                 <span>Sản phẩm đã mua</span>
