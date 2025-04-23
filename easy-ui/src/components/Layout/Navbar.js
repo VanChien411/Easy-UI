@@ -75,9 +75,7 @@ function Navbar() {
   };
 
   const handleLogout = () => {
-    // Xóa token từ localStorage
-    localStorage.removeItem('token');
-    // Dispatch action logout
+    // Dispatch action logout - điều này sẽ xóa token và userData trong localStorage
     dispatch(logout());
     // Chuyển hướng về trang login
     navigate('/LoginSignup/login');

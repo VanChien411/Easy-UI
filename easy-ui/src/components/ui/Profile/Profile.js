@@ -13,26 +13,26 @@ const Profile = () => {
     email: 'nguyenvana@example.com',
     avatar: '/placeholder.svg',
     joinDate: '2022-05-15',
-    purchasedItems: [
-      {
-        id: "item-1",
-        name: "Modern Dashboard UI Kit",
+  purchasedItems: [
+    {
+      id: "item-1",
+      name: "Modern Dashboard UI Kit",
         image: "/placeholder.svg",
-        purchaseDate: "2023-04-15",
-        price: 990000,
-        type: "UI Kit",
-        downloads: 3,
-      },
+      purchaseDate: "2023-04-15",
+      price: 990000,
+      type: "UI Kit",
+      downloads: 3,
+    },
       // ... other items
-    ],
-    favoriteItems: [
-      {
-        id: "fav-1",
-        name: "Landing Page Template",
+  ],
+  favoriteItems: [
+    {
+      id: "fav-1",
+      name: "Landing Page Template",
         image: "/placeholder.svg",
-        price: 590000,
-        type: "Template",
-      },
+      price: 590000,
+      type: "Template",
+    },
       // ... other items
     ],
   });
@@ -78,7 +78,7 @@ const Profile = () => {
     <div className="profile-container">
       <div className="profile-header">
         <h1>Thông tin cá nhân</h1>
-      </div>
+        </div>
 
       <div className="profile-content">
         <div className="profile-sidebar">
@@ -87,21 +87,21 @@ const Profile = () => {
             <label className="avatar-upload-button">
               <input type="file" hidden onChange={handleAvatarUpload} />
               Thay đổi ảnh
-            </label>
-          </div>
-          
+                    </label>
+                  </div>
+
           <div className="profile-menu">
             <button 
               className={`menu-item ${activeTab === 'profile' ? 'active' : ''}`}
               onClick={() => setActiveTab('profile')}
             >
-              Thông tin cá nhân
+                  Thông tin cá nhân
             </button>
             <button 
               className={`menu-item ${activeTab === 'purchases' ? 'active' : ''}`}
               onClick={() => setActiveTab('purchases')}
             >
-              Sản phẩm đã mua
+                  Sản phẩm đã mua
             </button>
             <button 
               className={`menu-item ${activeTab === 'favorites' ? 'active' : ''}`}
@@ -110,7 +110,7 @@ const Profile = () => {
               Sản phẩm yêu thích
             </button>
           </div>
-        </div>
+                    </div>
 
         <div className="profile-main">
           {activeTab === 'profile' && (
@@ -130,9 +130,9 @@ const Profile = () => {
                   value={profileData.email}
                   onChange={(e) => setProfileData({...profileData, email: e.target.value})}
                 />
-              </div>
+                          </div>
               <button type="submit" className="save-button">Lưu thay đổi</button>
-            </form>
+                        </form>
           )}
 
           {activeTab === 'purchases' && (
@@ -144,10 +144,10 @@ const Profile = () => {
                     <h3>{item.name}</h3>
                     <p>{formatCurrency(item.price)}</p>
                     <p>Ngày mua: {formatDate(item.purchaseDate)}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
           )}
 
           {activeTab === 'favorites' && (
@@ -158,10 +158,10 @@ const Profile = () => {
                   <div className="item-info">
                     <h3>{item.name}</h3>
                     <p>{formatCurrency(item.price)}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
           )}
         </div>
       </div>

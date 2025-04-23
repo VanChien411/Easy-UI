@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom"; // Import useNavigate
+import { useDispatch } from "react-redux"; // Import useDispatch
+import { login as loginAction } from "../../../redux/slices/authSlice"; // Import login action
 import { register, login } from "../../../services/userService"; // Ensure this path is correct
 import Spinner from "../../utils/Spinner"; // Import the Spinner component
 import Alert, { showAlert } from "../../utils/Alert";
@@ -8,6 +10,7 @@ import "../../../assets/styles/LoginSignup.css";
 function LoginSignup() {
   const { action } = useParams();
   const navigate = useNavigate(); // Initialize navigate
+  const dispatch = useDispatch(); // Initialize dispatch for Redux actions
   const containerRef = useRef(null);
   const registerBtnRef = useRef(null);
   const loginBtnRef = useRef(null);
@@ -113,10 +116,18 @@ function LoginSignup() {
     e.preventDefault();
     setIsLoading(true);
     try {
-      await login({
+      // Call the login service and get response with token
+      const response = await login({
         email: formData.email,
         password: formData.password,
       });
+      
+      console.log('Login response:', response);
+      
+      // Dispatch login action with token to update Redux store
+      // JWT token được giải mã trong authSlice để lấy thông tin người dùng
+      dispatch(loginAction({ token: response.token }));
+      
       if (rememberMe) {
         localStorage.setItem("savedEmail", formData.email);
         localStorage.setItem("savedPassword", formData.password);
@@ -124,12 +135,17 @@ function LoginSignup() {
         localStorage.removeItem("savedEmail");
         localStorage.removeItem("savedPassword");
       }
-      navigate("/"); // Redirect to homepage
-      // showAlert({
-      //   title: "Success",
-      //   message: "Login successful!",
-      //   type: "success",
-      // });
+      
+      showAlert({
+        title: "Thành công",
+        message: "Đăng nhập thành công!",
+        type: "success",
+      });
+      
+      // Chờ 1 giây rồi mới chuyển hướng để người dùng nhìn thấy thông báo thành công
+      setTimeout(() => {
+        navigate("/"); // Redirect to homepage
+      }, 1000);
     } catch (error) {
       showAlert({
         title: "Error",
