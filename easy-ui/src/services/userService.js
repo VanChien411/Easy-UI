@@ -3,11 +3,10 @@ import apiClient from "../config/axios"; // Correct relative path
 export const register = async (data) => {
   try {
     const response = await apiClient.post("/Auth/register", data);
-    const { token } = response.data;
-    if (token) {
-      localStorage.setItem("authToken", token); // Save token to localStorage
-    }
-    return response.data;
+    const { token, user } = response.data;
+    
+    // Return both token and user data for Redux store
+    return { token, user };
   } catch (error) {
     const errorMessage =
       error.response?.data?.message || "Registration failed!";
@@ -19,14 +18,26 @@ export const register = async (data) => {
 export const login = async (data) => {
   try {
     const response = await apiClient.post("/Auth/login", data);
-    const { token } = response.data;
-    if (token) {
-      localStorage.setItem("authToken", token); // Save token to localStorage
-    }
-    return response.data;
+    const { token, user } = response.data;
+    
+    // Return both token and user data for Redux store
+    return { token, user };
   } catch (error) {
     const errorMessage = error.response?.data?.message || "Login failed!";
     console.error(errorMessage);
     throw new Error(errorMessage); // Throw error with message
+  }
+};
+
+// Get the current user profile
+export const getCurrentUser = async () => {
+  try {
+    const response = await apiClient.get("/Auth/me");
+    return response.data;
+  } catch (error) {
+    const errorMessage =
+      error.response?.data?.message || "Failed to fetch user profile!";
+    console.error(errorMessage);
+    throw new Error(errorMessage);
   }
 };

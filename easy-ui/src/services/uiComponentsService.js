@@ -52,7 +52,18 @@ class UIComponentsService {
     return numPrice === 0;
   }
   
-  
+  // Method để lấy chi tiết sản phẩm theo ID
+  static async fetchUIComponentById(id) {
+    try {
+      const response = await apiClient.get(`/UIComponent/${id}`);
+      return response.data;
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message || "Failed to fetch UI component details!";
+      console.error(errorMessage);
+      throw new Error(errorMessage);
+    }
+  }
 }
 
 // Export các function riêng để các component có thể import trực tiếp
@@ -60,6 +71,7 @@ export const fetchUIComponents = UIComponentsService.fetchUIComponents;
 export const fetchUIComponentsAll = UIComponentsService.fetchUIComponentsAll;
 export const saveUIComponent = UIComponentsService.saveUIComponent;
 export const isFreeProduct = UIComponentsService.isFreeProduct;
+export const fetchUIComponentById = UIComponentsService.fetchUIComponentById;
 
 // Export default class
 export default UIComponentsService;
