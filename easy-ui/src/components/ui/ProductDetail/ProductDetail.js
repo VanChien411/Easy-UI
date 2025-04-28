@@ -265,17 +265,11 @@ const ProductDetail = () => {
   
   // Check if the current user is the author of a comment
   const isCommentAuthor = (comment) => {
-    // Log để debug
-    console.log('Comment:', comment);
-    console.log('Current user from JWT:', currentUser);
-    
     if (!isAuthenticated || !currentUser) {
-      console.log('User not authenticated or currentUser is null');
       return false;
     }
     
-    // Lấy ID người dùng từ JWT token payload
-    // Từ hình ảnh console, thấy JWT có trường nameidentifier chứa ID người dùng
+    // Get current user ID from JWT token payload
     const currentUserId = currentUser['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'] || 
                         currentUser.nameidentifier || 
                         currentUser.sub || 
@@ -283,20 +277,23 @@ const ProductDetail = () => {
                         currentUser.userId || 
                         currentUser.nameid;
     
-    console.log('Current user ID from JWT:', currentUserId);
+    if (!currentUserId) {
+      return false;
+    }
     
-    // Lấy ID người tạo comment từ nhiều trường có thể
-    const commentAuthorId = comment.creatorId || comment.userId || 
-                         (comment.user && comment.user.id);
+    // Get comment author ID from various possible fields
+    const commentAuthorId = comment.creatorId || 
+                         comment.userId || 
+                         (comment.creator && comment.creator.id) ||
+                         (comment.user && comment.user.id) ||
+                         comment.createdBy;
     
-    console.log('Comment author ID:', commentAuthorId);
+    if (!commentAuthorId) {
+      return false;
+    }
     
-    // Kiểm tra các trường hợp và so sánh ID
-    const isAuthor = commentAuthorId && currentUserId && 
-           (commentAuthorId.toString() === currentUserId.toString());
-    
-    console.log('Is author?', isAuthor);
-    return isAuthor;
+    // Compare IDs as strings to handle different formats
+    return commentAuthorId.toString() === currentUserId.toString();
   };
 
   if (loading) {
@@ -653,4 +650,4 @@ const ProductDetail = () => {
   );
 };
 
-export default ProductDetail; 
+export default ProductDetail;
