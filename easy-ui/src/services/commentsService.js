@@ -3,7 +3,37 @@ import apiClient from "../config/axios";
 export const fetchComments = async (componentId) => {
   try {
     const response = await apiClient.get(`/Comment/component/${componentId}`);
-    return response.data;
+    
+    // Process comments to ensure consistent user data structure
+    const processedComments = response.data.map(comment => {
+      // Extract creator ID from various possible fields
+      const creatorId = comment.creatorId || 
+                      comment.userId || 
+                      (comment.creator && comment.creator.id) ||
+                      (comment.user && comment.user.id) ||
+                      comment.createdBy;
+                      
+      // Extract creator name from various possible fields
+      const creatorName = comment.creatorName || 
+                        (comment.creator && (comment.creator.name || comment.creator.userName)) ||
+                        (comment.user && (comment.user.name || comment.user.userName)) ||
+                        'Người dùng';
+      
+      // Return comment with consistent user data
+      return {
+        ...comment,
+        creatorId: creatorId,
+        userId: creatorId, // Ensure userId is also set for compatibility
+        creatorName: creatorName,
+        user: {
+          ...(comment.user || {}),
+          id: creatorId,
+          name: creatorName
+        }
+      };
+    });
+    
+    return processedComments;
   } catch (error) {
     const errorMessage =
       error.response?.data?.message || "Failed to fetch comments!";
