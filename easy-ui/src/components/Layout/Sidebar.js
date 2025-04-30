@@ -6,43 +6,26 @@ function Sidebar() {
   const navigate = useNavigate();
   const location = useLocation();
   const handleMenuClickRef = useRef(null);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false); // Used in handleDropdownClick
   const [searchQuery, setSearchQuery] = useState("");
+  const [sidebarActive, setSidebarActive] = useState(window.innerWidth >= 768);
 
   useEffect(() => {
-    const menuBtn = document.querySelector(".menu-btn");
-
-    const handleMenuClick = (e) => {
-      document.body.classList.toggle("collapsed");
-      document.querySelectorAll(".dropdown").forEach((dropdown) => {
-        dropdown.classList.remove("active");
-      });
+    // Use React state for sidebar visibility instead of classList
+    const handleMenuClick = () => {
+      setSidebarActive(prev => !prev);
     };
 
     handleMenuClickRef.current = handleMenuClick;
 
     const handleResize = () => {
-      if (window.innerWidth <= 668) {
-        if (!document.body.classList.contains("collapsed")) {
-          if (menuBtn) {
-            handleMenuClickRef.current({ currentTarget: menuBtn });
-          }
-        }
-      } else {
-        if (document.body.classList.contains("collapsed")) {
-          if (menuBtn) {
-            handleMenuClickRef.current({ currentTarget: menuBtn });
-          }
-        }
-      }
+      setSidebarActive(window.innerWidth >= 768);
     };
 
-    menuBtn.addEventListener("click", handleMenuClick);
+    // Add event listener for window resize
     window.addEventListener("resize", handleResize);
 
-    handleResize();
-
     return () => {
-      menuBtn.removeEventListener("click", handleMenuClick);
       window.removeEventListener("resize", handleResize);
     };
   }, []);
@@ -72,11 +55,20 @@ function Sidebar() {
 
   const handleDropdownClick = (e) => {
     e.preventDefault();
-    const dropdown = e.currentTarget.parentElement;
-    dropdown.classList.toggle("active");
-    if (document.body.classList.contains("collapsed")) {
-      handleMenuClickRef.current();
-    }
+    const target = e.currentTarget;
+    const dropdown = target.parentElement.querySelector(".dropdown-menu");
+
+    // Close all other dropdowns first
+    document.querySelectorAll(".dropdown-menu.show").forEach((dd) => {
+      // Skip the current dropdown
+      if (dd !== dropdown) {
+        dd.classList.remove("show");
+      }
+    });
+
+    // Toggle the current dropdown
+    dropdown.classList.toggle("show");
+    setIsDropdownOpen(!isDropdownOpen);
   };
 
   const handleMenuItemClick = (e, path) => {
@@ -89,12 +81,12 @@ function Sidebar() {
   };
 
   return (
-    <aside>
+    <aside className={sidebarActive ? "active" : ""} style={{ display: 'block' }}>
       <div className="logo-container">
         <a href="#" className="logo-wrapper">
           <span
-            className="fa-brands fa-uikit"
-            onClick={() => handleMenuClickRef.current()}
+            className="fa-brands fa-uikit menu-btn"
+            onClick={() => handleMenuClickRef.current && handleMenuClickRef.current()}
           ></span>
           <span
             className="brand-name"
@@ -105,7 +97,7 @@ function Sidebar() {
         </a>
         <i
           className="fa-solid fa-xmark close-sidebar"
-          onClick={() => handleMenuClickRef.current()}
+          onClick={() => handleMenuClickRef.current && handleMenuClickRef.current()}
         ></i>
       </div>
       <div className="separator"></div>

@@ -1,0 +1,232 @@
+.hero-section {
+  width: 100%;
+  padding: 40px 0;
+  text-align: center;
+  background-color: var(--background-color-rgba);
+  margin: 0;
+  position: relative;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  top: 0;
+  order: 0;
+}
+
+.hero-content {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.hero-title {
+  font-size: 42px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  line-height: 1.2;
+  color: var(--text-color);
+  text-align: center;
+}
+
+.hero-subtitle {
+  font-size: 16px;
+  line-height: 1.5;
+  margin-bottom: 24px;
+  color: var(--text-color);
+  opacity: 0.8;
+  text-align: center;
+}
+
+.hero-search-wrapper {
+  width: 100%;
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: center;
+}
+
+.hero-search-form {
+  width: 100%;
+  max-width: 450px;
+  margin: 0;
+}
+
+.hero-search-container {
+  position: relative;
+  width: 100%;
+}
+
+.hero-search-input {
+  width: 100%;
+  height: 48px;
+  padding: 0 48px 0 16px;
+  border: 1px solid var(--card-border-color);
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.1);
+  font-size: 16px;
+  transition: all 0.2s;
+  color: var(--text-color);
+}
+
+.hero-search-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(var(--card-border-color), 0.2);
+}
+
+.hero-search-button {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: var(--button-html-color);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.hero-search-button:hover {
+  background-color: rgba(var(--button-html-color), 0.8);
+}
+
+.trending-searches {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 30px;
+  width: 100%;
+}
+
+.trending-label {
+  color: var(--text-color);
+  opacity: 0.6;
+  font-size: 14px;
+}
+
+.trending-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.trending-tag {
+  background-color: rgba(255, 255, 255, 0.08);
+  color: var(--text-color);
+  border-radius: 20px;
+  padding: 6px 16px;
+  font-size: 14px;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.trending-tag:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.filter-categories {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 0;
+  margin-bottom: 0;
+  text-align: center;
+  width: 100%;
+}
+
+.filter-dropdown {
+  margin-right: 16px;
+}
+
+.filter-button {
+  background: none;
+  border: none;
+  color: var(--text-color);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 6px 12px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.filter-button:hover {
+  background-color: var(--background-color-navbar);
+}
+
+.category-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+.category-pill {
+  color: var(--text-color);
+  text-decoration: none;
+  font-size: 15px;
+  transition: all 0.2s;
+  position: relative;
+  padding: 4px 0;
+  font-weight: 500;
+}
+
+.category-pill:hover,
+.category-pill.active {
+  color: var(--button-html-color);
+}
+
+.category-pill.active::after {
+  content: "";
+  position: absolute;
+  bottom: -9px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: var(--button-html-color);
+}
+
+.filters-button {
+  background-color: var(--background-color-navbar);
+  border-radius: 4px;
+}
+
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 36px;
+  }
+  
+  .hero-subtitle {
+    font-size: 16px;
+  }
+  
+  .filter-categories {
+    flex-direction: column;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  
+  .category-pills {
+    order: 3;
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    width: 100%;
+  }
+  
+  .filter-dropdown {
+    margin-right: 0;
+  }
+  
+  .filters-button {
+    align-self: flex-end;
+  }
+}

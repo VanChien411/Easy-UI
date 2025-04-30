@@ -33,32 +33,38 @@ html, body {
 }
 
 main {
-  display: grid;
-  grid-template-areas:
-  "side head head head"
-  "side content content content"
-  "side footer footer footer";
-  grid-template-rows: 48px auto;
-  grid-template-columns: 240px auto; /* Đặt chiều rộng của aside là 300px */
-  height: 80%; /* Thêm chiều cao cho main */
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
   position: relative; /* Ensure main content is positioned relative */
+  overflow-x: hidden;
+}
+
+/* Full-width layout when sidebar is hidden */
+main.fullwidth {
+  width: 100%;
+  max-width: 100%;
 }
 
 header { 
-  grid-area: head; 
-  background-color: rgba(89, 19, 76, 0.2); /* Màu nền đen nhạt hơn với độ trong suốt cao hơn */
+  width: 100%;
   align-content: center;
-  border-radius: 4px; /* Bo tròn các góc */
-    position: sticky;
+  position: sticky;
   top: 0;  /* Dính ở trên cùng khi cuộn trang */
-  z-index: 4;  /* Đảm bảo phần tử luôn ở trên cùng */
+  z-index: 100;  /* Đảm bảo phần tử luôn ở trên cùng */
+  background-color: var(--background-color-rgba); /* Use theme background color */
 }
 article { 
-  grid-area: content; 
+  width: 100%;
   padding: 8px; /* Thêm khoảng cách bên trong content */
+  max-width: 1200px;
+  margin: 0 auto;
+  flex: 1; /* Allow article to grow and fill available space */
 }
 footer { 
-  grid-area: footer; 
+  width: 100%;
+  margin-top: auto; /* Push footer to bottom */
 }
 
 aside { 

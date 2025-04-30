@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from 'react-router-dom';
 import { addItem } from "../../../redux/slices/cartSlice";
@@ -8,25 +8,50 @@ import CartService from "../../../services/CartService";
 import { isFreeProduct } from "../../../services/uiComponentsService";
 
 function CardItem({
-  name,
-  html,
-  css,
-  js,
-  uiComponentId,
-  price,
+  item,
   isExpanded,
   onExpand,
 }) {
+  const cardRef = useRef(null);
+  const { name, html, css, js, id: uiComponentId, price } = item || {};
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [isBuying, setIsBuying] = useState(false);
   
-  console.log('Product data:', { name, price, uiComponentId });
+  // Handle click outside to close expanded card
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (isExpanded && cardRef.current && !cardRef.current.contains(event.target)) {
+        onExpand();
+      }
+    }
+
+    // Add event listener when card is expanded
+    if (isExpanded) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    
+    // Clean up the event listener
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isExpanded, onExpand]);
   
   const isFree = !price || price === 0;
 
   const iframeContent = `
-    <style>${css}</style>
+    <style>
+      body {
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 200px;
+        background-color: white;
+        color: black;
+      }
+      ${css}
+    </style>
     ${html}
     <script>${js}</script>
   `;
@@ -64,17 +89,8 @@ function CardItem({
 
   return (
     <>
-      <div className={`card ${isExpanded ? "expanded" : ""}`}>
-        {/* Icon for expand/collapse */}
-        <div className="icon-expand" onClick={onExpand}>
-          <i
-            className={
-              isExpanded
-                ? "fa-solid fa-down-left-and-up-right-to-center"
-                : "fa-solid fa-up-right-and-down-left-from-center"
-            }
-          ></i>
-        </div>
+      <div ref={cardRef} className={`card ${isExpanded ? "expanded" : ""}`}>
+        {/* Preview Area */}
         <div className="row">
           {isExpanded ? (
             <AddUi
@@ -83,24 +99,28 @@ function CardItem({
               js={js}
               name={name}
               isEdit={false}
-            ></AddUi>
+            />
           ) : (
-            <>
+            <div className="card-preview">
               <iframe
                 srcDoc={iframeContent}
                 title="Preview"
                 sandbox="allow-scripts allow-same-origin"
-                style={{ border: "none", width: "100%", height: "100%" }}
-              ></iframe>
-            </>
+                style={{ border: "none", width: "100%", height: "220px" }}
+              />
+              <div className="icon-expand" onClick={onExpand}>
+                <i className="fa-solid fa-up-right-and-down-left-from-center" />
+              </div>
+            </div>
           )}
         </div>
-        <hr className="divider" />
+
+        {/* Footer with buttons */}
         <div className="button-container">
           <div className="button-hashtags">
             {html && <button className="button-hashtag button-html">Html</button>}
-            {js && <button className="button-hashtag button-js">JavaScript</button>}
-            {css && <button className="button-hashtag button-css">Css</button>}
+            {js && <button className="button-hashtag button-js">JS</button>}
+            {css && <button className="button-hashtag button-css">CSS</button>}
           </div>
           <div className="button-buy">
             <button
@@ -122,6 +142,8 @@ function CardItem({
             </button>
           </div>
         </div>
+        
+        {/* Price Tag */}
         <div className="price-tag">
           {isFree ? (
             <span className="free-label">Free</span>

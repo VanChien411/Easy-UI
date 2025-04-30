@@ -1,0 +1,67 @@
+/* Sidebar styling */
+aside {
+  transition: width 0.3s ease;
+  overflow-x: hidden;
+}
+
+aside.active {
+  width: 224px;
+}
+
+aside:not(.active) {
+  width: 48px;
+}
+
+.separator {
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.1);
+  margin: 10px 0;
+}
+
+.dropdown {
+  position: relative;
+}
+
+.dropdown-menu {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.dropdown-menu.show {
+  max-height: 500px; /* Adjust as needed */
+}
+
+/* When sidebar is collapsed, hide text */
+aside:not(.active) .brand-name,
+aside:not(.active) .item-name,
+aside:not(.active) .dropdown-icon
+
+/* Menu items styling */
+.menu-items {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.menu-items li {
+  margin-bottom: 5px;
+}
+
+.menu-items li a {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+
+.menu-items li a:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.icon {
+  margin-right: 10px;
+  width: 20px;
+  text-align: center;
+}
