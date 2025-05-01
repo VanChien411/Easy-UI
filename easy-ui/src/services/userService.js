@@ -41,3 +41,16 @@ export const getCurrentUser = async () => {
     throw new Error(errorMessage);
   }
 };
+
+// Get user by ID
+export const getUserById = async (userId) => {
+  try {
+    const response = await apiClient.get(`/users/${userId}`);
+    return response.data;
+  } catch (error) {
+    const errorMessage =
+      error.response?.data?.message || "Failed to fetch user data!";
+    console.error(errorMessage);
+    throw new Error(errorMessage);
+  }
+};

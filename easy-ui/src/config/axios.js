@@ -12,17 +12,25 @@ const apiClient = axios.create({
 // Add a request interceptor
 apiClient.interceptors.request.use(
   (config) => {
-    // Add authorization token if available
-    const token = localStorage.getItem("authToken");
+    // Check all possible token storage locations
+    const token = 
+      localStorage.getItem("authToken") || 
+      localStorage.getItem("auth_token") || 
+      localStorage.getItem("token") ||
+      sessionStorage.getItem("authToken") ||
+      sessionStorage.getItem("auth_token") ||
+      sessionStorage.getItem("token");
+    
     if (token) {
+      console.log("Found auth token, adding to request headers");
       config.headers.Authorization = `Bearer ${token}`;
+    } else {
+      console.log("No auth token found for request");
     }
-    // Ensure CORS headers are sent
-    config.headers = {
-      ...config.headers,
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
-    };
+    
+    // Log the final request config for debugging
+    console.log(`${config.method.toUpperCase()} ${config.baseURL}${config.url}`, config);
+    
     return config;
   },
   (error) => Promise.reject(error)
@@ -50,10 +58,13 @@ apiClient.interceptors.response.use(
           console.error('API error:', error.response.data);
       }
     } else if (error.request) {
+      // The request was made but no response was received
       console.error('No response received:', error.request);
     } else {
-      console.error('Error setting up request:', error.message);
+      // Something happened in setting up the request that triggered an Error
+      console.error('Request setup error:', error.message);
     }
+    
     return Promise.reject(error);
   }
 );

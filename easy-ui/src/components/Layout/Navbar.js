@@ -25,7 +25,9 @@ function Navbar() {
   const dropdownRef = useRef(null);
   const [categories, setCategories] = useState([]);
   const [showCategoriesDropdown, setShowCategoriesDropdown] = useState(false);
+  const [showDevelopDropdown, setShowDevelopDropdown] = useState(false);
   const categoriesDropdownRef = useRef(null);
+  const developDropdownRef = useRef(null);
 
   useEffect(() => {
     // Apply the theme on component mount
@@ -38,8 +40,8 @@ function Navbar() {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setShowDropdown(false);
       }
-      if (categoriesDropdownRef.current && !categoriesDropdownRef.current.contains(event.target)) {
-        setShowCategoriesDropdown(false);
+      if (developDropdownRef.current && !developDropdownRef.current.contains(event.target)) {
+        setShowDevelopDropdown(false);
       }
     }
     
@@ -106,6 +108,14 @@ function Navbar() {
     navigate('/LoginSignup/login');
   };
 
+
+
+  // handleDevelopToggle handles opening/closing the Develop dropdown
+  const handleDevelopToggle = (e) => {
+    e.preventDefault();
+    setShowDevelopDropdown(!showDevelopDropdown);
+  };
+
   return (
     <header>
       <div className="header-wrapper">
@@ -153,6 +163,47 @@ function Navbar() {
             <Link to="/" className="navbar-menu-item">
               Find Jobs
             </Link>
+
+            {/* Develop Dropdown */}
+            <div className="nav-dropdown" ref={developDropdownRef}>
+              <button 
+                className="nav-dropdown-button" 
+                onClick={handleDevelopToggle}
+              >
+                <i className="fa-brands fa-connectdevelop fa-spin fa-spin-reverse"></i>
+                Develop
+                <i className="fa fa-chevron-down ml-2"></i>
+              </button>
+              
+              {showDevelopDropdown && (
+                <div className="nav-dropdown-menu">
+                  <div 
+                    className="nav-dropdown-item" 
+                    onClick={() => {
+                      navigate("/AddUi");
+                      setShowDevelopDropdown(false);
+                    }}
+                  >
+                    <i className="fa fa-code mr-2"></i>
+                    Add UI
+                  </div>
+                  <div 
+                    className="nav-dropdown-item"
+                    onClick={() => setShowDevelopDropdown(false)}
+                  >
+                    <i className="fa fa-terminal mr-2"></i>
+                    CLI Tools
+                  </div>
+                  <div 
+                    className="nav-dropdown-item"
+                    onClick={() => setShowDevelopDropdown(false)}
+                  >
+                    <i className="fa fa-database mr-2"></i>
+                    Database Tools
+                  </div>
+                </div>
+              )}
+            </div>
 
             <Link to="/" className="navbar-menu-item">
               Blog
@@ -243,7 +294,7 @@ function Navbar() {
         <div className="md:hidden fixed top-16 left-0 w-full bg-white border-b border-gray-200 p-4 shadow-lg z-50">
           <div className="flex flex-col gap-4">
             <Link to="/" className="navbar-menu-item">
-              Explore
+              Category
             </Link>
             <Link to="/" className="navbar-menu-item">
               Hire a Designer

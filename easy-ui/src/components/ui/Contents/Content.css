@@ -6,7 +6,7 @@
 
 .content-header {
   margin: 30px 0;
-  text-align: left;
+  text-align: center; /* Center the content header text */
   padding: 0 16px;
   max-width: 1200px;
   margin-left: auto;
@@ -36,7 +36,7 @@
 .category-nav-items {
   display: flex;
   padding: 0 24px;
-  max-width: 1200px;
+  justify-content: center; /* Center the navigation tabs */
   margin: 0 auto;
   overflow-x: auto;
 }
