@@ -1,14 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import { IoChevronBackOutline } from "react-icons/io5";
-import { FaRegHeart, FaHeart, FaShare, FaDownload, FaCheck, FaRegCopy, FaStar, FaRegStar, FaEdit, FaTrash, FaTimes } from 'react-icons/fa';
+import { FaRegHeart, FaHeart, FaShare, FaBookmark, FaRegBookmark, 
+  FaInfoCircle, FaCommentAlt, FaSpinner } from 'react-icons/fa';
+// Import fetchUIComponentById to get UI component data
 import { fetchUIComponentById } from '../../../services/uiComponentsService';
-import { fetchComments, addComment, updateComment, deleteComment } from '../../../services/commentsService';
-import { showAlert } from '../../../components/utils/Alert';
+import CommentsPanel from './CommentsPanel';
+import DetailsPanel from './DetailsPanel';
+import SharePanel from './SharePanel';
 import './ProductDetail.css';
 
-// Component hiển thị và copy code
+// Component hiển thị và copy code - Will be used later when implementing code display functionality
+// This component is preserved for future implementation
+/*
 const CodeDisplay = ({ code, language }) => {
   const [copied, setCopied] = useState(false);
 
@@ -33,617 +37,353 @@ const CodeDisplay = ({ code, language }) => {
     </div>
   );
 };
+*/
 
-
-
-// Component chính
 const ProductDetail = () => {
-  const navigate = useNavigate();
   const { id } = useParams();
-  const [activeTab, setActiveTab] = useState('product');
-  const [codeTab, setCodeTab] = useState('html');
-  const [isLiked, setIsLiked] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [product, setProduct] = useState(null);
-  const [comments, setComments] = useState([]);
-  const [loadingComments, setLoadingComments] = useState(false);
-  const [rating, setRating] = useState(0);
-  const [hover, setHover] = useState(0);
-  const [commentText, setCommentText] = useState('');
-  const [submitting, setSubmitting] = useState(false);
-  const [editingCommentId, setEditingCommentId] = useState(null);
-  const [editCommentText, setEditCommentText] = useState('');
+  const navigate = useNavigate();
+  
+  // States for UI
+  const [isFavorited, setIsFavorited] = useState(false);
+  const [isBookmarked, setIsBookmarked] = useState(false);
+  const [activePanel, setActivePanel] = useState(null); 
+  const [loading, setLoading] = useState(false);
 
-  // Get user from redux state
-  const authState = useSelector(state => state.auth);
-  const isAuthenticated = authState?.isAuthenticated;
-  const currentUser = authState?.user;
+  const [product, setProduct] = useState({
+    id: "123",
+    title: "Modern UI Component",
+    description: "An elegant UI component for modern web applications",
+    image: "/placeholder.svg?height=600&width=800",
+    designer: {
+      name: "Design Studio",
+      // Will be replaced with "Design Studio for [username]" when data is fetched
+      company: "EasyUI", 
+      avatar: "/placeholder.svg?height=40&width=40",
+      available: true
+    }
+  });
 
+  // Fetch product and designer data when the component mounts
   useEffect(() => {
-    const fetchProductData = async () => {
+    const fetchData = async () => {
       try {
         setLoading(true);
-        const data = await fetchUIComponentById(id);
-        setProduct(data);
-        setError(null);
-      } catch (err) {
-        console.error('Error fetching product details:', err);
-        setError('Không thể tải thông tin sản phẩm. Vui lòng thử lại sau.');
-      } finally {
+        
+        // Fetch UI component data using the ID from URL params
+        if (id) {
+          try {
+            // Get UI component data which should include author information
+            const componentData = await fetchUIComponentById(id);
+            
+            // If we have the component data, update our product state
+            if (componentData) {
+              // Extract the author name from the component data
+              const authorName = componentData.authorName || "Unknown Author";
+              
+              // Update the product with data from API
+              setProduct({
+                id: componentData.id,
+                title: componentData.name || "UI Component",
+                description: componentData.description || "An elegant UI component for modern web applications",
+                image: componentData.previewImage || "/placeholder.svg?height=600&width=800",
+                // Include HTML, CSS, JS code if available
+                html: componentData.html || "",
+                css: componentData.css || "",
+                js: componentData.js || "",
+                designer: {
+                  name: "Design Studio",
+                  // Format as "Design Studio for [authorName]"
+                  company: `${authorName}`,
+                  avatar: "/placeholder.svg?height=40&width=40",
+                  available: true
+                }
+              });
+              
+              console.log("Loaded UI component data:", componentData);
+            }
+          } catch (error) {
+            console.error("Error fetching UI component data:", error);
+            // Keep using the default product data if there's an error
+          }
+        } else {
+          console.warn("No component ID provided in URL");
+        }
+        
+        setLoading(false);
+      } catch (error) {
+        console.error("Error in fetchData:", error);
         setLoading(false);
       }
     };
 
-    const fetchCommentsData = async () => {
-      try {
-        setLoadingComments(true);
-        const commentsData = await fetchComments(id);
-        setComments(commentsData);
-      } catch (err) {
-        console.error('Error fetching comments:', err);
-      } finally {
-        setLoadingComments(false);
-      }
-    };
-
-    if (id) {
-      fetchProductData();
-      fetchCommentsData();
-    }
-  }, [id]);
-
+    fetchData();
+  }, [id]); // Re-fetch when the ID changes
   
-  const formatDate = (dateString) => {
-    if (!dateString) return '';
-    const date = new Date(dateString);
-    return date.toLocaleDateString('vi-VN', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
+  // Sample related products
+  const moreByDesigner = [
+    {
+      id: 101,
+      title: "Button Component",
+      image: "/placeholder.svg?height=300&width=400",
+    },
+    {
+      id: 102,
+      title: "Card Component",
+      image: "/placeholder.svg?height=300&width=400",
+    },
+    {
+      id: 103,
+      title: "Form Component",
+      image: "/placeholder.svg?height=300&width=400",
+    },
+    {
+      id: 104,
+      title: "Modal Component",
+      image: "/placeholder.svg?height=300&width=400",
+    },
+  ];
+
+  const youMightAlsoLike = [
+    {
+      id: 201,
+      title: "Colorful UI Kit",
+      image: "/placeholder.svg?height=300&width=400",
+      designer: { name: "Creative Studio" },
+    },
+    {
+      id: 202,
+      title: "Minimalist Components",
+      image: "/placeholder.svg?height=300&width=400",
+      designer: { name: "Design Lab" },
+    },
+  ];
+
+  // For future implementation: fetch actual product data
+  // useEffect(() => {
+  //   const fetchProductData = async () => {
+  //     try {
+  //       const data = await fetchUIComponentById(id);
+  //       setProduct(data);
+  //     } catch (error) {
+  //       console.error("Error fetching product:", error);
+  //       showAlert("Failed to load product details", "error");
+  //     }
+  //   };
+  //
+  //   if (id) {
+  //     fetchProductData();
+  //   }
+  // }, [id]);
+
+  const handleGoBack = () => {
+    navigate(-1);
   };
 
-  // Handle submitting a new comment with rating
-  const handleSubmitComment = async () => {
-    if (!isAuthenticated) {
-      showAlert({
-        title: 'Yêu cầu đăng nhập',
-        message: 'Vui lòng đăng nhập để bình luận',
-        type: 'warning'
-      });
-      return;
-    }
-
-    if (commentText.trim() === '') {
-      showAlert({
-        title: 'Lỗi',
-        message: 'Vui lòng nhập nội dung bình luận',
-        type: 'error'
-      });
-      return;
-    }
-
-    try {
-      setSubmitting(true);
-      const commentData = {
-        componentId: id,
-        content: commentText,
-        rating: rating || null
-      };
-
-      const newComment = await addComment(commentData);
-      
-      // Add user info to the comment for immediate display
-      // Lấy ID người dùng từ JWT payload, từ ASP.NET Core có trường nameidentifier
-      const currentUserId = currentUser?.['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'] || 
-                        currentUser?.nameidentifier || 
-                        currentUser?.sub || 
-                        currentUser?.id || 
-                        currentUser?.userId || 
-                        currentUser?.nameid;
-                        
-      // Lấy tên người dùng từ JWT payload
-      const userName = currentUser?.['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] || 
-                       currentUser?.name || 
-                       currentUser?.userName || 
-                       currentUser?.email || 
-                       'Người dùng';
-      
-      const commentWithUser = {
-        ...newComment,
-        creatorName: userName,
-        creatorId: currentUserId,
-        userId: currentUserId,
-        user: {
-          id: currentUserId,
-          name: userName
-        }
-      };
-      
-      console.log('New comment with JWT user:', commentWithUser);
-      console.log('Current user from JWT:', currentUser);
-      
-      setComments(prevComments => [commentWithUser, ...prevComments]);
-      setCommentText('');
-      setRating(0);
-      
-      showAlert({
-        title: 'Thành công',
-        message: 'Đã thêm bình luận thành công',
-        type: 'success'
-      });
-    } catch (err) {
-      showAlert({
-        title: 'Lỗi',
-        message: 'Không thể thêm bình luận. Vui lòng thử lại sau.',
-        type: 'error'
-      });
-      console.error('Error adding comment:', err);
-    } finally {
-      setSubmitting(false);
+  const togglePanel = (panel) => {
+    if (activePanel === panel) {
+      setActivePanel(null);
+    } else {
+      setActivePanel(panel);
     }
   };
 
-  // Handle edit comment
-  const handleEditComment = (comment) => {
-    setEditingCommentId(comment.id);
-    setEditCommentText(comment.content);
+  const toggleLike = () => {
+    setIsFavorited(!isFavorited);
   };
 
-  // Save edited comment
-  const handleSaveEdit = async () => {
-    if (!editCommentText.trim()) return;
-
-    try {
-      await updateComment(editingCommentId, editCommentText);
-      
-      // Update the comment in the local state
-      setComments(prevComments => 
-        prevComments.map(comment => 
-          comment.id === editingCommentId 
-            ? { ...comment, content: editCommentText, updatedAt: new Date().toISOString() } 
-            : comment
-        )
-      );
-      
-      // Reset editing state
-      setEditingCommentId(null);
-      setEditCommentText('');
-      
-      showAlert({
-        title: 'Thành công',
-        message: 'Bình luận đã được cập nhật',
-        type: 'success'
-      });
-    } catch (err) {
-      showAlert({
-        title: 'Lỗi',
-        message: 'Không thể cập nhật bình luận. Vui lòng thử lại sau.',
-        type: 'error'
-      });
-      console.error('Error updating comment:', err);
-    }
+  const toggleSave = () => {
+    setIsBookmarked(!isBookmarked);
   };
 
-  // Cancel editing
-  const handleCancelEdit = () => {
-    setEditingCommentId(null);
-    setEditCommentText('');
-  };
-
-  // Delete comment
-  const handleDeleteComment = async (commentId) => {
-    if (window.confirm('Bạn có chắc chắn muốn xóa bình luận này không?')) {
-      try {
-        await deleteComment(commentId);
-        
-        // Remove the comment from local state
-        setComments(prevComments => 
-          prevComments.filter(comment => comment.id !== commentId)
-        );
-        
-        showAlert({
-          title: 'Thành công',
-          message: 'Bình luận đã được xóa',
-          type: 'success'
-        });
-      } catch (err) {
-        showAlert({
-          title: 'Lỗi',
-          message: 'Không thể xóa bình luận. Vui lòng thử lại sau.',
-          type: 'error'
-        });
-        console.error('Error deleting comment:', err);
-      }
-    }
-  };
-
-
-  
-  // Check if the current user is the author of a comment
-  const isCommentAuthor = (comment) => {
-    if (!isAuthenticated || !currentUser) {
-      return false;
-    }
-    
-    // Get current user ID from JWT token payload
-    const currentUserId = currentUser['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'] || 
-                        currentUser.nameidentifier || 
-                        currentUser.sub || 
-                        currentUser.id || 
-                        currentUser.userId || 
-                        currentUser.nameid;
-    
-    if (!currentUserId) {
-      return false;
-    }
-    
-    // Get comment author ID from various possible fields
-    const commentAuthorId = comment.creatorId || 
-                         comment.userId || 
-                         (comment.creator && comment.creator.id) ||
-                         (comment.user && comment.user.id) ||
-                         comment.createdBy;
-    
-    if (!commentAuthorId) {
-      return false;
-    }
-    
-    // Compare IDs as strings to handle different formats
-    return commentAuthorId.toString() === currentUserId.toString();
-  };
-
+  // Show loading spinner while data is being fetched
   if (loading) {
-    return <div className="loading-container">Đang tải...</div>;
-  }
-
-  if (error) {
-    return <div className="error-container">{error}</div>;
-  }
-
-  if (!product) {
-    return <div className="not-found-container">Không tìm thấy sản phẩm</div>;
+    return (
+      <div className="product-detail-container loading-container">
+        <FaSpinner className="loading-spinner" />
+        <p>Loading product details...</p>
+      </div>
+    );
   }
 
   return (
     <div className="product-detail-container">
-      {/* Header */}
-      <div className="product-header">
-        <button className="back-button" onClick={() => navigate(-1)}>
-          <IoChevronBackOutline /> Trở lại
-        </button>
-        <h1 className="product-title">{product.name}</h1>
-        <div className="product-actions">
-          <button className="action-button like-button" onClick={() => setIsLiked(!isLiked)}>
-            {isLiked ? <FaHeart className="liked" /> : <FaRegHeart />}
-            <span>Yêu thích</span>
-          </button>
-          <button className="action-button">
-            <FaShare />
-            <span>Chia sẻ</span>
-          </button>
-          <button className="action-button download-button">
-            <FaDownload />
-            <span>Tải xuống</span>
-          </button>
-        </div>
-      </div>
+      {/* Back button */}
+      <button
+        onClick={handleGoBack}
+        className="back-button"
+        aria-label="Go back"
+      >
+        <IoChevronBackOutline size={24} />
+      </button>
 
-      {/* Main Content */}
-      <div className="product-content">
-        <div className="content-left">
-          {/* Tabs */}
-          <div className="content-tabs">
-            <button 
-              className={`tab-button ${activeTab === 'product' ? 'active' : ''}`}
-              onClick={() => setActiveTab('product')}
-            >
-              Sản phẩm
-            </button>
-            <button 
-              className={`tab-button ${activeTab === 'description' ? 'active' : ''}`}
-              onClick={() => setActiveTab('description')}
-            >
-              Mô tả
-            </button>
-            <button 
-              className={`tab-button ${activeTab === 'comments' ? 'active' : ''}`}
-              onClick={() => setActiveTab('comments')}
-            >
-              Bình luận
-            </button>
+      <div className="product-detail-content">
+        <div className="mx-auto px-4 pt-4 pb-8">
+          {/* Title */}
+          <h2 className="text-3xl font-bold mb-2">{product.title}</h2>
+
+          {/* Designer info */}
+          <div className="designer-info">
+            <div className="designer-profile">
+              <div className="avatar">
+                <img
+                  src={product.designer.avatar}
+                  alt={product.designer.name}
+                  className="avatar-image"
+                />
+              </div>
+              <div>
+                <div className="designer-name">
+                  <span className="font-medium">{product.designer.name}</span>
+                  <span className="text-gray-500"> for </span>
+                  <span className="font-medium">{product.designer.company}</span>
+                </div>
+                <div className="designer-status">
+                  <span className="availability">Available for work</span>
+                  <button className="follow-button">Follow</button>
+                </div>
+              </div>
+            </div>
+
+            <div className="action-buttons">
+              <button
+                className={`like-button ${isFavorited ? "liked" : ""}`}
+                onClick={toggleLike}
+              >
+                {isFavorited ? <FaHeart /> : <FaRegHeart />}
+              </button>
+              <button
+                className={`save-button ${isBookmarked ? "saved" : ""}`}
+                onClick={toggleSave}
+              >
+                {isBookmarked ? <FaBookmark /> : <FaRegBookmark />}
+              </button>
+              <button className="contact-button">
+                Get in touch
+              </button>
+            </div>
           </div>
 
-          {/* Preview Area */}
-          <div className="preview-area">
-            {activeTab === 'product' && (
-              <>
-                
-                <div className="source-code-section">
-                  <div className="code-tabs">
-                    <button 
-                      className={`code-tab ${codeTab === 'preview' ? 'active' : ''}`}
-                      onClick={() => setCodeTab('preview')}
-                    >
-                      Preview
-                    </button>
-                    <button 
-                      className={`code-tab ${codeTab === 'html' ? 'active' : ''}`}
-                      onClick={() => setCodeTab('html')}
-                    >
-                      HTML
-                    </button>
-                    <button 
-                      className={`code-tab ${codeTab === 'css' ? 'active' : ''}`}
-                      onClick={() => setCodeTab('css')}
-                    >
-                      CSS
-                    </button>
-                    <button 
-                      className={`code-tab ${codeTab === 'javascript' ? 'active' : ''}`}
-                      onClick={() => setCodeTab('javascript')}
-                    >
-                      JavaScript
-                    </button>
-                  </div>
-                  <div className="code-content">
-                    {codeTab === 'preview' ? (
-                      <div className="preview-iframe">
-                        <iframe 
-                          srcDoc={`
-                            <html>
-                              <style>${product.css || ''}</style>
-                              <body>${product.html || ''}</body>
-                              <script>${product.js || ''}</script>
-                            </html>
-                          `}
-                          title="preview"
-                        />
-                      </div>
-                    ) : (
-                      <CodeDisplay 
-                        code={
-                          codeTab === 'html' 
-                            ? product.html || '' 
-                            : codeTab === 'css' 
-                            ? product.css || '' 
-                            : product.js || ''
-                        } 
-                        language={codeTab.toUpperCase()}
-                      />
-                    )}
-                  </div>
-                </div>
-              </>
-            )}
-            
-            {activeTab === 'description' && (
-              <div className="description-content">
-                <div className="description-section">
-                  <p>{product.description || 'Không có mô tả chi tiết.'}</p>
-                </div>
+          {/* Main content with image and action buttons */}
+          <div className={`product-main-content ${activePanel ? "with-panel" : ""}`}>
+            {/* Main image container - shrinks when panel is active */}
+            <div className={`product-image-container ${activePanel ? "with-panel" : ""}`}>
+              <div className="product-image">
+                <img
+                  src={product.image}
+                  alt={product.title}
+                  className="product-image-content"
+                />
+              </div>
+            </div>
+
+            {/* Side panels */}
+            {activePanel === "comments" && (
+              <div className="panel-container">
+                <CommentsPanel onClose={() => setActivePanel(null)} componentId={id} />
               </div>
             )}
 
-            {activeTab === 'comments' && (
-              <div className="comments-content">
-                <div className="add-comment-section">
-                  <div className="rating-section">
-                    <h3>Đánh giá và bình luận</h3>
-                    <div className="stars-container">
-                      {[...Array(5)].map((star, index) => {
-                        const ratingValue = index + 1;
-                        return (
-                          <label key={index}>
-                            <input 
-                              type="radio" 
-                              name="rating" 
-                              value={ratingValue} 
-                              onClick={() => setRating(ratingValue)}
-                              disabled={submitting || !isAuthenticated}
-                            />
-                            {ratingValue <= (hover || rating) 
-                              ? <FaStar className="star" onMouseEnter={() => !submitting && setHover(ratingValue)} onMouseLeave={() => !submitting && setHover(0)} /> 
-                              : <FaRegStar className="star" onMouseEnter={() => !submitting && setHover(ratingValue)} onMouseLeave={() => !submitting && setHover(0)} />}
-                          </label>
-                        );
-                      })}
-                      <span className="rating-text">{rating ? `${rating}/5` : "Chưa đánh giá"}</span>
-                    </div>
-                  </div>
-                  
-                  <textarea 
-                    className="comment-input" 
-                    placeholder={isAuthenticated ? "Nhập bình luận của bạn..." : "Đăng nhập để bình luận..."}
-                    value={commentText}
-                    onChange={(e) => setCommentText(e.target.value)}
-                    disabled={submitting || !isAuthenticated}
-                  ></textarea>
-                  <button 
-                    className="comment-button" 
-                    onClick={handleSubmitComment} 
-                    disabled={submitting || !isAuthenticated || commentText.trim() === ''}
-                  >
-                    {submitting ? 'Đang gửi...' : 'Gửi bình luận'}
-                  </button>
-                </div>
-                <div className="comments-section">
-                  <h3>Các bình luận</h3>
-                  {loadingComments ? (
-                    <div className="loading-comments">Đang tải bình luận...</div>
-                  ) : comments && comments.length > 0 ? (
-                    <div className="comments-list">
-                      {comments.map((comment) => (
-                        <div key={comment.id} className="comment-item">
-                          <div className="comment-header">
-                            <div className="comment-user-info">
-                              <span className="comment-author">{comment.creatorName || 'Người dùng'}</span>
-                              {comment.rating && (
-                                <div className="comment-rating">
-                                  {[...Array(5)].map((_, index) => (
-                                    <span key={index}>
-                                      {index < comment.rating ? <FaStar className="rating-star" /> : <FaRegStar className="rating-star" />}
-                                    </span>
-                                  ))}
-                                </div>
-                              )}
-                            </div>
-                            <div className="comment-meta">
-                              <span className="comment-date">{formatDate(comment.updatedAt || comment.createdAt)}</span>
-                              {isCommentAuthor(comment) && (
-                                <div className="comment-actions">
-                                  <button 
-                                    className="action-button edit-button" 
-                                    onClick={() => handleEditComment(comment)}
-                                    aria-label="Chỉnh sửa bình luận"
-                                  >
-                                    <FaEdit />
-                                  </button>
-                                  <button 
-                                    className="action-button delete-button" 
-                                    onClick={() => handleDeleteComment(comment.id)}
-                                    aria-label="Xóa bình luận"
-                                  >
-                                    <FaTrash />
-                                  </button>
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                          
-                          {editingCommentId === comment.id ? (
-                            <div className="edit-comment-form">
-                              <textarea 
-                                className="edit-comment-input" 
-                                value={editCommentText} 
-                                onChange={(e) => setEditCommentText(e.target.value)}
-                                disabled={submitting}
-                              ></textarea>
-                              <div className="edit-buttons">
-                                <button 
-                                  className="save-edit-button" 
-                                  onClick={() => handleSaveEdit(comment.id)}
-                                  disabled={submitting}
-                                >
-                                  {submitting ? 'Đang lưu...' : 'Lưu'}
-                                </button>
-                                <button 
-                                  className="cancel-edit-button" 
-                                  onClick={handleCancelEdit}
-                                  disabled={submitting}
-                                >
-                                  <FaTimes />
-                                </button>
-                              </div>
-                            </div>
-                          ) : (
-                            editingCommentId === comment.id ? (
-                              <div className="edit-comment-form">
-                                <textarea
-                                  className="edit-comment-input"
-                                  value={editCommentText}
-                                  onChange={(e) => setEditCommentText(e.target.value)}
-                                  placeholder="Chỉnh sửa bình luận..."
-                                  rows="3"
-                                />
-                                <div className="edit-buttons">
-                                  <button
-                                    className="cancel-edit-button"
-                                    onClick={handleCancelEdit}
-                                    disabled={submitting}
-                                  >
-                                    Hủy
-                                  </button>
-                                  <button
-                                    className="save-edit-button"
-                                    onClick={handleSaveEdit}
-                                    disabled={submitting || !editCommentText.trim()}
-                                  >
-                                    Lưu
-                                  </button>
-                                </div>
-                              </div>
-                            ) : (
-                              <div className="comment-content">{comment.content}</div>
-                            )
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="no-comments">Chưa có bình luận nào.</div>
-                  )}
-                </div> {/* Hiển thị form thêm bình luận mới */}
-               
+            {activePanel === "share" && (
+              <div className="panel-container">
+                <SharePanel onClose={() => setActivePanel(null)} />
               </div>
             )}
-          </div>
-        </div>
 
-        {/* Product Info Sidebar */}
-        <div className="product-sidebar">
-
-          <div className="creator-section">
-            <div className="creator-info">
-              <span className="creator-name">{product.creatorName || 'EasyUI'}</span>
-              <span className="creator-label">Tác giả</span>
-            </div>
-          </div>
-
-          <div className="product-stats">
-            <div className="stat-item">
-              <span className="stat-label">Cập nhật</span>
-              <span className="stat-value">{formatDate(product.createdAt)}</span>
-            </div>
-            <div className="stat-item">
-              <span className="stat-label">Lượt tải</span>
-              <span className="stat-value">{product.downloads || 0}</span>
-            </div>
-            <div className="stat-item">
-              <span className="stat-label">Lượt xem</span>
-              <span className="stat-value">{product.views || 0}</span>
-            </div>
-            {product.rating && (
-              <div className="stat-item">
-                <span className="stat-label">Đánh giá</span>
-                <span className="stat-value">{product.rating}/5</span>
+            {activePanel === "details" && (
+              <div className="panel-container">
+                <DetailsPanel design={product} onClose={() => setActivePanel(null)} />
               </div>
             )}
           </div>
 
-          <div className="product-tags">
-            <div className="tag-label">Thẻ</div>
-            <div className="tags-container">
-              {product.tags && product.tags.length > 0 ? (
-                product.tags.map((tag, index) => (
-                  <span key={index} className="tag">{tag}</span>
-                ))
-              ) : (
-                <p>Không có thẻ nào.</p>
-              )}
+          {/* Action buttons outside the image */}
+          <div className="panel-toggle-buttons">
+            <button
+              className={`panel-toggle-button ${activePanel === "comments" ? "active" : ""}`}
+              onClick={() => togglePanel("comments")}
+              aria-label="Comments"
+            >
+              <FaCommentAlt size={20} />
+            </button>
+            <button
+              className={`panel-toggle-button ${activePanel === "share" ? "active" : ""}`}
+              onClick={() => togglePanel("share")}
+              aria-label="Share"
+            >
+              <FaShare size={20} />
+            </button>
+            <button
+              className={`panel-toggle-button ${activePanel === "details" ? "active" : ""}`}
+              onClick={() => togglePanel("details")}
+              aria-label="Details"
+            >
+              <FaInfoCircle size={20} />
+            </button>
+          </div>
+
+          {/* Description */}
+          <div className="product-description">
+            <p className="description-text">
+              {product.description || "A modern UI component for your web applications."}
+            </p>
+          </div>
+
+          {/* Contact section */}
+          <div className="contact-section">
+            <h3 className="contact-heading">Contact us to get your custom UI component</h3>
+            <p className="contact-subheading">or branding project done</p>
+
+            <div className="contact-divider">
+              <hr className="divider-line" />
+              <div className="divider-icon">
+                <FaShare className="icon-white" />
+              </div>
+              <hr className="divider-line" />
+            </div>
+
+            <div className="company-info">
+              <h4 className="company-name">{product.designer.company || "EasyUI Studio"}</h4>
+            </div>
+            <p className="company-description">Welcome to our component portfolio</p>
+            <button className="contact-us-button">Get in touch</button>
+          </div>
+
+          {/* More by designer */}
+          <div className="more-by-designer">
+            <div className="section-header">
+              <h3 className="section-title">More by {product.designer.company || "EasyUI Studio"}</h3>
+              <button className="view-profile-link">
+                View profile
+              </button>
+            </div>
+            <div className="more-items-grid">
+              {moreByDesigner.map((item) => (
+                <div key={item.id} className="more-item">
+                  <img
+                    src={item.image}
+                    alt={item.title}
+                    className="more-item-image"
+                  />
+                </div>
+              ))}
             </div>
           </div>
 
-          <div className="product-categories">
-            <div className="categories-label">Danh mục</div>
-            <div className="categories-container">
-              {product.categories && product.categories.length > 0 ? (
-                product.categories.map((category, index) => (
-                  <span key={index} className="category">{category}</span>
-                ))
-              ) : (
-                <p>Không có danh mục nào.</p>
-              )}
+          {/* You might also like */}
+          <div className="recommendations">
+            <h3 className="section-title">You might also like</h3>
+            <div className="recommended-items-grid">
+              {youMightAlsoLike.map((item) => (
+                <div key={item.id} className="recommended-item">
+                  <img
+                    src={item.image}
+                    alt={item.title}
+                    className="recommended-item-image"
+                  />
+                </div>
+              ))}
             </div>
           </div>
-          
-          <button className="download-button-secondary">
-            <FaDownload /> Tải xuống
-          </button>
-          
         </div>
       </div>
     </div>
