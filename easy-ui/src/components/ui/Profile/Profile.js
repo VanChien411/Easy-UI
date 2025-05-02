@@ -1,168 +1,111 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { FaEllipsisH, FaPlus } from 'react-icons/fa';
+import useAuth from '../../../hooks/useAuth';
 import './Profile.css';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
 
 const Profile = () => {
-  const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('profile');
+  const { isAuthenticated, user } = useAuth();
+  const location = useLocation();
   
-  // User data state
-  const [profileData, setProfileData] = useState({
-    name: 'Nguyễn Văn A',
-    email: 'nguyenvana@example.com',
-    avatar: '/placeholder.svg',
-    joinDate: '2022-05-15',
-  purchasedItems: [
-    {
-      id: "item-1",
-      name: "Modern Dashboard UI Kit",
-        image: "/placeholder.svg",
-      purchaseDate: "2023-04-15",
-      price: 990000,
-      type: "UI Kit",
-      downloads: 3,
-    },
-      // ... other items
-  ],
-  favoriteItems: [
-    {
-      id: "fav-1",
-      name: "Landing Page Template",
-        image: "/placeholder.svg",
-      price: 590000,
-      type: "Template",
-    },
-      // ... other items
-    ],
+  // Default user data in case auth data is not available
+  const [userData, setUserData] = useState({
+    name: "Tien Pham",
+    avatar: "/placeholder.svg?height=100&width=100",
+    bio: "Designer & Developer",
   });
 
-  // Format currency to USD
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat("en-US", { 
-      style: "currency", 
-      currency: "USD" 
-    }).format(amount);
-  };
-
-  // Format date
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('vi-VN');
-  };
-
-  // Handle form submission
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    // Add your form submission logic here
-    toast.success("Thông tin cá nhân đã được cập nhật");
-  };
-
-  // Handle avatar upload
-  const handleAvatarUpload = (event) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setProfileData({
-          ...profileData,
-          avatar: e.target?.result
-        });
-        toast.success("Ảnh đại diện đã được cập nhật");
-      };
-      reader.readAsDataURL(file);
+  // Update user data when auth state changes
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      setUserData({
+        name: user.name || user.userName || "User",
+        avatar: user.avatar || "/placeholder.svg?height=100&width=100",
+        bio: user.bio || "UI Component Creator",
+      });
     }
+  }, [isAuthenticated, user]);
+
+  // Function to determine if a nav link is active
+  const isActive = (path) => {
+    return location.pathname === path ? 'active-nav-link' : '';
   };
 
   return (
-    <div className="profile-container">
-      <div className="profile-header">
-        <h1>Thông tin cá nhân</h1>
-        </div>
+    <div className="profile-page">
+      <div className="profile-container">
+        <div className="profile-header">
+          <div className="profile-avatar-container">
+            <img
+              src={userData.avatar}
+              alt={userData.name}
+              className="profile-avatar"
+            />
+          </div>
 
-      <div className="profile-content">
-        <div className="profile-sidebar">
-          <div className="avatar-section">
-            <img src={profileData.avatar} alt="Avatar" className="profile-avatar" />
-            <label className="avatar-upload-button">
-              <input type="file" hidden onChange={handleAvatarUpload} />
-              Thay đổi ảnh
-                    </label>
-                  </div>
+          <h1 className="profile-name">{userData.name}</h1>
+          {userData.bio && <p className="profile-bio">{userData.bio}</p>}
 
-          <div className="profile-menu">
-            <button 
-              className={`menu-item ${activeTab === 'profile' ? 'active' : ''}`}
-              onClick={() => setActiveTab('profile')}
-            >
-                  Thông tin cá nhân
-            </button>
-            <button 
-              className={`menu-item ${activeTab === 'purchases' ? 'active' : ''}`}
-              onClick={() => setActiveTab('purchases')}
-            >
-                  Sản phẩm đã mua
-            </button>
-            <button 
-              className={`menu-item ${activeTab === 'favorites' ? 'active' : ''}`}
-              onClick={() => setActiveTab('favorites')}
-            >
-              Sản phẩm yêu thích
+          <div className="profile-actions">
+            <Link to="/profile/edit" className="edit-profile-button">
+              Edit Profile
+            </Link>
+            <button className="more-options-button">
+              <FaEllipsisH size={20} />
             </button>
           </div>
-                    </div>
+        </div>
 
-        <div className="profile-main">
-          {activeTab === 'profile' && (
-            <form onSubmit={handleSubmit} className="profile-form">
-              <div className="form-group">
-                <label>Họ và tên</label>
-                <input 
-                  type="text" 
-                  value={profileData.name}
-                  onChange={(e) => setProfileData({...profileData, name: e.target.value})}
-                />
-              </div>
-              <div className="form-group">
-                <label>Email</label>
-                <input 
-                  type="email" 
-                  value={profileData.email}
-                  onChange={(e) => setProfileData({...profileData, email: e.target.value})}
-                />
-                          </div>
-              <button type="submit" className="save-button">Lưu thay đổi</button>
-                        </form>
-          )}
+        <div className="profile-navigation">
+          <nav className="profile-nav">
+            <Link to="/profile" className={`profile-nav-link ${isActive('/profile')}`}>
+              Work
+            </Link>
+            <Link
+              to="/profile/services"
+              className={`profile-nav-link ${isActive('/profile/services')}`}
+            >
+              Services
+              <span className="new-badge">NEW</span>
+            </Link>
+            <Link
+              to="/profile/boosted"
+              className={`profile-nav-link ${isActive('/profile/boosted')}`}
+            >
+              Boosted Shots
+            </Link>
+            <Link
+              to="/profile/collections"
+              className={`profile-nav-link ${isActive('/profile/collections')}`}
+            >
+              Collections
+            </Link>
+            <Link
+              to="/profile/liked"
+              className={`profile-nav-link ${isActive('/profile/liked')}`}
+            >
+              Liked Shots
+            </Link>
+            <Link
+              to="/profile/about"
+              className={`profile-nav-link ${isActive('/profile/about')}`}
+            >
+              About
+            </Link>
+          </nav>
+        </div>
 
-          {activeTab === 'purchases' && (
-            <div className="purchases-list">
-              {profileData.purchasedItems.map(item => (
-                <div key={item.id} className="purchase-item">
-                  <img src={item.image} alt={item.name} />
-                  <div className="item-info">
-                    <h3>{item.name}</h3>
-                    <p>{formatCurrency(item.price)}</p>
-                    <p>Ngày mua: {formatDate(item.purchaseDate)}</p>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-          )}
-
-          {activeTab === 'favorites' && (
-            <div className="favorites-list">
-              {profileData.favoriteItems.map(item => (
-                <div key={item.id} className="favorite-item">
-                  <img src={item.image} alt={item.name} />
-                  <div className="item-info">
-                    <h3>{item.name}</h3>
-                    <p>{formatCurrency(item.price)}</p>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-          )}
+        <div className="upload-container">
+          <div className="upload-icon">
+            <FaPlus size={32} />
+          </div>
+          <h2 className="upload-title">Upload your first shot</h2>
+          <p className="upload-description">
+            Show off your best work. Get feedback, likes and be a part of a growing community.
+          </p>
+          <button className="upload-button">
+            Upload your first shot
+          </button>
         </div>
       </div>
     </div>

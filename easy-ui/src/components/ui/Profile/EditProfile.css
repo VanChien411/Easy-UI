@@ -1,0 +1,376 @@
+/* EditProfile.css */
+
+.edit-profile-page {
+  width: 100%;
+  padding: 0;
+  margin-top: 20px;
+  text-align: left;
+}
+
+.edit-profile-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+/* Profile Header Section */
+.profile-header-section {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.profile-header-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  overflow: hidden;
+  background-color: #f3f4f6;
+}
+
+.profile-avatar-small {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.edit-profile-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-color);
+  text-align: left;
+}
+
+.edit-profile-subtitle {
+  color: #6b7280;
+  font-weight: 400;
+  text-align: left;
+}
+
+.edit-profile-description {
+  color: #6b7280;
+  font-size: 0.875rem;
+  text-align: left;
+}
+
+/* Layout */
+.edit-profile-layout {
+  display: flex;
+  gap: 48px;
+}
+
+/* Sidebar */
+.edit-profile-sidebar {
+  width: 25%;
+}
+
+.sidebar-sticky {
+  position: sticky;
+  top: 24px;
+}
+
+.sidebar-heading {
+  text-transform: uppercase;
+  color: #6b7280;
+  font-weight: 500;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  margin-bottom: 16px;
+  text-align: left;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-nav-item {
+  padding: 8px 12px;
+  border-left: 2px solid transparent;
+  color: #6b7280;
+  text-decoration: none;
+  font-size: 0.875rem;
+  margin-bottom: 4px;
+  transition: all 0.2s;
+  text-align: left;
+}
+
+.sidebar-nav-item:hover {
+  color: #111827;
+}
+
+.sidebar-nav-item.active {
+  color: #ea4c89;
+  border-left-color: #ea4c89;
+  font-weight: 500;
+}
+
+.delete-account-section {
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.delete-account-link {
+  color: #ef4444;
+  text-decoration: none;
+  font-size: 0.875rem;
+  transition: color 0.2s;
+  text-align: left;
+}
+
+.delete-account-link:hover {
+  color: #dc2626;
+}
+
+/* Main Content */
+.edit-profile-content {
+  flex: 1;
+}
+
+/* Profile Picture Section */
+.profile-picture-section {
+  margin-bottom: 32px;
+}
+
+.profile-picture-container {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.profile-picture-wrapper {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  overflow: hidden;
+  background-color: #f3f4f6;
+}
+
+.profile-picture {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-picture-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.profile-picture-button {
+  padding: 8px 16px;
+  background-color: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  color: #374151;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  text-align: left;
+}
+
+.profile-picture-button:hover {
+  background-color: #f9fafb;
+}
+
+/* Form Sections */
+.form-section {
+  margin-bottom: 48px;
+}
+
+.form-group {
+  margin-bottom: 24px;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 4px;
+  text-align: left;
+}
+
+.form-label-with-counter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.form-counter {
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.required-field {
+  color: #ef4444;
+}
+
+.form-input,
+.form-textarea {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  transition: all 0.2s;
+  font-size: 0.875rem;
+  text-align: left;
+}
+
+.form-input:focus,
+.form-textarea:focus {
+  outline: none;
+  border-color: #ea4c89;
+  box-shadow: 0 0 0 2px rgba(234, 76, 137, 0.2);
+}
+
+.form-input-with-icon {
+  position: relative;
+}
+
+.form-input-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9ca3af;
+  font-size: 14px;
+}
+
+.form-input.with-icon {
+  padding-left: 36px;
+}
+
+.form-label-with-icon {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.form-label-icon {
+  color: #6b7280;
+  font-size: 14px;
+}
+
+/* Section Titles */
+.section-title {
+  text-transform: uppercase;
+  color: #6b7280;
+  font-weight: 600;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  margin-bottom: 16px;
+  text-align: left;
+}
+
+.subsection-title {
+  font-weight: 500;
+  font-size: 0.875rem;
+  color: #374151;
+  margin-bottom: 8px;
+  text-align: left;
+}
+
+/* Work & Education Section */
+.work-education-section {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.work-history-item,
+.education-item {
+  margin-bottom: 16px;
+}
+
+.add-item-button {
+  color: #ea4c89;
+  background: none;
+  border: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0;
+  text-align: left;
+}
+
+.add-item-button:hover {
+  color: #f082ac;
+}
+
+/* Contact Details */
+.contact-details-section {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Form Actions */
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 32px;
+}
+
+.save-profile-button {
+  padding: 8px 24px;
+  background-color: #111827;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  text-align: left;
+}
+
+.save-profile-button:hover {
+  background-color: #1f2937;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .edit-profile-layout {
+    flex-direction: column;
+  }
+  
+  .edit-profile-sidebar {
+    width: 100%;
+    margin-bottom: 32px;
+  }
+  
+  .sidebar-sticky {
+    position: static;
+  }
+}
+
+/* Dark Mode */
+@media (prefers-color-scheme: dark) {
+  .profile-picture-button,
+  .form-input,
+  .form-textarea {
+    background-color: #1f2937;
+    border-color: #374151;
+    color: #e5e7eb;
+  }
+  
+  .profile-picture-button:hover {
+    background-color: #111827;
+  }
+  
+  .save-profile-button {
+    background-color: #e5e7eb;
+    color: #111827;
+  }
+  
+  .save-profile-button:hover {
+    background-color: #f9fafb;
+  }
+}
