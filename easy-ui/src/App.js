@@ -2,7 +2,7 @@ import "./App.css";
 import LoginSignup from "./components/ui/LoginSignup/LoginSignup";
 import PageNotFound from "./components/ui/PageNotFound";
 import PageHome from "./pages/Home/Page-home";
-import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Buttons from "./components/ui/Buttons/Buttons"; // Ensure this path is correct
 import AddUi from "./components/ui/Develop/AddUi";
 import ShopCart from "./components/ui/ShopCart";
@@ -12,6 +12,7 @@ import Content from "./components/ui/Contents/Content";
 import PaymentCallback from "./components/payment/PaymentCallback";
 import PurchasedProducts from './components/ui/PurchasedProducts/PurchasedProducts';
 import Profile from './components/ui/Profile/Profile';
+import EditProfile from './components/ui/Profile/EditProfile';
 import ProductDetail from './components/ui/ProductDetail/ProductDetail';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -96,6 +97,14 @@ function App() {
             element={
               <PageHome>
                 <Profile />
+              </PageHome>
+            }
+          />
+          <Route
+            path="/profile/edit"
+            element={
+              <PageHome>
+                <EditProfile />
               </PageHome>
             }
           />

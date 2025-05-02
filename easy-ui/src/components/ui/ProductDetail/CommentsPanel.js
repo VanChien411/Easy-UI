@@ -7,7 +7,14 @@ import './ProductDetail.css';
 
 const CommentsPanel = ({ onClose, componentId }) => {
   // Get auth state
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
+  
+  // Log current user for debugging
+  useEffect(() => {
+    if (user) {
+      console.log('Current user in CommentsPanel:', user);
+    }
+  }, [user]);
   
   // State for direct testing and display
   const [testLoading, setTestLoading] = useState(false);
@@ -280,7 +287,7 @@ const CommentsPanel = ({ onClose, componentId }) => {
                 <div key={comment.id} className="comment-item">
                   <div className="comment-header">
                     <div className="comment-user-info">
-                      <span className="comment-author">{comment.creatorName || 'Người dùng'}</span>
+                      <span className="comment-author">{comment.creatorName || comment.userName || 'Người dùng'}</span>
                       {comment.rating && (
                         <div className="comment-rating">
                           {[...Array(5)].map((_, index) => (
@@ -293,12 +300,13 @@ const CommentsPanel = ({ onClose, componentId }) => {
                     </div>
                     <div className="comment-meta">
                       <span className="comment-date">{formatDate(comment.updatedAt || comment.createdAt)}</span>
-                      {isCommentAuthor(comment) && (
+                      {(isCommentAuthor(comment) || comment.isCurrentUserComment) && (
                         <div className="comment-actions">
                           <button 
                             className="action-button edit-button" 
                             onClick={() => handleEditComment(comment)}
                             aria-label="Chỉnh sửa bình luận"
+                            title="Chỉnh sửa bình luận"
                           >
                             <FaEdit />
                           </button>
@@ -306,6 +314,7 @@ const CommentsPanel = ({ onClose, componentId }) => {
                             className="action-button delete-button" 
                             onClick={() => handleDeleteComment(comment.id)}
                             aria-label="Xóa bình luận"
+                            title="Xóa bình luận"
                           >
                             <FaTrash />
                           </button>

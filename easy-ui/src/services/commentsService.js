@@ -39,6 +39,29 @@ export const fetchComments = async (componentId) => {
                         (comment.user && (comment.user.name || comment.user.userName)) ||
                         'Người dùng';
       
+      // Get the user token to check current user
+      let currentUserId = null;
+      try {
+        const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
+        if (token) {
+          // Try to parse JWT token
+          const base64Url = token.split('.')[1];
+          const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+          const tokenData = JSON.parse(window.atob(base64));
+          console.log('Token data:', tokenData);
+          
+          currentUserId = tokenData.id || 
+                      tokenData.nameid || 
+                      tokenData.sub || 
+                      tokenData['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'];
+                      
+          console.log(`Current user ID from token: ${currentUserId}, comment creator ID: ${creatorId}`);
+          console.log(`Is user's comment: ${creatorId && currentUserId && creatorId.toString() === currentUserId.toString()}`);
+        }
+      } catch (error) {
+        console.error('Error parsing auth token:', error);
+      }
+      
       // Return comment with consistent user data
       return {
         ...comment,
@@ -49,7 +72,8 @@ export const fetchComments = async (componentId) => {
           ...(comment.user || {}),
           id: creatorId,
           name: creatorName
-        }
+        },
+        isCurrentUserComment: creatorId && currentUserId && creatorId.toString() === currentUserId.toString()
       };
     });
     
