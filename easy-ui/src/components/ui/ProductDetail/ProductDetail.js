@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { IoChevronBackOutline } from "react-icons/io5";
 import { FaRegHeart, FaHeart, FaShare, FaBookmark, FaRegBookmark, 
-  FaInfoCircle, FaCommentAlt, FaSpinner, FaRegCopy, FaCheck } from 'react-icons/fa';
+  FaInfoCircle, FaCommentAlt, FaSpinner, FaRegCopy, FaCheck, FaUserPlus, FaUserCheck } from 'react-icons/fa';
 // Import fetchUIComponentById to get UI component data
 import { 
   fetchUIComponentById, 
@@ -16,6 +16,11 @@ import CommentsPanel from './CommentsPanel';
 import DetailsPanel from './DetailsPanel';
 import SharePanel from './SharePanel';
 import './ProductDetail.css';
+import CartService from "../../../services/CartService";
+import { addItem } from "../../../redux/slices/cartSlice";
+import { showSuccessAlert, showErrorAlert } from "../../utils/Alert";
+import { useDispatch } from 'react-redux';
+import UserManagerService from '../../../services/usermanagerService';
 
 // Component hiển thị và copy code - Will be used later when implementing code display functionality
 // This component for displaying and copying code
@@ -180,7 +185,8 @@ ${js}
 const ProductDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user, userId } = useAuth();
+  const dispatch = useDispatch();
   
   // States for UI
   const [isFavorited, setIsFavorited] = useState(false);
@@ -189,6 +195,10 @@ const ProductDetail = () => {
   const [loading, setLoading] = useState(false);
   const [likesCount, setLikesCount] = useState(0);
   const [isLiking, setIsLiking] = useState(false);
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [isFollowingLoading, setIsFollowingLoading] = useState(false);
+  const [creatorId, setCreatorId] = useState(null);
 
   const [product, setProduct] = useState({
     id: "123",
@@ -204,41 +214,49 @@ const ProductDetail = () => {
     }
   });
   
-  // Separate function to fetch likes data to be reused
-  const fetchLikesData = useCallback(async () => {
-    if (!id) return;
+  // Check if current user is the creator - updated with more robust comparison
+  const isCurrentUserCreator = useMemo(() => {
+    // Log for debugging
+    console.log('Comparing creator:', {
+      userId,
+      creatorId,
+      user: user ? JSON.stringify(user) : 'No user'
+    });
+    
+    if (!userId || !creatorId) return false;
+    
+    // Compare using string values to ensure proper comparison
+    return String(userId) === String(creatorId);
+  }, [userId, creatorId, user]);
+
+  // Fetch follow status when component mounts
+  const fetchFollowStatus = useCallback(async () => {
+    if (!isAuthenticated || !creatorId || isCurrentUserCreator) {
+      return;
+    }
     
     try {
-      console.log('Fetching likes data for component:', id);
-      
-      // Get the like count
-      const likesData = await getComponentLikes(id);
-      console.log('Raw likes data:', likesData);
-      
-      // Make sure we have a number
-      const likesCount = typeof likesData === 'number' ? likesData : 
-                       (typeof likesData === 'object' && likesData !== null && 'count' in likesData) ? 
-                       likesData.count : 
-                       Array.isArray(likesData) ? likesData.length : 0;
-      
-      console.log('Processed likes count:', likesCount);
-      setLikesCount(likesCount);
-      
-      // Check if the current user has liked this component
-      if (isAuthenticated) {
-        const hasLiked = await checkIfUserLiked(id);
-        console.log('User has liked this component:', hasLiked);
-        setIsFavorited(hasLiked);
+      // Use the dedicated follow checking method
+      const isFollowing = await UserManagerService.isFollowingUser(creatorId);
+      // Lưu trạng thái follow vào localStorage để giữ nguyên trạng thái
+      if (isFollowing) {
+        localStorage.setItem(`follow_${creatorId}`, 'true');
+      } else {
+        localStorage.removeItem(`follow_${creatorId}`);
       }
-      
-      return likesCount;
+      setIsFollowing(!!isFollowing); // Ensure boolean value
     } catch (error) {
-      console.error('Error in fetchLikesData:', error);
-      return 0;
+      // Kiểm tra trong localStorage nếu API lỗi
+      const storedFollowState = localStorage.getItem(`follow_${creatorId}`);
+      if (storedFollowState === 'true') {
+        setIsFollowing(true);
+      } else {
+        setIsFollowing(false);
+      }
     }
-  }, [id, isAuthenticated]);
+  }, [isAuthenticated, creatorId, isCurrentUserCreator]);
 
-  // Fetch product and designer data when the component mounts
+  // Update useEffect to fetch data including follow status
   useEffect(() => {
     // Use a ref to track if the component is mounted to prevent duplicate fetches
     let isMounted = true;
@@ -261,8 +279,32 @@ const ProductDetail = () => {
             
             // If we have the component data, update our product state
             if (componentData) {
-              // Extract the author name from the component data
-              const authorName = componentData.authorName || "Unknown Author";
+              // Extract the creator information from the component data
+              const creator = componentData.creator || {};
+              const authorName = creator.fullName || creator.userName || "Unknown Author";
+              const authorAvatar = creator.avatar || "/placeholder.svg?height=40&width=40";
+              
+              // Store the creator ID for follow functionality - ensure it's a string for comparison
+              const extractedCreatorId = creator.id || null;
+              setCreatorId(extractedCreatorId);
+              
+              // Multiple possible locations for isFollowedByCurrentUser
+              let followStatus = false;
+              
+              if (creator.hasOwnProperty('isFollowedByCurrentUser')) {
+                followStatus = creator.isFollowedByCurrentUser;
+              } else if (componentData.hasOwnProperty('isFollowedByCurrentUser')) {
+                followStatus = componentData.isFollowedByCurrentUser;
+              } else if (componentData.hasOwnProperty('isFollowing')) {
+                followStatus = componentData.isFollowing;
+              } else if (creator.hasOwnProperty('isFollowing')) {
+                followStatus = creator.isFollowing;
+              }
+              
+              // Set the follow status if found
+              if (typeof followStatus === 'boolean') {
+                setIsFollowing(followStatus);
+              }
               
               // Update the product with data from API
               setProduct({
@@ -274,19 +316,17 @@ const ProductDetail = () => {
                 html: componentData.html || "",
                 css: componentData.css || "",
                 js: componentData.js || "",
+                price: componentData.price || 0,
                 designer: {
                   name: "Design Studio",
-                  // Format as "Design Studio for [authorName]"
+                  // Format with the creator's name
                   company: `${authorName}`,
-                  avatar: "/placeholder.svg?height=40&width=40",
+                  avatar: authorAvatar,
                   available: true
                 }
               });
-              
-              console.log("Loaded UI component data:", componentData);
             }
           } catch (error) {
-            console.error("Error fetching UI component data:", error);
             // Keep using the default product data if there's an error
           }
           
@@ -324,7 +364,6 @@ const ProductDetail = () => {
           hasLoaded = true;
         }
       } catch (error) {
-        console.error("Error in fetchData:", error);
         if (isMounted) {
           setLoading(false);
         }
@@ -337,8 +376,89 @@ const ProductDetail = () => {
     return () => {
       isMounted = false;
     };
-  }, [id, isAuthenticated]); // Remove fetchLikesData from dependencies
-  
+  }, [id, isAuthenticated, userId]);
+
+  // Explicitly fetch follow status if we didn't get it from component data
+  useEffect(() => {
+    if (creatorId && !isCurrentUserCreator && isAuthenticated) {
+      console.log("Fetching follow status separately for creator:", creatorId);
+      fetchFollowStatus();
+    }
+  }, [creatorId, isCurrentUserCreator, isAuthenticated, fetchFollowStatus]);
+
+  // Separate function to fetch likes data to be reused
+  const fetchLikesData = useCallback(async () => {
+    if (!id) return;
+    
+    try {
+      console.log('Fetching likes data for component:', id);
+      
+      // Get the like count
+      const likesData = await getComponentLikes(id);
+      console.log('Raw likes data:', likesData);
+      
+      // Make sure we have a number
+      const likesCount = typeof likesData === 'number' ? likesData : 
+                       (typeof likesData === 'object' && likesData !== null && 'count' in likesData) ? 
+                       likesData.count : 
+                       Array.isArray(likesData) ? likesData.length : 0;
+      
+      console.log('Processed likes count:', likesCount);
+      setLikesCount(likesCount);
+      
+      // Check if the current user has liked this component
+      if (isAuthenticated) {
+        const hasLiked = await checkIfUserLiked(id);
+        console.log('User has liked this component:', hasLiked);
+        setIsFavorited(hasLiked);
+      }
+      
+      return likesCount;
+    } catch (error) {
+      console.error('Error in fetchLikesData:', error);
+      return 0;
+    }
+  }, [id, isAuthenticated]);
+
+  // Handle follow/unfollow actions
+  const handleFollowUser = async () => {
+    if (!isAuthenticated) {
+      alert("Please login to follow this user!");
+      return;
+    }
+    
+    if (!creatorId || isCurrentUserCreator) return;
+    
+    setIsFollowingLoading(true);
+    try {
+      if (isFollowing) {
+        await UserManagerService.unfollowUser(creatorId);
+        localStorage.removeItem(`follow_${creatorId}`);
+        setIsFollowing(false);
+        showSuccessAlert("Unfollowed successfully!");
+      } else {
+        await UserManagerService.followUser(creatorId);
+        localStorage.setItem(`follow_${creatorId}`, 'true');
+        setIsFollowing(true);
+        showSuccessAlert("Following successfully!");
+      }
+    } catch (error) {
+      showErrorAlert(error.message || "Failed to update follow status!");
+    } finally {
+      setIsFollowingLoading(false);
+    }
+  };
+
+  // Kiểm tra trạng thái từ localStorage khi component mount
+  useEffect(() => {
+    if (creatorId && !isCurrentUserCreator && isAuthenticated) {
+      const storedFollowState = localStorage.getItem(`follow_${creatorId}`);
+      if (storedFollowState === 'true') {
+        setIsFollowing(true);
+      }
+    }
+  }, [creatorId, isCurrentUserCreator, isAuthenticated]);
+
   // Sample related products
   const moreByDesigner = [
     {
@@ -464,6 +584,37 @@ const ProductDetail = () => {
 
   const [showCodeModal, setShowCodeModal] = useState(false);
 
+  // Add a handler for adding to cart
+  const handleAddToCart = async () => {
+    if (!id) return;
+    
+    setIsAddingToCart(true);
+    try {
+      await CartService.addToCart({ uiComponentId: id, quantity: 1 });
+      dispatch(addItem({ 
+        uiComponentId: id, 
+        name: product.title, 
+        price: product.price || 0,
+        quantity: 1 
+      }));
+      showSuccessAlert("Added to cart successfully!");
+    } catch (error) {
+      showErrorAlert(error.message || "Failed to add item to cart!");
+    } finally {
+      setIsAddingToCart(false);
+    }
+  };
+
+  // Debugging effect to log user and creator information
+  useEffect(() => {
+    console.log("Current user/creator status:", { 
+      userId, 
+      creatorId, 
+      isCurrentUserCreator,
+      user: user ? `ID: ${user.id || 'unknown'}` : 'No user' 
+    });
+  }, [userId, creatorId, isCurrentUserCreator, user]);
+
   // Show loading spinner while data is being fetched
   if (loading) {
     return (
@@ -508,7 +659,27 @@ const ProductDetail = () => {
                 </div>
                 <div className="designer-status">
                   <span className="availability">Available for work</span>
-                  <button className="follow-button">Follow</button>
+                  {!isCurrentUserCreator && creatorId && isAuthenticated && (
+                    <button 
+                      className={`follow-button ${isFollowing ? 'following' : ''}`}
+                      onClick={handleFollowUser}
+                      disabled={isFollowingLoading}
+                    >
+                      {isFollowingLoading ? (
+                        <FaSpinner className="spin-icon" />
+                      ) : isFollowing ? (
+                        <>
+                          <FaUserCheck />
+                          <span>Following</span>
+                        </>
+                      ) : (
+                        <>
+                          <FaUserPlus />
+                          <span>Follow</span>
+                        </>
+                      )}
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
@@ -530,12 +701,23 @@ const ProductDetail = () => {
               >
                 {isBookmarked ? <FaBookmark /> : <FaRegBookmark />}
               </button>
-              <button 
-                className="contact-button"
-                onClick={handleGetInTouch}
-              >
-                Get in touch
-              </button>
+              
+              {product.price > 0 ? (
+                <button 
+                  className="add-to-cart-button"
+                  onClick={handleAddToCart}
+                  disabled={isAddingToCart}
+                >
+                  {isAddingToCart ? "Adding..." : "Add to Cart"}
+                </button>
+              ) : (
+                <button 
+                  className="contact-button"
+                  onClick={handleGetInTouch}
+                >
+                  Get in touch
+                </button>
+              )}
             </div>
           </div>
 

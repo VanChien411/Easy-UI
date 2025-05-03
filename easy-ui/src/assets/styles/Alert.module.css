@@ -7,13 +7,16 @@
 
 .toast {
   margin-bottom: 15px;
-  border-radius: 5px;
+  border-radius: 12px;
   background: #fff;
   padding: 20px 35px 20px 25px;
-  box-shadow: 0 6px 20px -5px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
   overflow: hidden;
   transform: translateX(calc(100% + 30px));
   transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.35);
+  min-width: 300px;
+  max-width: 450px;
+  border-left: 4px solid #4070f4;
 }
 
 .toast.active {
@@ -33,7 +36,7 @@
   min-width: 35px;
   background-color: #4070f4;
   color: #fff;
-  font-size: 20px;
+  font-size: 18px;
   border-radius: 50%;
 }
 
@@ -52,6 +55,8 @@
 .message .text.text-1 {
   font-weight: 600;
   color: #333;
+  font-size: 18px;
+  margin-bottom: 5px;
 }
 
 .toast .close {
@@ -61,19 +66,23 @@
   padding: 5px;
   cursor: pointer;
   opacity: 0.7;
-  color: black;
+  color: #777;
+  font-size: 16px;
+  transition: all 0.2s ease;
 }
 
 .toast .close:hover {
   opacity: 1;
+  color: #333;
 }
 
 .toast .progress {
   position: absolute;
   bottom: 0;
   left: 0;
-  height: 3px;
+  height: 4px;
   width: 100%;
+  background: rgba(0, 0, 0, 0.05);
 }
 
 .toast .progress:before {
@@ -87,7 +96,7 @@
 }
 
 .progress.active:before {
-  animation: progress 2.5s linear forwards;
+  animation: progress 5s linear forwards;
 }
 
 @keyframes progress {
@@ -99,24 +108,41 @@
   }
 }
 
+/* Success toast */
+.toast.success {
+  border-left-color: #28a745;
+}
+
 .toast.success .check {
   background-color: #28a745;
+}
+
+.toast.success .progress:before {
+  background-color: #28a745;
+}
+
+/* Error toast */
+.toast.error {
+  border-left-color: #dc3545;
 }
 
 .toast.error .check {
   background-color: #dc3545;
 }
 
+.toast.error .progress:before {
+  background-color: #dc3545;
+}
+
+/* Warning toast */
+.toast.warning {
+  border-left-color: #ffc107;
+}
+
 .toast.warning .check {
   background-color: #ffc107;
 }
 
-.toast.success .progress:before {
-    background-color: green;
-}
-.toast.error .progress:before {
-    background-color: red;
-}
 .toast.warning .progress:before {
-    background-color: yellow;
+  background-color: #ffc107;
 }

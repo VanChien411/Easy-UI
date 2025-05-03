@@ -157,3 +157,29 @@
     border-color: #4b5563;
   }
 }
+
+.profile-dropdown-stats {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 6px 0;
+  font-size: 12px;
+  color: var(--text-secondary-color, #666);
+  flex-wrap: wrap;
+}
+
+.profile-dropdown-stats-icon {
+  color: var(--text-secondary-color, #666);
+  margin-right: 2px;
+}
+
+.profile-dropdown-stat {
+  display: flex;
+  align-items: center;
+  margin-right: 8px;
+}
+
+.profile-dropdown-stat strong {
+  margin-right: 4px;
+  color: var(--text-primary-color, #333);
+}

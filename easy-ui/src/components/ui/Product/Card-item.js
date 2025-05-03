@@ -3,9 +3,9 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from 'react-router-dom';
 import { addItem } from "../../../redux/slices/cartSlice";
 import AddUi from "../Develop/AddUi";
-import { showAlert } from "../../utils/Alert";
+import { showAlert, showSuccessAlert, showErrorAlert } from "../../utils/Alert";
 import CartService from "../../../services/CartService";
-import { isFreeProduct } from "../../../services/uiComponentsService";
+import { isFreeProduct, getComponentLikes, checkIfUserLiked, likeComponent, unlikeComponent } from "../../../services/uiComponentsService";
 
 function CardItem({
   item,
@@ -13,10 +13,13 @@ function CardItem({
   onExpand,
 }) {
   const cardRef = useRef(null);
-  const { name, html, css, js, id: uiComponentId, price } = item || {};
+  const { name, html, css, js, id: uiComponentId, price, createdBy, previewImage, views, likesCount: initialLikesCount, isLikedByCurrentUser } = item || {};
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [isBuying, setIsBuying] = useState(false);
+  const [isLiked, setIsLiked] = useState(isLikedByCurrentUser || false);
+  const [likesCount, setLikesCount] = useState(initialLikesCount || 0);
+  const [isHovered, setIsHovered] = useState(false);
   
   // Handle click outside to close expanded card
   useEffect(() => {
@@ -29,6 +32,11 @@ function CardItem({
     // Add event listener when card is expanded
     if (isExpanded) {
       document.addEventListener("mousedown", handleClickOutside);
+      // Prevent body scrolling when modal is open
+      document.body.style.overflow = "hidden";
+    } else {
+      // Restore body scrolling
+      document.body.style.overflow = "auto";
     }
     
     // Clean up the event listener
@@ -37,24 +45,26 @@ function CardItem({
     };
   }, [isExpanded, onExpand]);
   
-  const isFree = !price || price === 0;
-
-  const iframeContent = `
-    <style>
-      body {
-        margin: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 200px;
-        background-color: white;
-        color: black;
+  // Only fetch likes if not provided from API
+  useEffect(() => {
+    const fetchLikesData = async () => {
+      if (uiComponentId && (initialLikesCount === undefined || isLikedByCurrentUser === undefined)) {
+        try {
+          const likes = await getComponentLikes(uiComponentId);
+          setLikesCount(likes);
+          
+          const userLiked = await checkIfUserLiked(uiComponentId);
+          setIsLiked(userLiked);
+        } catch (error) {
+          console.error("Error fetching likes data:", error);
+        }
       }
-      ${css}
-    </style>
-    ${html}
-    <script>${js}</script>
-  `;
+    };
+    
+    fetchLikesData();
+  }, [uiComponentId, initialLikesCount, isLikedByCurrentUser]);
+  
+  const isFree = !price || price === 0;
 
   const handleAction = async () => {
     if (isFree) {
@@ -71,86 +81,134 @@ function CardItem({
         price: price || 0,
         quantity: 1 
       }));
-      showAlert({
-        title: "Success",
-        message: "Added to cart successfully!",
-        type: "success",
-      });
+      showSuccessAlert("Added to cart successfully!");
     } catch (error) {
-      showAlert({
-        title: "Error",
-        message: error.message || "Failed to add item to cart!",
-        type: "error",
-      });
+      showErrorAlert(error.message || "Failed to add item to cart!");
     } finally {
       setIsBuying(false);
     }
   };
 
+  const handleLikeToggle = async (e) => {
+    e.stopPropagation();
+    try {
+      if (isLiked) {
+        await unlikeComponent(uiComponentId);
+        setLikesCount(prev => Math.max(0, prev - 1));
+      } else {
+        await likeComponent(uiComponentId);
+        setLikesCount(prev => prev + 1);
+      }
+      setIsLiked(!isLiked);
+    } catch (error) {
+      console.error("Error toggling like:", error);
+    }
+  };
+
+  const handleImageClick = (e) => {
+    e.stopPropagation();
+    navigate(`/product/${uiComponentId}`);
+  };
+
+  const handleCardClick = () => {
+    if (!isExpanded) {
+      onExpand();
+    }
+  };
+
+  const handleUserProfileClick = (e) => {
+    e.stopPropagation();
+    if (createdBy?.id) {
+      navigate(`/profile/${createdBy.id}`);
+    }
+  };
+
   return (
     <>
-      <div ref={cardRef} className={`card ${isExpanded ? "expanded" : ""}`}>
-        {/* Preview Area */}
-        <div className="row">
-          {isExpanded ? (
-            <AddUi
-              html={html}
-              css={css}
-              js={js}
-              name={name}
-              isEdit={false}
-            />
-          ) : (
-            <div className="card-preview">
-              <iframe
-                srcDoc={iframeContent}
-                title="Preview"
-                sandbox="allow-scripts allow-same-origin"
-                style={{ border: "none", width: "100%", height: "220px" }}
-              />
-              <div className="icon-expand" onClick={onExpand}>
-                <i className="fa-solid fa-up-right-and-down-left-from-center" />
+      <div 
+        ref={cardRef} 
+        className={`card ${isExpanded ? "expanded" : ""} group`}
+        onClick={handleCardClick}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
+        {isExpanded ? (
+          <AddUi
+            html={html}
+            css={css}
+            js={js}
+            name={name}
+            isEdit={false}
+          />
+        ) : (
+          <>
+            {/* Preview Image with hover effect */}
+            <div className="card-preview" onClick={handleImageClick}>
+              {previewImage ? (
+                <img 
+                  src={previewImage} 
+                  alt={name || "UI Component"} 
+                  className="preview-image"
+                />
+              ) : (
+                <div className="preview-placeholder">
+                  <span>{name || html || "UI Component"}</span>
+                </div>
+              )}
+              <div className="preview-overlay"></div>
+            </div>
+
+            {/* Like button (visible on hover) */}
+            <div className={`like-button-container ${isHovered ? 'visible' : ''}`}>
+              <button 
+                className={`like-button ${isLiked ? 'liked' : ''}`}
+                onClick={handleLikeToggle}
+              >
+                <i className={`fa${isLiked ? 's' : 'r'} fa-heart`}></i>
+              </button>
+            </div>
+
+            {/* Component info and stats */}
+            <div className="component-info">
+              <div className="component-author" onClick={handleUserProfileClick}>
+                <div className="author-avatar">
+                  {createdBy?.avatar ? (
+                    <img 
+                      src={createdBy.avatar} 
+                      alt={createdBy.name || createdBy.fullName || 'Designer'} 
+                      className="avatar-img"
+                    />
+                  ) : (
+                    <i className="fas fa-user"></i>
+                  )}
+                </div>
+                <span className="author-name">
+                  {createdBy?.name || createdBy?.fullName || createdBy?.userName || 'Designer'}
+                </span>
+              </div>
+
+              <div className="component-stats">
+                <div className="stat-item">
+                  <i className="far fa-heart"></i>
+                  <span>{likesCount}</span>
+                </div>
+                <div className="stat-item">
+                  <i className="far fa-eye"></i>
+                  <span>{views || 0}</span>
+                </div>
               </div>
             </div>
-          )}
-        </div>
 
-        {/* Footer with buttons */}
-        <div className="button-container">
-          <div className="button-hashtags">
-            {html && <button className="button-hashtag button-html">Html</button>}
-            {js && <button className="button-hashtag button-js">JS</button>}
-            {css && <button className="button-hashtag button-css">CSS</button>}
-          </div>
-          <div className="button-buy">
-            <button
-              className={`button-hashtag ${isFree ? 'view-detail' : 'buy'}`}
-              onClick={handleAction}
-              disabled={isBuying}
-            >
-              {isBuying ? (
-                <i className="fa fa-spinner fa-spin"></i>
-              ) : isFree ? (
-                <>
-                  <i className="fas fa-eye"></i> View
-                </>
+            {/* Price Tag (positioned absolutely) */}
+            <div className="price-tag">
+              {isFree ? (
+                <span className="free-label">Free</span>
               ) : (
-                <>
-                  <i className="fas fa-shopping-cart"></i> Buy
-                </>
+                <span className="price-label">${Number(price).toFixed(2)}</span>
               )}
-            </button>
-          </div>
-        </div>
-        
-        {/* Price Tag */}
-        <div className="price-tag">
-          {isFree ? (
-            <span className="free-label">Free</span>
-          ) : (
-            <span className="price-label">${Number(price).toFixed(2)}</span>
-          )}
-        </div>
+            </div>
+          </>
+        )}
       </div>
     </>
   );

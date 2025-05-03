@@ -100,10 +100,34 @@
   border: none;
   color: #4b5563;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
 }
 
 .follow-button:hover {
   color: #111827;
+  background-color: rgba(75, 85, 99, 0.1);
+}
+
+.follow-button.following {
+  color: var(--button-html-color, #6c4f94);
+}
+
+.follow-button.following:hover {
+  background-color: rgba(108, 79, 148, 0.1);
+}
+
+.follow-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.spin-icon {
+  animation: spin 1s linear infinite;
 }
 
 .action-buttons {
@@ -164,6 +188,30 @@
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
+}
+
+.add-to-cart-button {
+  background-color: #10b981;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 9999px;
+  border: none;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+}
+
+.add-to-cart-button:hover {
+  background-color: #059669;
+}
+
+.add-to-cart-button:disabled {
+  background-color: #d1d5db;
+  cursor: not-allowed;
 }
 
 .product-main-content {

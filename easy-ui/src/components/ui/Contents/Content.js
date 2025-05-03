@@ -8,31 +8,79 @@ import "./Content.css";
 function Content() {
   const [contentData, setContentData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [activeCategory, setActiveCategory] = useState('All Components');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [totalPages, setTotalPages] = useState(1);
+  const pageSize = 16;
+
+  const loadContents = async (page = 1, shouldAppend = false) => {
+    try {
+      if (page === 1) {
+        setIsLoading(true);
+      } else {
+        setIsLoadingMore(true);
+      }
+      
+      const response = await fetchUIComponentsAll(page, pageSize);
+      
+      // Debug the API response
+      console.log('Content API Response:', response);
+      
+      // Check if we have the new paginated response structure
+      const components = response.items || response;
+      
+      // Debug the components data
+      if (components && components.length > 0) {
+        console.log('First content component:', components[0]);
+        console.log('previewImage:', components[0].previewImage);
+        console.log('views:', components[0].views);
+      }
+      
+      // Update pagination info
+      if (response.totalPages !== undefined) {
+        setTotalPages(response.totalPages);
+        setHasMore(page < response.totalPages);
+      } else {
+        // If response is empty or less than pageSize, we've reached the end
+        setHasMore(!components || components.length === 0 || components.length < pageSize ? false : true);
+      }
+      
+      const mappedComponents = components.map(component => {
+        const mappedComponent = UIComponent.fromJson(component);
+        console.log('Mapped content component:', mappedComponent);
+        return mappedComponent;
+      });
+      
+      if (shouldAppend) {
+        setContentData(prevData => [...prevData, ...mappedComponents]);
+      } else {
+        setContentData(mappedComponents);
+      }
+    } catch (error) {
+      console.error("Error loading Contents:", error.message);
+    } finally {
+      setIsLoading(false);
+      setIsLoadingMore(false);
+    }
+  };
 
   useEffect(() => {
-    const loadContents = async () => {
-      try {
-        setIsLoading(true);
-        const components = await fetchUIComponentsAll();
-        setContentData(
-          components.map((component) => UIComponent.fromJson(component))
-        );
-      } catch (error) {
-        console.error("Error loading Contents:", error.message);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    loadContents();
+    loadContents(1, false);
   }, []);
+
+  const handleLoadMore = () => {
+    const nextPage = currentPage + 1;
+    setCurrentPage(nextPage);
+    loadContents(nextPage, true);
+  };
 
   if (isLoading) {
     return (
       <div className="content-container">
         <div className="skeleton-grid">
-          {[...Array(12)].map((_, index) => (
+          {[...Array(16)].map((_, index) => (
             <Skeleton key={index} />
           ))}
         </div>
@@ -72,6 +120,21 @@ function Content() {
       </div>
       
       <ListItem items={contentData} />
+      
+      {isLoadingMore && (
+        <div className="loading-more-container">
+          <div className="loading-spinner"></div>
+          <p>Loading more components...</p>
+        </div>
+      )}
+      
+      {hasMore && !isLoadingMore && (
+        <div className="load-more-container">
+          <button className="load-more-button" onClick={handleLoadMore}>
+            Load More
+          </button>
+        </div>
+      )}
     </div>
   );
 }

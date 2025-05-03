@@ -1,0 +1,52 @@
+.card {
+  border: 1px solid var(--border-color, rgba(0, 0, 0, 0.08));
+  padding: 0;
+  width: 100%; /* Ensure card takes full width of its grid cell */
+  height: 100%; /* Ensure consistent height */
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border-radius: 8px;
+  background-color: var(--card-background, #fff);
+  min-height: 200px;
+  position: relative;
+  transform-origin: center;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  color: var(--card-text-color, #333);
+} 
+
+.component-author {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.component-author:hover {
+  opacity: 0.8;
+}
+
+.author-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  margin-right: 8px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #e5e7eb;
+  color: #6b7280;
+  font-size: 12px;
+}
+
+.author-name {
+  font-size: 0.875rem;
+  color: var(--text-secondary, #6b7280);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 120px;
+} 

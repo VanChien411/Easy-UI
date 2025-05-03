@@ -108,8 +108,6 @@ function Navbar() {
     navigate('/LoginSignup/login');
   };
 
-
-
   // handleDevelopToggle handles opening/closing the Develop dropdown
   const handleDevelopToggle = (e) => {
     e.preventDefault();
@@ -279,11 +277,11 @@ function Navbar() {
               </div>
             )}
             
-            {/* Mobile menu button */}
+            {/* Mobile menu button - Only visible on small screens */}
             <i 
-              className="fa fa-bars menu-icon md:hidden" 
+              className="fa fa-bars menu-icon md:hidden d-none" 
               onClick={handleMenuToggle}
-              style={{ fontSize: '24px' }}
+              style={{ fontSize: '24px', display: 'none' }}
             ></i>
           </div>
         </nav>

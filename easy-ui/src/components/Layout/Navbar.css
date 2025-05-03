@@ -2,11 +2,12 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 0;
+  padding: 16px 70px; /* Match footer padding (70px) */
   background-color: var(--background-color-rgba); /* Use the theme background color */
   position: relative;
   width: 100%;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  box-sizing: border-box;
 }
 
 .navbar-logo {
@@ -430,10 +431,10 @@
 
 /* Header wrapper for better spacing */
 .header-wrapper {
-  max-width: 100%;
-  margin: 0 auto;
-  padding: 0 24px;
   width: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 /* Theme toggle */
@@ -560,5 +561,17 @@
     font-size: 24px;
     color: #6e6d7a;
     cursor: pointer;
+  }
+}
+
+/* Hide the mobile menu icon in desktop view */
+.menu-icon {
+  display: none !important;
+}
+
+/* Only show mobile menu on small screens */
+@media screen and (max-width: 768px) {
+  .menu-icon {
+    display: block !important;
   }
 }

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import "../../../assets/styles/Develop/AddUi.css";
 import { saveUIComponent } from '../../../services/uiComponentsService';
 import { fetchCategories } from "../../../services/categoriesService";
-import { showAlert } from "../../utils/Alert";
+import { showAlert, showErrorAlert, showSuccessAlert, showWarningAlert } from "../../utils/Alert";
 import Spinner from "../../utils/Spinner";
 import MonacoEditor from "@monaco-editor/react";
 import apiClient from "../../../config/axios";
@@ -33,11 +33,7 @@ function AddUi({
         const data = await fetchCategories();
         setCategories(data);
       } catch (error) {
-        showAlert({
-          title: "Error",
-          message: "Failed to load categories",
-          type: "error",
-        });
+        showErrorAlert("Failed to load categories");
       }
     };
     loadCategories();
@@ -126,21 +122,13 @@ function AddUi({
       `;
       iframe.srcdoc = documentContent;
       setIsPreviewing(false);
-      showAlert({
-        title: "Success",
-        message: "Preview updated",
-        type: "success",
-      });
+      showSuccessAlert("Preview updated");
     }, 500);
   };
 
   const handleSave = async () => {
     if (!selectedCategory) {
-      showAlert({
-        title: "Error",
-        message: "Please enter select a category",
-        type: "error",
-      });
+      showErrorAlert("Please enter select a category");
       return;
     }
 
@@ -166,17 +154,9 @@ function AddUi({
         componentIds: [savedComponent.id],
       });
 
-      showAlert({
-        title: "Success",
-        message: "UI Component saved successfully!",
-        type: "success",
-      });
+      showSuccessAlert("UI Component saved successfully!");
     } catch (error) {
-      showAlert({
-        title: "Error",
-        message: "Failed to save UI Component!",
-        type: "error",
-      });
+      showErrorAlert("Failed to save UI Component!");
       console.error(error);
     } finally {
       setIsSaving(false);

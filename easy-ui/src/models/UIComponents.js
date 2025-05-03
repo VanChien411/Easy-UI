@@ -6,7 +6,7 @@ export default class UIComponent {
     html,
     css = null,
     js = null,
-    previewUrl = null,
+    previewImage = null,
     type = null,
     framework = null,
     price = 0,
@@ -14,7 +14,10 @@ export default class UIComponent {
     createdAt,
     updatedAt,
     updatedBy = null,
-    isActive = true
+    isActive = true,
+    views = 0,
+    likesCount = 0,
+    isLikedByCurrentUser = false
   ) {
     this.id = id;
     this.name = name;
@@ -22,7 +25,7 @@ export default class UIComponent {
     this.html = html;
     this.css = css;
     this.js = js;
-    this.previewUrl = previewUrl;
+    this.previewImage = previewImage;
     this.type = type;
     this.framework = framework;
     this.price = price;
@@ -31,6 +34,9 @@ export default class UIComponent {
     this.updatedAt = updatedAt;
     this.updatedBy = updatedBy;
     this.isActive = isActive;
+    this.views = views;
+    this.likesCount = likesCount;
+    this.isLikedByCurrentUser = isLikedByCurrentUser;
   }
 
   static fromJson(json) {
@@ -41,15 +47,18 @@ export default class UIComponent {
       json.html,
       json.css,
       json.js,
-      json.previewUrl,
+      json.previewImage,
       json.type,
       json.framework,
       json.price,
-      json.createdBy,
+      json.createdBy || json.creator,
       json.createdAt,
       json.updatedAt,
       json.updatedBy,
-      json.isActive
+      json.isActive,
+      json.views || 0,
+      json.likesCount || 0,
+      json.isLikedByCurrentUser || false
     );
   }
 
@@ -61,15 +70,18 @@ export default class UIComponent {
       json.html,
       json.css,
       json.js,
-      json.previewUrl,
+      json.previewImage,
       json.type,
       json.framework,
       json.price,
-      json.createdBy,
-      null, // createdAt
-      null, // updatedAt
+      json.createdBy || json.creator,
+      null,
+      null,
       json.updatedBy,
-      true // isActive
+      true,
+      json.views || 0,
+      json.likesCount || 0,
+      json.isLikedByCurrentUser || false
     );
   }
 }

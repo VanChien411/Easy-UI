@@ -1,20 +1,46 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FaUser, FaHeart, FaBookmark, FaUpload, FaCog, FaSignOutAlt } from "react-icons/fa";
+import { FaUser, FaHeart, FaBookmark, FaUpload, FaCog, FaSignOutAlt, FaUserFriends } from "react-icons/fa";
 import useAuth from "../../../hooks/useAuth";
+import UserManagerService from "../../../services/usermanagerService";
 import "./ProfileDropdown.css";
 
 const ProfileDropdown = () => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
+  const { user, logout, userId, isAuthenticated } = useAuth();
+  const [profileData, setProfileData] = useState({
+    followersCount: 0,
+    followingCount: 0
+  });
 
   // Default user data in case auth data is not available
   const userData = {
     name: user?.name || user?.userName || "User",
     avatar: user?.avatar || "/placeholder.svg?height=100&width=100",
   };
+
+  // Fetch user profile data when component mounts
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      if (isAuthenticated && userId) {
+        try {
+          const userProfile = await UserManagerService.getUserProfile(userId);
+          setProfileData({
+            followersCount: userProfile.followersCount || 0,
+            followingCount: userProfile.followingCount || 0
+          });
+        } catch (error) {
+          console.error("Error fetching user profile:", error);
+        }
+      }
+    };
+
+    if (isOpen) {
+      fetchUserProfile();
+    }
+  }, [isAuthenticated, userId, isOpen]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -64,6 +90,14 @@ const ProfileDropdown = () => {
               </div>
               <div className="profile-dropdown-user-info">
                 <div className="profile-dropdown-name">{userData.name}</div>
+                <div className="profile-dropdown-stats">
+                  <span className="profile-dropdown-stat">
+                    <strong>{profileData.followersCount}</strong> Followers
+                  </span>
+                  <span className="profile-dropdown-stat">
+                    <strong>{profileData.followingCount}</strong> Following
+                  </span>
+                </div>
                 <Link to="/profile" className="profile-dropdown-view-profile" onClick={() => setIsOpen(false)}>
                   View Profile
                 </Link>

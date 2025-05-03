@@ -20,7 +20,7 @@ function Alert() {
           className={`${styles.toast} ${styles[alert.type]} ${styles.active}`}
         >
           <div className={styles["toast-content"]}>
-            <i className={`fas ${alert.icon} ${styles.check}`}></i>
+            <i className={`${alert.icon} ${styles.check}`}></i>
             <div className={styles.message}>
               <span className={`${styles.text} ${styles["text-1"]}`}>
                 {alert.title}
@@ -52,15 +52,40 @@ function Alert() {
 
 export function showAlert({ title, message, type = "success", icon }) {
   if (!icon) {
-    icon =
+    icon = 
       type === "warning"
-        ? "fa-solid fa-triangle-exclamation"
+        ? "fas fa-triangle-exclamation"
         : type === "error"
-        ? "fa-solid fa-circle-exclamation"
-        : "fa-check";
+        ? "fas fa-circle-exclamation"
+        : "fas fa-check";
   }
   alertQueue.push({ id: uuidv4(), title, message, type, icon }); // Use UUID for unique ID
   setAlertQueue([...alertQueue]); // Ensure setAlertQueue is always callable
+}
+
+// Standard alerts for common operations
+export function showSuccessAlert(message) {
+  showAlert({
+    title: "Success",
+    message,
+    type: "success"
+  });
+}
+
+export function showErrorAlert(message) {
+  showAlert({
+    title: "Error",
+    message,
+    type: "error"
+  });
+}
+
+export function showWarningAlert(message) {
+  showAlert({
+    title: "Warning",
+    message,
+    type: "warning"
+  });
 }
 
 export default Alert;
