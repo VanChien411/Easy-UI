@@ -4,6 +4,7 @@ import useComments from '../../../hooks/useComments';
 import useAuth from '../../../hooks/useAuth';
 import { fetchComments } from '../../../services/commentsService';
 import './ProductDetail.css';
+import { showSuccessAlert, showErrorAlert } from "../../utils/Alert";
 
 const CommentsPanel = ({ onClose, componentId }) => {
   // Get auth state
@@ -96,13 +97,6 @@ const CommentsPanel = ({ onClose, componentId }) => {
     return date.toLocaleDateString('vi-VN');
   };
 
-  // Show alert message
-  const showAlert = ({ title, message, type }) => {
-    // Simple implementation - replace with your preferred alert system
-    console.log(`[${title}]: ${message} (${type})`);
-    alert(`${title}: ${message}`);
-  };
-
   // Handle submitting a new comment
   const handleSubmitComment = async (e) => {
     e.preventDefault();
@@ -117,24 +111,29 @@ const CommentsPanel = ({ onClose, componentId }) => {
         setCommentText('');
         setRating(0);
         
-        showAlert({
-          title: 'Thành công',
-          message: 'Đã thêm bình luận thành công',
-          type: 'success'
-        });
+        // Add the comment to the display list with current user info
+        const newComment = {
+          id: result.commentId || `temp-${Date.now()}`,
+          content: commentText,
+          rating: rating || null,
+          createdAt: new Date().toISOString(),
+          creatorName: user?.fullName || user?.name || user?.userName || 'Bạn',
+          isCurrentUserComment: true
+        };
+        
+        setDisplayComments(prevComments => [newComment, ...prevComments]);
+        
+        showSuccessAlert('Đã thêm bình luận thành công');
+        
+        // Refresh comments from the server after a short delay to allow DB to update
+        setTimeout(() => {
+          testDirectApiCall();
+        }, 500);
       } else {
-        showAlert({
-          title: 'Lỗi',
-          message: result.message || 'Không thể thêm bình luận. Vui lòng thử lại sau.',
-          type: 'error'
-        });
+        showErrorAlert(result.message || 'Không thể thêm bình luận. Vui lòng thử lại sau.');
       }
     } catch (err) {
-      showAlert({
-        title: 'Lỗi',
-        message: 'Không thể thêm bình luận. Vui lòng thử lại sau.',
-        type: 'error'
-      });
+      showErrorAlert('Không thể thêm bình luận. Vui lòng thử lại sau.');
       console.error('Error adding comment:', err);
     } finally {
       setSubmitting(false);
@@ -161,24 +160,26 @@ const CommentsPanel = ({ onClose, componentId }) => {
         setEditingCommentId(null);
         setEditCommentText('');
         
-        showAlert({
-          title: 'Thành công',
-          message: 'Bình luận đã được cập nhật',
-          type: 'success'
-        });
+        // Immediately update the comment in the current display list
+        setDisplayComments(prevComments => 
+          prevComments.map(comment => 
+            comment.id === editingCommentId 
+              ? { ...comment, content: editCommentText, updatedAt: new Date().toISOString() } 
+              : comment
+          )
+        );
+        
+        showSuccessAlert('Bình luận đã được cập nhật');
+        
+        // Refresh comments from the server after a short delay to allow DB to update
+        setTimeout(() => {
+          testDirectApiCall();
+        }, 500);
       } else {
-        showAlert({
-          title: 'Lỗi',
-          message: result.message || 'Không thể cập nhật bình luận. Vui lòng thử lại sau.',
-          type: 'error'
-        });
+        showErrorAlert(result.message || 'Không thể cập nhật bình luận. Vui lòng thử lại sau.');
       }
     } catch (err) {
-      showAlert({
-        title: 'Lỗi',
-        message: 'Không thể cập nhật bình luận. Vui lòng thử lại sau.',
-        type: 'error'
-      });
+      showErrorAlert('Không thể cập nhật bình luận. Vui lòng thử lại sau.');
       console.error('Error updating comment:', err);
     } finally {
       setSubmitting(false);
@@ -200,24 +201,25 @@ const CommentsPanel = ({ onClose, componentId }) => {
         const result = await removeComment(commentId);
         
         if (result.success) {
-          showAlert({
-            title: 'Thành công',
-            message: 'Bình luận đã được xóa',
-            type: 'success'
-          });
+          // Immediately remove the comment from the display list
+          setDisplayComments(prevComments => 
+            prevComments.filter(comment => comment.id !== commentId)
+          );
+          
+          showSuccessAlert('Bình luận đã được xóa');
+          
+          // Force a re-render after a very short delay
+          setTimeout(() => {
+            // Create a new array reference to ensure React detects the change
+            setDisplayComments(prevComments => [...prevComments]);
+            // Refresh data from server
+            testDirectApiCall();
+          }, 300);
         } else {
-          showAlert({
-            title: 'Lỗi',
-            message: result.message || 'Không thể xóa bình luận. Vui lòng thử lại sau.',
-            type: 'error'
-          });
+          showErrorAlert(result.message || 'Không thể xóa bình luận. Vui lòng thử lại sau.');
         }
       } catch (err) {
-        showAlert({
-          title: 'Lỗi',
-          message: 'Không thể xóa bình luận. Vui lòng thử lại sau.',
-          type: 'error'
-        });
+        showErrorAlert('Không thể xóa bình luận. Vui lòng thử lại sau.');
         console.error('Error deleting comment:', err);
       } finally {
         setSubmitting(false);

@@ -14,8 +14,11 @@ import PurchasedProducts from './components/ui/PurchasedProducts/PurchasedProduc
 import Profile from './components/ui/Profile/Profile';
 import EditProfile from './components/ui/Profile/EditProfile';
 import ProductDetail from './components/ui/ProductDetail/ProductDetail';
+import SearchPage from './pages/Search/SearchPage';
+import { CategoryList, CategoryComponents } from './components/ui/Category';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Alert from './components/utils/Alert';
 
 function App() {
   return (
@@ -48,6 +51,30 @@ function App() {
             element={
               <PageHome>
                 <Content />
+              </PageHome>
+            }
+          />
+          <Route
+            path="/search/:keyword"
+            element={
+              <PageHome>
+                <SearchPage />
+              </PageHome>
+            }
+          />
+          <Route
+            path="/categories"
+            element={
+              <PageHome>
+                <CategoryList />
+              </PageHome>
+            }
+          />
+          <Route
+            path="/category/:categoryId"
+            element={
+              <PageHome>
+                <CategoryComponents />
               </PageHome>
             }
           />
@@ -109,6 +136,14 @@ function App() {
             }
           />
           <Route
+            path="/profile/:id"
+            element={
+              <PageHome>
+                <Profile />
+              </PageHome>
+            }
+          />
+          <Route
             path="/product/:id"
             element={
               <PageHome>
@@ -120,6 +155,7 @@ function App() {
         </Routes>
       </Router>
       <ToastContainer />
+      <Alert />
     </div>
   );
 }

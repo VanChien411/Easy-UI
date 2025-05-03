@@ -20,16 +20,18 @@
 html, body {
   height: 100%;
   width: 100%;
-  margin: 0;  /* Đảm bảo không có margin mặc định */
+  margin: 0;
   color: var(--text-color);
-  background: var(--background-color); /* Use CSS variable for background color */
+  background: var(--background-color);
   overflow-y: auto;
-  overflow-x: hidden;  /* Ẩn thanh cuộn ngang nếu không cần thiết */
+  overflow-x: hidden;
 }
+
 .App {
   text-align: center;
-  height: 80vh;
+  min-height: 100vh;
   width: 100%;
+  box-sizing: border-box;
 }
 
 main {
@@ -37,8 +39,9 @@ main {
   flex-direction: column;
   min-height: 100vh;
   width: 100%;
-  position: relative; /* Ensure main content is positioned relative */
+  position: relative;
   overflow-x: hidden;
+  box-sizing: border-box;
 }
 
 /* Full-width layout when sidebar is hidden */
@@ -57,8 +60,7 @@ header {
 }
 article { 
   width: 100%;
-  padding: 8px; /* Thêm khoảng cách bên trong content */
-  max-width: 1200px;
+  padding: 0;
   margin: 0 auto;
   flex: 1; /* Allow article to grow and fill available space */
 }
@@ -280,7 +282,36 @@ ul {
  
 }
 
+/* Tab container styling */
+.tab-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0 70px;
+  box-sizing: border-box;
+  background-color: var(--background-color-rgba);
+}
 
+.tab-items {
+  display: flex;
+  width: 100%;
+  overflow-x: auto;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tab-item {
+  color: var(--text-color);
+  padding: 15px 20px;
+  text-decoration: none;
+  font-size: 15px;
+  position: relative;
+  display: block;
+  white-space: nowrap;
+  cursor: pointer;
+  background: none;
+  border: none;
+}
 
 /* Bỏ phần footer đi */
   
@@ -338,6 +369,8 @@ ul {
   padding: 3px 70px;
   text-align: center;
   border-top: 1px solid var(--card-border-color);
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .footer-content {

@@ -1,6 +1,6 @@
 .hero-section {
   width: 100%;
-  padding: 40px 0;
+  padding: 40px 0 0;
   text-align: center;
   background-color: var(--background-color-rgba);
   margin: 0;
@@ -11,12 +11,13 @@
 }
 
 .hero-content {
-  max-width: 800px;
+  width: 100%;
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 0 70px; /* Match footer padding (70px) */
   display: flex;
   flex-direction: column;
   align-items: center;
+  box-sizing: border-box;
 }
 
 .hero-title {
@@ -46,7 +47,7 @@
 
 .hero-search-form {
   width: 100%;
-  max-width: 450px;
+  max-width: 800px;
   margin: 0;
 }
 
@@ -102,6 +103,8 @@
   gap: 10px;
   margin-bottom: 30px;
   width: 100%;
+  padding: 0 70px;
+  box-sizing: border-box;
 }
 
 .trending-label {

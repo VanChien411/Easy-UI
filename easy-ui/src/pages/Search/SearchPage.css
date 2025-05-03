@@ -1,0 +1,11 @@
+.search-page {
+  width: 100%;
+  min-height: 75vh;
+  background-color: var(--background-color-rgba);
+}
+
+.search-page article {
+  width: 100%;
+  padding: 0;
+  margin: 0 auto;
+} 

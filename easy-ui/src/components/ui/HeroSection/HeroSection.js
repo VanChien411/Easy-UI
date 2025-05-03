@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './HeroSection.css';
+import SearchBar from '../Search/SearchBar';
 
 function HeroSection() {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
 
   const trendingSearches = [
@@ -13,14 +16,8 @@ function HeroSection() {
     'layout'
   ];
 
-  const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value);
-  };
-
-  const handleSearchSubmit = (e) => {
-    e.preventDefault();
-    // Handle search query - you could redirect to search results page
-    console.log('Search query:', searchQuery);
+  const handleTagClick = (tag) => {
+    navigate(`/search/${encodeURIComponent(tag)}`);
   };
 
   return (
@@ -36,20 +33,7 @@ function HeroSection() {
 
         {/* Search Bar */}
         <div className="hero-search-wrapper">
-          <form className="hero-search-form" onSubmit={handleSearchSubmit}>
-            <div className="hero-search-container">
-              <input
-                type="text"
-                className="hero-search-input"
-                placeholder="What are you looking for?"
-                value={searchQuery}
-                onChange={handleSearchChange}
-              />
-              <button type="submit" className="hero-search-button">
-                <i className="fa fa-search"></i>
-              </button>
-            </div>
-          </form>
+          <SearchBar placeholder="What are you looking for?" />
         </div>
 
         {/* Trending Searches */}
@@ -57,7 +41,12 @@ function HeroSection() {
           <span className="trending-label">Trending:</span>
           <div className="trending-tags">
             {trendingSearches.map((tag, index) => (
-              <a key={index} href={`/search?q=${tag}`} className="trending-tag">
+              <a 
+                key={index} 
+                onClick={() => handleTagClick(tag)} 
+                className="trending-tag"
+                style={{ cursor: 'pointer' }}
+              >
                 {tag}
               </a>
             ))}

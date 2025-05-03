@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom"; // Import useNavigate
+import { useParams, useNavigate, useSearchParams } from "react-router-dom"; // Import useNavigate and useSearchParams
 import { useDispatch } from "react-redux"; // Import useDispatch
 import { login as loginAction } from "../../../redux/slices/authSlice"; // Import login action
 import { register, login } from "../../../services/userService"; // Ensure this path is correct
 import Spinner from "../../utils/Spinner"; // Import the Spinner component
-import Alert, { showAlert } from "../../utils/Alert";
+import Alert, { showAlert, showSuccessAlert, showErrorAlert } from "../../utils/Alert";
 import "../../../assets/styles/LoginSignup.css";
 
 function LoginSignup() {
@@ -23,6 +23,7 @@ function LoginSignup() {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [isPasswordTyped, setIsPasswordTyped] = useState(true);
+  const [searchParams] = useSearchParams();
 
   useEffect(() => {
     const container = containerRef.current;
@@ -86,74 +87,107 @@ function LoginSignup() {
     setShowPassword((prev) => !prev);
   };
 
-  const handleRegister = async (e) => {
+  // Form validation function
+  const validate = () => {
+    if (!formData.email || !formData.email.includes('@')) {
+      showErrorAlert("Please enter a valid email address");
+      return false;
+    }
+
+    if (!formData.password || formData.password.length < 6) {
+      showErrorAlert("Password must be at least 6 characters");
+      return false;
+    }
+
+    if (action === "signup" && !formData.fullName) {
+      showErrorAlert("Please enter your full name");
+      return false;
+    }
+
+    return true;
+  };
+
+  // Function to register a new user
+  const registerUser = async (userData) => {
+    const response = await register({
+      email: userData.email,
+      password: userData.password,
+      fullName: userData.fullName,
+    });
+    return response;
+  };
+
+  // Function to login a user
+  const loginUser = async (userData) => {
+    const response = await login({
+      email: userData.email,
+      password: userData.password,
+    });
+    
+    // Store token in Redux
+    dispatch(loginAction({ token: response.token }));
+    
+    // Save credentials if remember me is checked
+    if (rememberMe) {
+      localStorage.setItem("savedEmail", userData.email);
+      localStorage.setItem("savedPassword", userData.password);
+    } else {
+      localStorage.removeItem("savedEmail");
+      localStorage.removeItem("savedPassword");
+    }
+    
+    return response;
+  };
+
+  // Google login handler
+  const handleGoogleLogin = async () => {
+    // This would typically call your API for Google OAuth
+    // For now, we'll just show an error that it's not implemented yet
+    throw new Error("Google login not implemented yet");
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Validate fields
+    if (!validate()) {
+      return;
+    }
+    
     setIsLoading(true);
     try {
-      await register({
-        email: formData.email,
-        password: formData.password,
-        fullName: formData.fullName,
-      });
-      showAlert({
-        title: "Success",
-        message: "Registration successful!",
-        type: "success",
-      });
-      navigate("/"); // Redirect to homepage
+      if (action === "sign-up") {
+        await registerUser(formData);
+        showSuccessAlert("Registration successful!");
+        navigate("/LoginSignup/sign-in");
+      } else {
+        const result = await loginUser(formData);
+        showSuccessAlert("Login successful!");
+        
+        // Check if coming from cart checkout
+        const returnPath = searchParams.get("returnTo");
+        if (returnPath) {
+          navigate(returnPath);
+        } else {
+          navigate("/");
+        }
+      }
     } catch (error) {
-      showAlert({
-        title: "Error",
-        message: error.message,
-        type: "error",
-      });
+      console.error("Authentication error:", error);
+      showErrorAlert(error.message || "Authentication failed");
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
+  const handleGoogleAuth = async () => {
     try {
-      // Call the login service and get response with token
-      const response = await login({
-        email: formData.email,
-        password: formData.password,
-      });
-      
-      console.log('Login response:', response);
-      
-      // Dispatch login action with token to update Redux store
-      // JWT token được giải mã trong authSlice để lấy thông tin người dùng
-      dispatch(loginAction({ token: response.token }));
-      
-      if (rememberMe) {
-        localStorage.setItem("savedEmail", formData.email);
-        localStorage.setItem("savedPassword", formData.password);
-      } else {
-        localStorage.removeItem("savedEmail");
-        localStorage.removeItem("savedPassword");
-      }
-      
-      showAlert({
-        title: "Thành công",
-        message: "Đăng nhập thành công!",
-        type: "success",
-      });
-      
-      // Chờ 1 giây rồi mới chuyển hướng để người dùng nhìn thấy thông báo thành công
-      setTimeout(() => {
-        navigate("/"); // Redirect to homepage
-      }, 1000);
+      await handleGoogleLogin();
+      showSuccessAlert("Google authentication successful!");
+      navigate("/");
     } catch (error) {
-      showAlert({
-        title: "Error",
-        message: error.message,
-        type: "error",
-      });
-    } finally {
-      setIsLoading(false);
+      console.error("Google authentication error:", error);
+      showErrorAlert(error.message || "Google authentication failed");
     }
   };
 
@@ -167,7 +201,7 @@ function LoginSignup() {
       <div className="login-signup">
         <div className="container" ref={containerRef}>
           <div className="form-box login">
-            <form onSubmit={handleLogin}>
+            <form onSubmit={handleSubmit}>
               <h1>Login</h1>
               <div className="input-box">
                 <input
@@ -215,8 +249,8 @@ function LoginSignup() {
               </button>
               <p>or register with social platforms</p>
               <div className="social-icons">
-                <a href="#" className="google">
-                  <i class="fa-brands fa-google"></i>
+                <a href="#" className="google" onClick={handleGoogleAuth}>
+                  <i className="fa-brands fa-google"></i>
                 </a>
                 <a href="#" className="facebook">
                   <i className="fa-brands fa-facebook"></i>
@@ -225,14 +259,14 @@ function LoginSignup() {
                   <i className="fa-brands fa-github"></i>
                 </a>
                 <a href="#" className="linkedin">
-                  <i class="fa-brands fa-linkedin-in"></i>
+                  <i className="fa-brands fa-linkedin-in"></i>
                 </a>
               </div>
             </form>
           </div>
 
           <div className="form-box register">
-            <form onSubmit={handleRegister}>
+            <form onSubmit={handleSubmit}>
               <h1>Registration</h1>
               <div className="input-box">
                 <input
@@ -279,8 +313,8 @@ function LoginSignup() {
               </button>
               <p>or register with social platforms</p>
               <div className="social-icons">
-                <a href="#" className="google">
-                  <i class="fa-brands fa-google"></i>
+                <a href="#" className="google" onClick={handleGoogleAuth}>
+                  <i className="fa-brands fa-google"></i>
                 </a>
                 <a href="#" className="facebook">
                   <i className="fa-brands fa-facebook"></i>
@@ -289,7 +323,7 @@ function LoginSignup() {
                   <i className="fa-brands fa-github"></i>
                 </a>
                 <a href="#" className="linkedin">
-                  <i class="fa-brands fa-linkedin-in"></i>
+                  <i className="fa-brands fa-linkedin-in"></i>
                 </a>
               </div>
             </form>

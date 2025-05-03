@@ -5,12 +5,13 @@
 }
 
 .content-header {
-  margin: 30px 0;
+  margin: 15px 0;
   text-align: center; /* Center the content header text */
-  padding: 0 16px;
-  max-width: 1200px;
+  padding: 0 70px; /* Match footer padding (70px) */
+  width: 100%;
   margin-left: auto;
   margin-right: auto;
+  box-sizing: border-box;
 }
 
 .content-title {
@@ -31,14 +32,18 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   padding: 0;
   background-color: var(--background-color-rgba);
+  margin-bottom: 0;
+  box-sizing: border-box;
 }
 
 .category-nav-items {
   display: flex;
-  padding: 0 24px;
-  justify-content: center; /* Center the navigation tabs */
+  padding: 0 70px; /* Match footer padding (70px) */
+  justify-content: center; 
   margin: 0 auto;
   overflow-x: auto;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .category-nav-item {
@@ -72,7 +77,59 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 24px;
-  padding: 0 24px;
-  max-width: 1200px;
+  padding: 24px 70px 0; /* Match footer padding (70px) */
+  width: 100%;
   margin: 0 auto;
+  box-sizing: border-box;
+}
+
+/* Load More styles */
+.load-more-container {
+  display: flex;
+  justify-content: center;
+  margin: 32px 0;
+  padding: 0 70px; /* Match footer padding (70px) */
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.load-more-button {
+  background-color: var(--button-html-color);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.load-more-button:hover {
+  background-color: var(--button-html-hover-color, #0056b3);
+}
+
+.loading-more-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 32px 0;
+  color: var(--text-color);
+}
+
+.loading-spinner {
+  width: 30px;
+  height: 30px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: var(--button-html-color);
+  animation: spin 1s linear infinite;
+  margin-bottom: 8px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }

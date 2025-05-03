@@ -1,9 +1,11 @@
 import apiClient from "../config/axios";
 
 class UIComponentsService {
-  static async fetchUIComponentsAll() {
+  static async fetchUIComponentsAll(pageNumber = 1, pageSize = 10) {
     try {
-      const response = await apiClient.get("/UIComponent");
+      const response = await apiClient.get("/UIComponent", {
+        params: { pageNumber, pageSize }
+      });
       return response.data;
     } catch (error) {
       const errorMessage =
@@ -13,12 +15,14 @@ class UIComponentsService {
     }
   }
 
-  static async fetchUIComponents(categoryName) {
+  static async fetchUIComponents(categoryName, pageNumber = 1, pageSize = 10) {
     try {
       const endpoint = categoryName
         ? `/UIComponent/by-category/${categoryName}`
         : "/UIComponent";
-      const response = await apiClient.get(endpoint);
+      const response = await apiClient.get(endpoint, {
+        params: { pageNumber, pageSize }
+      });
       return response.data;
     } catch (error) {
       const errorMessage =
@@ -124,6 +128,24 @@ class UIComponentsService {
       return { success: false, error: error.message };
     }
   }
+
+  // Method to search for UI components
+  static async searchUIComponents(keyword, pageNumber = 1, pageSize = 16) {
+    try {
+      // Based on Swagger, the endpoint is /api/UIComponent/search
+      const response = await apiClient.post("/UIComponent/search", {
+        keyword,
+        pageNumber,
+        pageSize
+      });
+      return response.data;
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message || "Failed to search UI components!";
+      console.error(errorMessage);
+      throw new Error(errorMessage);
+    }
+  }
 }
 
 // Export các function riêng để các component có thể import trực tiếp
@@ -136,6 +158,7 @@ export const getComponentLikes = UIComponentsService.getComponentLikes;
 export const checkIfUserLiked = UIComponentsService.checkIfUserLiked;
 export const likeComponent = UIComponentsService.likeComponent;
 export const unlikeComponent = UIComponentsService.unlikeComponent;
+export const searchUIComponents = UIComponentsService.searchUIComponents;
 
 // Export default class
 export default UIComponentsService;
