@@ -194,9 +194,6 @@ const Profile = () => {
                   Artical
                   <span className="new-badge">NEW</span>
                 </Link>
-                <Link to={`/profile${profileId ? `/${profileId}` : ''}/collections`} className={`profile-tab ${isActive(`/profile${profileId ? `/${profileId}` : ''}/collections`) ? 'active' : ''}`}>
-                  Collections
-                </Link>
                 <Link to={`/profile${profileId ? `/${profileId}` : ''}/liked`} className={`profile-tab ${isActive(`/profile${profileId ? `/${profileId}` : ''}/liked`) ? 'active' : ''}`}>
                   Liked Shots
                 </Link>

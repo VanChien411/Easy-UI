@@ -27,7 +27,7 @@ const useComments = (componentId) => {
       // Add user information to comments if missing
       const processedComments = data.map(comment => ({
         ...comment,
-        creatorName: comment.creatorName || comment.userName || 'Người dùng',
+        creatorName: comment.creatorName || comment.userName || 'You',
       }));
       
       setComments(processedComments);
@@ -65,7 +65,7 @@ const useComments = (componentId) => {
       const commentWithUser = {
         ...newComment,
         componentId: componentId,
-        creatorName: user?.name || user?.userName || 'Người dùng',
+        creatorName: user?.name || user?.userName || 'You',
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
       };

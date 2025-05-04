@@ -32,6 +32,21 @@ class UIComponentsService {
     }
   }
 
+  // Lấy trending components với sortBy (popular, views_desc, likes_desc)
+  static async fetchTrendingUIComponents(sortBy = "popular", pageNumber = 1, pageSize = 10) {
+    try {
+      const response = await apiClient.get("/UIComponent/trending", {
+        params: { sortBy, pageNumber, pageSize }
+      });
+      return response.data;
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message || "Failed to fetch trending UI components!";
+      console.error(errorMessage);
+      throw new Error(errorMessage);
+    }
+  }
+
   static async saveUIComponent(data) {
     try {
       const response = await apiClient.post("/UIComponent", data);
@@ -151,6 +166,7 @@ class UIComponentsService {
 // Export các function riêng để các component có thể import trực tiếp
 export const fetchUIComponents = UIComponentsService.fetchUIComponents;
 export const fetchUIComponentsAll = UIComponentsService.fetchUIComponentsAll;
+export const fetchTrendingUIComponents = UIComponentsService.fetchTrendingUIComponents;
 export const saveUIComponent = UIComponentsService.saveUIComponent;
 export const isFreeProduct = UIComponentsService.isFreeProduct;
 export const fetchUIComponentById = UIComponentsService.fetchUIComponentById;

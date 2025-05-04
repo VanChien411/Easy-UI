@@ -289,7 +289,7 @@ const CommentsPanel = ({ onClose, componentId }) => {
                 <div key={comment.id} className="comment-item">
                   <div className="comment-header">
                     <div className="comment-user-info">
-                      <span className="comment-author">{comment.creatorName || comment.userName || 'Người dùng'}</span>
+                      <span className="comment-author">{comment.creatorName || comment.userName || 'You'}</span>
                       {comment.rating && (
                         <div className="comment-rating">
                           {[...Array(5)].map((_, index) => (
