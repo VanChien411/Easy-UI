@@ -1,12 +1,53 @@
 import apiClient from "../config/axios";
 import UserProfile from "../models/UserProfile";
 import FollowUser from "../models/FollowUser";
+import UserDetail from "../models/UserDetail";
 
 /**
  * Service for managing user-related operations
  * Handles user profiles, following/unfollowing, and component retrieval
  */
 class UserManagerService {
+  /**
+   * Update current user's profile
+   * @param {Object} profileData - User profile data to update
+   * @returns {Promise<Object>} - Updated user data
+   */
+  async updateUserProfile(profileData) {
+    try {
+      const response = await apiClient.put('/User/me', {
+        fullName: profileData.fullName,
+        location: profileData.location,
+        bio: profileData.bio,
+        website: profileData.website,
+        workDisplayEmail: profileData.workDisplayEmail,
+        phoneNumber: profileData.phoneNumber,
+        workHistory: profileData.workHistory || [],
+        education: profileData.education || []
+      });
+      return response.data;
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || "Failed to update user profile!";
+      console.error(errorMessage);
+      throw new Error(errorMessage);
+    }
+  }
+
+  /**
+   * Get current user's detailed information
+   * @returns {Promise<UserDetail>} - Current user's detailed information
+   */
+  async getCurrentUserDetail() {
+    try {
+      const response = await apiClient.get('/User/me/detail');
+      return UserDetail.fromJson(response.data);
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || "Failed to fetch user details!";
+      console.error(errorMessage);
+      throw new Error(errorMessage);
+    }
+  }
+
   /**
    * Get user profile by ID
    * @param {string} userId - The ID of the user

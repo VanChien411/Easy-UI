@@ -1,16 +1,44 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FaSearch, FaEnvelope } from "react-icons/fa";
+import { FaSearch, FaEnvelope, FaTimes } from "react-icons/fa";
 import useAuth from "../../../hooks/useAuth";
+import userManagerService from "../../../services/usermanagerService";
+import { showSuccessAlert, showErrorAlert } from "../../../utils/alertUtils";
 import "./EditProfile.css";
+
+// Predefined job types
+const JOB_TYPES = [
+  "UX/UI Design",
+  "Frontend Development",
+  "Backend Development",
+  "Mobile Development",
+  "Full Stack Development",
+  "DevOps",
+  "Data Science",
+  "Product Management",
+  "Project Management",
+  "Quality Assurance",
+  "Other"
+];
 
 const EditProfile = () => {
   const navigate = useNavigate();
   const { user: authUser, isAuthenticated } = useAuth();
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const [showJobSelector, setShowJobSelector] = useState(false);
+  const [showEducationForm, setShowEducationForm] = useState(false);
+  const [newEducation, setNewEducation] = useState({
+    institution: "",
+    degree: "",
+    field: "",
+    startYear: "",
+    endYear: ""
+  });
   
   // Initialize user state with default values
   const [user, setUser] = useState({
-    name: "Tien Pham",
+    name: "",
     avatar: "/placeholder.svg?height=100&width=100",
     bio: "",
     location: "",
@@ -18,19 +46,53 @@ const EditProfile = () => {
     phoneNumber: "",
     website: "",
     customUrl: "",
+    workHistory: [],
+    education: []
   });
 
-  // Update user data from auth when available
+  // Load user details from API
   useEffect(() => {
-    if (isAuthenticated && authUser) {
-      setUser(prevUser => ({
-        ...prevUser,
-        name: authUser.name || authUser.userName || prevUser.name,
-        avatar: authUser.avatar || prevUser.avatar,
-        bio: authUser.bio || prevUser.bio,
-        workEmail: authUser.email || prevUser.workEmail,
-      }));
-    }
+    const loadUserDetails = async () => {
+      if (!isAuthenticated) {
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        setIsLoading(true);
+        const userDetail = await userManagerService.getCurrentUserDetail();
+        
+        setUser({
+          name: userDetail.fullName || userDetail.userName || "",
+          avatar: userDetail.avatar || "/placeholder.svg?height=100&width=100",
+          bio: userDetail.bio || "",
+          location: userDetail.location || "",
+          workEmail: userDetail.workDisplayEmail || userDetail.email || "",
+          phoneNumber: userDetail.phoneNumber || "",
+          website: userDetail.website || "",
+          customUrl: userDetail.userName || "",
+          workHistory: userDetail.workHistory || [],
+          education: userDetail.education || []
+        });
+      } catch (error) {
+        console.error("Failed to load user details:", error);
+        showErrorAlert("Failed to load user details. Please try again later.");
+        
+        // Fall back to auth data if API fails
+        if (authUser) {
+          setUser(prevUser => ({
+            ...prevUser,
+            name: authUser.name || authUser.userName || prevUser.name,
+            avatar: authUser.avatar || prevUser.avatar,
+            workEmail: authUser.email || prevUser.workEmail,
+          }));
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadUserDetails();
   }, [isAuthenticated, authUser]);
 
   const handleChange = (e) => {
@@ -41,13 +103,122 @@ const EditProfile = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // In a real app, this would save the profile data to a database
-    console.log("Profile data saved:", user);
-    // Redirect to profile page
-    navigate("/profile");
+    
+    if (isSaving) return;
+    
+    try {
+      setIsSaving(true);
+      
+      // Prepare data for API request
+      const profileData = {
+        fullName: user.name,
+        location: user.location,
+        bio: user.bio,
+        website: user.website,
+        workDisplayEmail: user.workEmail,
+        phoneNumber: user.phoneNumber,
+        workHistory: user.workHistory,
+        education: user.education
+      };
+      
+      // Call the API to update profile
+      await userManagerService.updateUserProfile(profileData);
+      
+      showSuccessAlert("Profile updated successfully!");
+      
+      // Redirect to profile page
+      navigate("/profile");
+    } catch (error) {
+      console.error("Failed to update profile:", error);
+      showErrorAlert(error.message || "Failed to update profile. Please try again.");
+    } finally {
+      setIsSaving(false);
+    }
   };
+
+  // Handle selecting a job
+  const handleSelectJob = (jobType) => {
+    setUser(prev => ({
+      ...prev,
+      workHistory: [...prev.workHistory, { title: jobType, company: "", yearStart: "", yearEnd: "" }]
+    }));
+    setShowJobSelector(false);
+  };
+
+  // Handle removing a job
+  const handleRemoveJob = (index) => {
+    setUser(prev => ({
+      ...prev,
+      workHistory: prev.workHistory.filter((_, i) => i !== index)
+    }));
+  };
+
+  // Handle changing job details
+  const handleJobChange = (index, field, value) => {
+    setUser(prev => {
+      const updatedWorkHistory = [...prev.workHistory];
+      updatedWorkHistory[index] = {
+        ...updatedWorkHistory[index],
+        [field]: value
+      };
+      return {
+        ...prev,
+        workHistory: updatedWorkHistory
+      };
+    });
+  };
+
+  // Handle education change
+  const handleEducationChange = (e) => {
+    const { name, value } = e.target;
+    setNewEducation(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  // Add new education
+  const handleAddEducation = () => {
+    if (!newEducation.institution || !newEducation.degree) {
+      showErrorAlert("Institution and Degree are required fields");
+      return;
+    }
+
+    setUser(prev => ({
+      ...prev,
+      education: [...prev.education, newEducation]
+    }));
+
+    // Reset form
+    setNewEducation({
+      institution: "",
+      degree: "",
+      field: "",
+      startYear: "",
+      endYear: ""
+    });
+    setShowEducationForm(false);
+  };
+
+  // Remove education
+  const handleRemoveEducation = (index) => {
+    setUser(prev => ({
+      ...prev,
+      education: prev.education.filter((_, i) => i !== index)
+    }));
+  };
+
+  if (isLoading) {
+    return (
+      <div className="edit-profile-page">
+        <div className="edit-profile-container">
+          <div className="loading-indicator">Loading profile data...</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="edit-profile-page">
@@ -208,16 +379,210 @@ const EditProfile = () => {
                 <div className="work-education-section">
                   <div className="work-history-item">
                     <h3 className="subsection-title">Work History</h3>
-                    <button type="button" className="add-item-button">
-                      + Add job
-                    </button>
+                    
+                    {/* Display existing work history */}
+                    {user.workHistory.length > 0 && (
+                      <div className="work-history-list">
+                        {user.workHistory.map((job, index) => (
+                          <div key={index} className="work-history-entry">
+                            <div className="entry-header">
+                              <h4 className="entry-title">{job.title}</h4>
+                              <button 
+                                type="button" 
+                                className="remove-button"
+                                onClick={() => handleRemoveJob(index)}
+                              >
+                                <FaTimes />
+                              </button>
+                            </div>
+                            <div className="entry-form">
+                              <div className="entry-field">
+                                <label>Company</label>
+                                <input 
+                                  type="text" 
+                                  value={job.company || ''} 
+                                  onChange={(e) => handleJobChange(index, 'company', e.target.value)}
+                                  placeholder="Company name"
+                                />
+                              </div>
+                              <div className="entry-field-group">
+                                <div className="entry-field">
+                                  <label>Start Year</label>
+                                  <input 
+                                    type="text" 
+                                    value={job.yearStart || ''} 
+                                    onChange={(e) => handleJobChange(index, 'yearStart', e.target.value)}
+                                    placeholder="YYYY"
+                                  />
+                                </div>
+                                <div className="entry-field">
+                                  <label>End Year</label>
+                                  <input 
+                                    type="text" 
+                                    value={job.yearEnd || ''} 
+                                    onChange={(e) => handleJobChange(index, 'yearEnd', e.target.value)}
+                                    placeholder="YYYY or Present"
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Job selector */}
+                    {showJobSelector ? (
+                      <div className="job-selector">
+                        <div className="job-selector-header">
+                          <h4>Select Role</h4>
+                          <button 
+                            type="button" 
+                            className="close-button"
+                            onClick={() => setShowJobSelector(false)}
+                          >
+                            <FaTimes />
+                          </button>
+                        </div>
+                        <div className="job-selector-content">
+                          {JOB_TYPES.map((jobType, index) => (
+                            <button 
+                              key={index} 
+                              type="button" 
+                              className="job-type-button"
+                              onClick={() => handleSelectJob(jobType)}
+                            >
+                              {jobType}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    ) : (
+                      <button 
+                        type="button" 
+                        className="add-item-button"
+                        onClick={() => setShowJobSelector(true)}
+                      >
+                        + Add job
+                      </button>
+                    )}
                   </div>
 
                   <div className="education-item">
                     <h3 className="subsection-title">Education</h3>
-                    <button type="button" className="add-item-button">
-                      + Add education
-                    </button>
+                    
+                    {/* Display existing education */}
+                    {user.education.length > 0 && (
+                      <div className="education-list">
+                        {user.education.map((edu, index) => (
+                          <div key={index} className="education-entry">
+                            <div className="entry-header">
+                              <h4 className="entry-title">{edu.institution}</h4>
+                              <button 
+                                type="button" 
+                                className="remove-button"
+                                onClick={() => handleRemoveEducation(index)}
+                              >
+                                <FaTimes />
+                              </button>
+                            </div>
+                            <p className="education-details">
+                              {edu.degree} {edu.field && `in ${edu.field}`}
+                              {(edu.startYear || edu.endYear) && ` (${edu.startYear || ''} - ${edu.endYear || ''})`}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Education form */}
+                    {showEducationForm ? (
+                      <div className="education-form">
+                        <div className="education-form-header">
+                          <h4>Add Education</h4>
+                          <button 
+                            type="button" 
+                            className="close-button"
+                            onClick={() => setShowEducationForm(false)}
+                          >
+                            <FaTimes />
+                          </button>
+                        </div>
+                        <div className="education-form-content">
+                          <div className="education-field">
+                            <label>Institution <span className="required-field">*</span></label>
+                            <input 
+                              type="text" 
+                              name="institution"
+                              value={newEducation.institution} 
+                              onChange={handleEducationChange}
+                              placeholder="School or University"
+                              required
+                            />
+                          </div>
+                          <div className="education-field">
+                            <label>Degree <span className="required-field">*</span></label>
+                            <input 
+                              type="text" 
+                              name="degree"
+                              value={newEducation.degree} 
+                              onChange={handleEducationChange}
+                              placeholder="e.g. Bachelor's, Master's"
+                              required
+                            />
+                          </div>
+                          <div className="education-field">
+                            <label>Field of Study</label>
+                            <input 
+                              type="text" 
+                              name="field"
+                              value={newEducation.field} 
+                              onChange={handleEducationChange}
+                              placeholder="e.g. Computer Science"
+                            />
+                          </div>
+                          <div className="education-field-group">
+                            <div className="education-field">
+                              <label>Start Year</label>
+                              <input 
+                                type="text" 
+                                name="startYear"
+                                value={newEducation.startYear} 
+                                onChange={handleEducationChange}
+                                placeholder="YYYY"
+                              />
+                            </div>
+                            <div className="education-field">
+                              <label>End Year</label>
+                              <input 
+                                type="text" 
+                                name="endYear"
+                                value={newEducation.endYear} 
+                                onChange={handleEducationChange}
+                                placeholder="YYYY or Present"
+                              />
+                            </div>
+                          </div>
+                          <div className="education-form-actions">
+                            <button 
+                              type="button" 
+                              className="save-education-button"
+                              onClick={handleAddEducation}
+                            >
+                              Add Education
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <button 
+                        type="button" 
+                        className="add-item-button"
+                        onClick={() => setShowEducationForm(true)}
+                      >
+                        + Add education
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>
@@ -293,8 +658,9 @@ const EditProfile = () => {
                 <button
                   type="submit"
                   className="save-profile-button"
+                  disabled={isSaving}
                 >
-                  Save Profile
+                  {isSaving ? "Saving..." : "Save Profile"}
                 </button>
               </div>
             </form>

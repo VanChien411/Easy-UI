@@ -1,15 +1,16 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { IoChevronBackOutline } from "react-icons/io5";
 import { FaRegHeart, FaHeart, FaShare, FaBookmark, FaRegBookmark, 
-  FaInfoCircle, FaCommentAlt, FaSpinner, FaRegCopy, FaCheck, FaUserPlus, FaUserCheck } from 'react-icons/fa';
+  FaInfoCircle, FaCommentAlt, FaSpinner, FaRegCopy, FaCheck, FaUserPlus, FaUserCheck, FaChevronRight } from 'react-icons/fa';
 // Import fetchUIComponentById to get UI component data
 import { 
   fetchUIComponentById, 
   getComponentLikes,
   checkIfUserLiked,
   likeComponent,
-  unlikeComponent
+  unlikeComponent,
+  fetchTrendingUIComponents
 } from '../../../services/uiComponentsService';
 import useAuth from '../../../hooks/useAuth';
 import CommentsPanel from './CommentsPanel';
@@ -21,6 +22,7 @@ import { addItem } from "../../../redux/slices/cartSlice";
 import { showSuccessAlert, showErrorAlert } from "../../utils/Alert";
 import { useDispatch } from 'react-redux';
 import UserManagerService from '../../../services/usermanagerService';
+import CardItem from '../Product/Card-item';
 
 // Component hiển thị và copy code - Will be used later when implementing code display functionality
 // This component for displaying and copying code
@@ -182,6 +184,116 @@ ${js}
   );
 };
 
+// Component for displaying similar products with horizontal scrolling
+const SimilarProducts = ({ currentProductId }) => {
+  const [similarProducts, setSimilarProducts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const scrollContainerRef = useRef(null);
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    const fetchSimilarProducts = async () => {
+      try {
+        setIsLoading(true);
+        // Fetch random trending products
+        const response = await fetchTrendingUIComponents('popular', 1, 8);
+        const products = response.items || response;
+        
+        // Filter out the current product if present
+        const filteredProducts = products.filter(product => 
+          product.id !== currentProductId
+        );
+        
+        setSimilarProducts(filteredProducts);
+      } catch (error) {
+        console.error("Error fetching similar products:", error);
+        setSimilarProducts([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    fetchSimilarProducts();
+  }, [currentProductId]);
+  
+  const handleScroll = (direction) => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+    
+    const scrollAmount = 300; // Amount to scroll each time
+    const currentScroll = container.scrollLeft;
+    
+    container.scrollTo({
+      left: direction === 'left' ? currentScroll - scrollAmount : currentScroll + scrollAmount,
+      behavior: 'smooth'
+    });
+  };
+  
+  const handleCardClick = (productId) => {
+    navigate(`/product/${productId}`);
+    // Scroll to top when navigating to a new product
+    window.scrollTo(0, 0);
+  };
+  
+  if (isLoading) {
+    return (
+      <div className="similar-products-section">
+        <div className="similar-products-loading">
+          <div className="loading-spinner"></div>
+        </div>
+      </div>
+    );
+  }
+  
+  if (similarProducts.length === 0) {
+    return null; // Don't render section if no similar products
+  }
+  
+  return (
+    <div className="similar-products-section">
+      
+      <div className="similar-products-container">
+        <button 
+          className="scroll-button scroll-left"
+          onClick={() => handleScroll('left')}
+        >
+          &#10094;
+        </button>
+        
+        <div className="similar-products-scroll" ref={scrollContainerRef}>
+          {similarProducts.map((product) => (
+            <div 
+              key={product.id} 
+              className="similar-product-card"
+              onClick={() => handleCardClick(product.id)}
+            >
+              <div className="similar-product-image">
+                <img 
+                  src={product.previewImage || '/placeholder.svg'} 
+                  alt={product.name || 'UI Component'} 
+                />
+              </div>
+              <div className="similar-product-info">
+                <h3 className="similar-product-title">{product.name || 'UI Component'}</h3>
+                <p className="similar-product-author">
+                  {product.createdBy?.name || product.createdBy?.fullName || 'Designer'}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+        
+        <button 
+          className="scroll-button scroll-right"
+          onClick={() => handleScroll('right')}
+        >
+          &#10095;
+        </button>
+      </div>
+    </div>
+  );
+};
+
 const ProductDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -199,6 +311,10 @@ const ProductDetail = () => {
   const [isFollowing, setIsFollowing] = useState(false);
   const [isFollowingLoading, setIsFollowingLoading] = useState(false);
   const [creatorId, setCreatorId] = useState(null);
+  const [creatorName, setCreatorName] = useState("");
+  const [creatorComponents, setCreatorComponents] = useState([]);
+  const [componentsLoading, setComponentsLoading] = useState(false);
+  const [expandedCardIndex, setExpandedCardIndex] = useState(null);
 
   const [product, setProduct] = useState({
     id: "123",
@@ -214,21 +330,12 @@ const ProductDetail = () => {
     }
   });
   
-  // Check if current user is the creator - updated with more robust comparison
+  // Check if current user is the creator
   const isCurrentUserCreator = useMemo(() => {
-    // Log for debugging
-    console.log('Comparing creator:', {
-      userId,
-      creatorId,
-      user: user ? JSON.stringify(user) : 'No user'
-    });
-    
     if (!userId || !creatorId) return false;
-    
-    // Compare using string values to ensure proper comparison
     return String(userId) === String(creatorId);
   }, [userId, creatorId, user]);
-
+      
   // Fetch follow status when component mounts
   const fetchFollowStatus = useCallback(async () => {
     if (!isAuthenticated || !creatorId || isCurrentUserCreator) {
@@ -253,6 +360,7 @@ const ProductDetail = () => {
       } else {
         setIsFollowing(false);
       }
+      console.error('Failed to fetch follow status:', error);
     }
   }, [isAuthenticated, creatorId, isCurrentUserCreator]);
 
@@ -287,6 +395,7 @@ const ProductDetail = () => {
               // Store the creator ID for follow functionality - ensure it's a string for comparison
               const extractedCreatorId = creator.id || null;
               setCreatorId(extractedCreatorId);
+              setCreatorName(authorName);
               
               // Multiple possible locations for isFollowedByCurrentUser
               let followStatus = false;
@@ -317,13 +426,22 @@ const ProductDetail = () => {
                 css: componentData.css || "",
                 js: componentData.js || "",
                 price: componentData.price || 0,
+                views: componentData.views || 0,
+                downloads: componentData.downloads || 0,
+                rating: componentData.rating || 0,
+                likesCount: componentData.likesCount || 0,
+                createdAt: componentData.createdAt,
+                categories: componentData.categories || [],
+                tags: componentData.tags || [],
+                comments: componentData.comments || [],
                 designer: {
-                  name: "Design Studio",
+                  name: authorName,
                   // Format with the creator's name
                   company: `${authorName}`,
                   avatar: authorAvatar,
                   available: true
-                }
+                },
+                creator: creator
               });
             }
           } catch (error) {
@@ -459,6 +577,45 @@ const ProductDetail = () => {
     }
   }, [creatorId, isCurrentUserCreator, isAuthenticated]);
 
+  // Fetch creator's other components
+  useEffect(() => {
+    const fetchCreatorComponents = async () => {
+      if (!creatorId || !id) return;
+      
+      setComponentsLoading(true);
+      try {
+        const response = await UserManagerService.getUserComponents(creatorId, 1, 6);
+        
+        // Filter out the current component
+        const otherComponents = response.components
+          .filter(comp => comp.id !== id)
+          .slice(0, 5); // Limit to 5 components max
+        
+        setCreatorComponents(otherComponents);
+      } catch (error) {
+        console.error("Error fetching creator's components:", error);
+      } finally {
+        setComponentsLoading(false);
+      }
+    };
+
+    if (creatorId) {
+      fetchCreatorComponents();
+    }
+  }, [creatorId, id]);
+
+  // Handle card expand/collapse
+  const handleCardExpand = (index) => {
+    setExpandedCardIndex(expandedCardIndex === index ? null : index);
+  };
+
+  // View profile handler
+  const handleViewProfile = () => {
+    if (creatorId) {
+      navigate(`/profile/${creatorId}`);
+    }
+  };
+  
   // Sample related products
   const moreByDesigner = [
     {
@@ -615,6 +772,13 @@ const ProductDetail = () => {
     });
   }, [userId, creatorId, isCurrentUserCreator, user]);
 
+  // Handler for navigating to profile
+  const navigateToProfile = () => {
+    if (creatorId) {
+      navigate(`/profile/${creatorId}`);
+    }
+  };
+
   // Show loading spinner while data is being fetched
   if (loading) {
     return (
@@ -644,7 +808,7 @@ const ProductDetail = () => {
           {/* Designer info */}
           <div className="designer-info">
             <div className="designer-profile">
-              <div className="avatar">
+              <div className="avatar" onClick={navigateToProfile}>
                 <img
                   src={product.designer.avatar}
                   alt={product.designer.name}
@@ -652,10 +816,10 @@ const ProductDetail = () => {
                 />
               </div>
               <div>
-                <div className="designer-name">
+                <div className="designer-name" onClick={navigateToProfile}>
                   <span className="font-medium">{product.designer.name}</span>
                   <span className="text-gray-500"> for </span>
-                  <span className="font-medium">{product.designer.company}</span>
+                  <span className="font-medium clickable">{product.designer.company}</span>
                 </div>
                 <div className="designer-status">
                   <span className="availability">Available for work</span>
@@ -711,12 +875,12 @@ const ProductDetail = () => {
                   {isAddingToCart ? "Adding..." : "Add to Cart"}
                 </button>
               ) : (
-                <button 
-                  className="contact-button"
-                  onClick={handleGetInTouch}
-                >
-                  Get in touch
-                </button>
+              <button 
+                className="contact-button"
+                onClick={handleGetInTouch}
+              >
+                Get in touch
+              </button>
               )}
             </div>
           </div>
@@ -807,41 +971,44 @@ const ProductDetail = () => {
           </div>
 
           {/* More by designer */}
+          {creatorId && creatorComponents.length > 0 && (
           <div className="more-by-designer">
             <div className="section-header">
-              <h3 className="section-title">More by {product.designer.company || "EasyUI Studio"}</h3>
-              <button className="view-profile-link">
-                View profile
+                <h2 className="section-title">More by {creatorName}</h2>
+                <button onClick={handleViewProfile} className="view-profile-link">
+                  View profile <FaChevronRight size={12} />
               </button>
             </div>
-            <div className="more-items-grid">
-              {moreByDesigner.map((item) => (
-                <div key={item.id} className="more-item">
-                  <img
-                    src={item.image}
-                    alt={item.title}
-                    className="more-item-image"
-                  />
+              
+              <div className="creator-components-scroll">
+                <div className="creator-components-container">
+                  {componentsLoading ? (
+                    <div className="components-loading">
+                      <div className="loading-spinner" />
+                      <p>Loading components...</p>
+                    </div>
+                  ) : (
+                    creatorComponents.map((component, index) => (
+                      <div key={component.id || index} className="creator-component-item">
+                        <CardItem
+                          item={{
+                            ...component,
+                            createdBy: {
+                              id: creatorId,
+                              name: creatorName,
+                              avatar: product.designer.avatar
+                            }
+                          }}
+                          isExpanded={expandedCardIndex === index}
+                          onExpand={() => handleCardExpand(index)}
+                        />
+                      </div>
+                    ))
+                  )}
                 </div>
-              ))}
+              </div>
             </div>
-          </div>
-
-          {/* You might also like */}
-          <div className="recommendations">
-            <h3 className="section-title">You might also like</h3>
-            <div className="recommended-items-grid">
-              {youMightAlsoLike.map((item) => (
-                <div key={item.id} className="recommended-item">
-                  <img
-                    src={item.image}
-                    alt={item.title}
-                    className="recommended-item-image"
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
+          )}
         </div>
       </div>
 
@@ -858,6 +1025,9 @@ const ProductDetail = () => {
           </div>
         </div>
       )}
+
+      {/* Add the SimilarProducts component at the bottom */}
+      <SimilarProducts currentProductId={id} />
     </div>
   );
 };

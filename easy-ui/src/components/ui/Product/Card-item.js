@@ -128,7 +128,7 @@ function CardItem({
       <div 
         ref={cardRef} 
         className={`card ${isExpanded ? "expanded" : ""} group`}
-        onClick={handleCardClick}
+        onClick={handleUserProfileClick}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
