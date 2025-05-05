@@ -1,0 +1,526 @@
+/* EmailNotifications.css */
+
+.email-notifications-page {
+  width: 100%;
+  padding: 0;
+}
+
+body.dark .email-notifications-page,
+body[data-theme="dark"] .email-notifications-page,
+.dark-mode .email-notifications-page,
+[data-theme="dark"] .email-notifications-page {
+  background-color: #121212;
+  color: #f9fafb;
+}
+
+.profile-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px 16px;
+}
+
+.profile-header {
+  text-align: center;
+  padding: 40px 0 20px;
+  margin-bottom: 24px;
+}
+
+.profile-avatar-container {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin: 0 auto 16px;
+  background-color: #f3f4f6;
+  border: 1px solid #e5e7eb;
+}
+
+body.dark .profile-avatar-container,
+body[data-theme="dark"] .profile-avatar-container,
+.dark-mode .profile-avatar-container,
+[data-theme="dark"] .profile-avatar-container {
+  background-color: #2d3748;
+  border-color: #4a5568;
+}
+
+.profile-avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-name {
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0 0 8px;
+  color: #111827;
+}
+
+body.dark .profile-name,
+body[data-theme="dark"] .profile-name,
+.dark-mode .profile-name,
+[data-theme="dark"] .profile-name {
+  color: #f9fafb;
+}
+
+.profile-subheading {
+  color: #6b7280;
+  font-weight: normal;
+  font-size: 20px;
+}
+
+body.dark .profile-subheading,
+body[data-theme="dark"] .profile-subheading,
+.dark-mode .profile-subheading,
+[data-theme="dark"] .profile-subheading {
+  color: #a0aec0;
+}
+
+.profile-bio {
+  margin: 8px auto;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+body.dark .profile-bio,
+body[data-theme="dark"] .profile-bio,
+.dark-mode .profile-bio,
+[data-theme="dark"] .profile-bio {
+  color: #a0aec0;
+}
+
+.notification-settings-container {
+  display: flex;
+  gap: 24px;
+  margin-top: 24px;
+}
+
+/* Sidebar Styles */
+.profile-sidebar {
+  width: 250px;
+  flex-shrink: 0;
+}
+
+.sidebar-heading {
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+body.dark .sidebar-heading,
+body[data-theme="dark"] .sidebar-heading,
+.dark-mode .sidebar-heading,
+[data-theme="dark"] .sidebar-heading {
+  color: #f9fafb;
+}
+
+.sidebar-links {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 24px;
+}
+
+.sidebar-nav-item {
+  display: block;
+  padding: 10px 0;
+  color: #6b7280;
+  text-decoration: none;
+  font-size: 14px;
+  border-left: 2px solid transparent;
+  padding-left: 10px;
+  transition: all 0.2s ease;
+}
+
+body.dark .sidebar-nav-item,
+body[data-theme="dark"] .sidebar-nav-item,
+.dark-mode .sidebar-nav-item,
+[data-theme="dark"] .sidebar-nav-item {
+  color: #a0aec0;
+}
+
+.sidebar-nav-item:hover {
+  color: #ea4c89;
+}
+
+.sidebar-nav-item.active {
+  color: #ea4c89;
+  border-left-color: #ea4c89;
+  font-weight: 500;
+}
+
+.delete-account-section {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #e5e7eb;
+}
+
+body.dark .delete-account-section,
+body[data-theme="dark"] .delete-account-section,
+.dark-mode .delete-account-section,
+[data-theme="dark"] .delete-account-section {
+  border-top-color: #374151;
+}
+
+.delete-account-link {
+  color: #ef4444;
+  text-decoration: none;
+  font-size: 14px;
+  display: block;
+  padding: 8px 0;
+}
+
+.delete-account-link:hover {
+  text-decoration: underline;
+}
+
+/* Main Content Styles */
+.notification-settings-content {
+  flex: 1;
+}
+
+.settings-card {
+  background-color: white;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
+}
+
+body.dark .settings-card,
+body[data-theme="dark"] .settings-card,
+.dark-mode .settings-card,
+[data-theme="dark"] .settings-card {
+  background-color: #1a202c;
+  border-color: #2d3748;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.settings-section-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #111827;
+  margin-top: 0;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: center;
+}
+
+body.dark .settings-section-title,
+body[data-theme="dark"] .settings-section-title,
+.dark-mode .settings-section-title,
+[data-theme="dark"] .settings-section-title {
+  color: #f9fafb;
+  border-bottom-color: #2d3748;
+}
+
+.settings-description {
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+body.dark .settings-description,
+body[data-theme="dark"] .settings-description,
+.dark-mode .settings-description,
+[data-theme="dark"] .settings-description {
+  color: #a0aec0;
+}
+
+.email-address-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f3f4f6;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+body.dark .email-address-container,
+body[data-theme="dark"] .email-address-container,
+.dark-mode .email-address-container,
+[data-theme="dark"] .email-address-container {
+  background-color: #171f2e;
+}
+
+.email-address {
+  font-size: 14px;
+  font-weight: 500;
+  color: #111827;
+}
+
+body.dark .email-address,
+body[data-theme="dark"] .email-address,
+.dark-mode .email-address,
+[data-theme="dark"] .email-address {
+  color: #f9fafb;
+}
+
+.email-status {
+  font-size: 13px;
+  color: #6b7280;
+  margin-top: 4px;
+}
+
+body.dark .email-status,
+body[data-theme="dark"] .email-status,
+.dark-mode .email-status,
+[data-theme="dark"] .email-status {
+  color: #a0aec0;
+}
+
+.verify-email-button {
+  padding: 8px 16px;
+  background-color: #ea4c89;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.verify-email-button:hover {
+  background-color: #d03571;
+}
+
+.verify-email-button.verified {
+  background-color: #10b981;
+  color: white;
+  border: none;
+  cursor: default;
+}
+
+.verify-email-button.verified:hover {
+  background-color: #10b981;
+}
+
+/* Notification Preferences */
+.notification-preferences {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.preferences-section {
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 24px;
+}
+
+body.dark .preferences-section,
+body[data-theme="dark"] .preferences-section,
+.dark-mode .preferences-section,
+[data-theme="dark"] .preferences-section {
+  border-bottom-color: #2d3748;
+}
+
+.preferences-section:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.preferences-section-title {
+  font-size: 16px;
+  font-weight: 500;
+  color: #111827;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+body.dark .preferences-section-title,
+body[data-theme="dark"] .preferences-section-title,
+.dark-mode .preferences-section-title,
+[data-theme="dark"] .preferences-section-title {
+  color: #f9fafb;
+}
+
+.preferences-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.preference-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.preference-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.preference-icon-wrapper {
+  width: 36px;
+  height: 36px;
+  background-color: #f3f4f6;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+body.dark .preference-icon-wrapper,
+body[data-theme="dark"] .preference-icon-wrapper,
+.dark-mode .preference-icon-wrapper,
+[data-theme="dark"] .preference-icon-wrapper {
+  background-color: #2d3748;
+}
+
+.preference-icon {
+  color: #6b7280;
+  font-size: 16px;
+}
+
+body.dark .preference-icon,
+body[data-theme="dark"] .preference-icon,
+.dark-mode .preference-icon,
+[data-theme="dark"] .preference-icon {
+  color: #a0aec0;
+}
+
+.preference-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.preference-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: #111827;
+}
+
+body.dark .preference-title,
+body[data-theme="dark"] .preference-title,
+.dark-mode .preference-title,
+[data-theme="dark"] .preference-title {
+  color: #f9fafb;
+}
+
+.preference-description {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+body.dark .preference-description,
+body[data-theme="dark"] .preference-description,
+.dark-mode .preference-description,
+[data-theme="dark"] .preference-description {
+  color: #a0aec0;
+}
+
+/* Toggle Switch */
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+}
+
+.toggle-input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #e5e7eb;
+  transition: .4s;
+  border-radius: 24px;
+}
+
+body.dark .toggle-slider,
+body[data-theme="dark"] .toggle-slider,
+.dark-mode .toggle-slider,
+[data-theme="dark"] .toggle-slider {
+  background-color: #4a5568;
+}
+
+.toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+
+.toggle-input:checked + .toggle-slider {
+  background-color: #ea4c89;
+}
+
+.toggle-input:checked + .toggle-slider:before {
+  transform: translateX(20px);
+}
+
+/* Save Button */
+.save-preferences {
+  margin-top: 32px;
+  display: flex;
+  justify-content: center;
+}
+
+.save-button {
+  padding: 10px 20px;
+  background-color: #ea4c89;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.save-button:hover {
+  background-color: #d03571;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .notification-settings-container {
+    flex-direction: column;
+  }
+  
+  .profile-sidebar {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+  
+  .sidebar-links {
+    flex-direction: row;
+    overflow-x: auto;
+    padding-bottom: 8px;
+  }
+  
+  .sidebar-nav-item {
+    padding: 8px 16px;
+    border-left: none;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+  }
+  
+  .sidebar-nav-item.active {
+    border-left-color: transparent;
+    border-bottom-color: #ea4c89;
+  }
+} 

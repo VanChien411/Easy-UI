@@ -4,7 +4,7 @@ import { FaEllipsisH, FaPlus, FaUserFriends } from 'react-icons/fa';
 import useAuth from '../../../hooks/useAuth';
 import UserManagerService from '../../../services/usermanagerService';
 import CardItem from '../Product/Card-item';
-import About from './About';
+import About from './Show/About';
 import './Profile.css';
 
 const Profile = ({ children }) => {

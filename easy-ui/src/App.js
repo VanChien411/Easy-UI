@@ -12,14 +12,18 @@ import Content from "./components/ui/Contents/Content";
 import PaymentCallback from "./components/payment/PaymentCallback";
 import PurchasedProducts from './components/ui/PurchasedProducts/PurchasedProducts';
 import Profile from './components/ui/Profile/Profile';
-import About from './components/ui/Profile/About';
-import EditProfile from './components/ui/Profile/EditProfile';
+import About from './components/ui/Profile/Show/About';
+import EditProfile from './components/ui/Profile/Edit/EditProfile';
+import EmailNotifications from './components/ui/Profile/Email/EmailNotifications';
+import Password from './components/ui/Profile/PassWord/Password';
+import Payouts from './components/ui/Profile/Payouts/Payouts';
 import ProductDetail from './components/ui/ProductDetail/ProductDetail';
 import SearchPage from './pages/Search/SearchPage';
 import { CategoryList, CategoryComponents } from './components/ui/Category';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Alert from './components/utils/Alert';
+import VerifyEmail from './pages/VerifyEmail';
 
 function App() {
   return (
@@ -36,6 +40,7 @@ function App() {
         <Routes>
           {/* Các route không có layout */}
           <Route path="/LoginSignup/:action" element={<LoginSignup />} />
+          <Route path="/verify-email" element={<VerifyEmail />} />
           <Route path="*" element={<PageNotFound />} />
 
           {/* PageHome chứa layout và các route con */}
@@ -145,6 +150,30 @@ function App() {
                 <Profile>
                   <About />
                 </Profile>
+              </PageHome>
+            }
+          />
+          <Route
+            path="/profile/notifications"
+            element={
+              <PageHome>
+                <EmailNotifications />
+              </PageHome>
+            }
+          />
+          <Route
+            path="/profile/password"
+            element={
+              <PageHome>
+                <Password />
+              </PageHome>
+            }
+          />
+          <Route
+            path="/profile/payouts"
+            element={
+              <PageHome>
+                <Payouts />
               </PageHome>
             }
           />
