@@ -1,0 +1,250 @@
+/* About.css */
+
+.about-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px 0;
+}
+
+.about-section {
+  background-color: white;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e5e7eb;
+}
+
+.about-section-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #111827;
+  margin-top: 0;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.about-bio {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #4b5563;
+  margin: 0;
+}
+
+.about-bio-empty {
+  font-size: 14px;
+  color: #9ca3af;
+  font-style: italic;
+  margin: 0;
+}
+
+/* Contact Information */
+.contact-info {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.contact-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.contact-icon {
+  color: #6b7280;
+  margin-top: 3px;
+  flex-shrink: 0;
+  font-size: 16px;
+}
+
+.contact-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.contact-label {
+  font-size: 13px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.contact-value {
+  font-size: 14px;
+  color: #374151;
+}
+
+.website-link {
+  color: #ea4c89;
+  text-decoration: none;
+}
+
+.website-link:hover {
+  text-decoration: underline;
+}
+
+.contact-empty {
+  font-size: 14px;
+  color: #9ca3af;
+  font-style: italic;
+  margin: 0;
+}
+
+/* Work History & Education */
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.history-item {
+  padding-bottom: 16px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.history-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.history-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 8px 0;
+}
+
+.history-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.history-company, 
+.history-degree {
+  color: #4b5563;
+  font-weight: 500;
+}
+
+.history-field {
+  color: #4b5563;
+}
+
+.history-field::before {
+  content: 'in ';
+  color: #6b7280;
+}
+
+.history-period {
+  color: #6b7280;
+}
+
+.history-description {
+  font-size: 14px;
+  color: #4b5563;
+  line-height: 1.5;
+  margin: 8px 0 0;
+}
+
+/* Member Since */
+.member-since {
+  font-size: 14px;
+  color: #4b5563;
+  margin: 0;
+}
+
+/* Loading & Error States */
+.about-loading,
+.about-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #f3f4f6;
+  border-top: 3px solid #ea4c89;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.about-error {
+  color: #ef4444;
+  font-weight: 500;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .about-section {
+    padding: 16px;
+  }
+  
+  .about-section-title {
+    font-size: 16px;
+  }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  .about-section {
+    background-color: #1f2937;
+    border-color: #374151;
+  }
+  
+  .about-section-title {
+    color: #f9fafb;
+    border-bottom-color: #374151;
+  }
+  
+  .about-bio {
+    color: #d1d5db;
+  }
+  
+  .about-bio-empty,
+  .contact-empty {
+    color: #6b7280;
+  }
+  
+  .contact-label {
+    color: #9ca3af;
+  }
+  
+  .contact-value {
+    color: #e5e7eb;
+  }
+  
+  .history-item {
+    border-bottom-color: #374151;
+  }
+  
+  .history-title {
+    color: #f9fafb;
+  }
+  
+  .history-company,
+  .history-degree,
+  .history-field,
+  .member-since,
+  .history-description {
+    color: #d1d5db;
+  }
+  
+  .history-period {
+    color: #9ca3af;
+  }
+} 

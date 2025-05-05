@@ -9,26 +9,55 @@ import UserDetail from "../models/UserDetail";
  */
 class UserManagerService {
   /**
+   * Get user's detailed information by ID
+   * @param {string} userId - The ID of the user
+   * @returns {Promise<UserDetail>} - User's detailed information
+   */
+  async getUserDetail(userId) {
+    try {
+      const response = await apiClient.get(`/User/${userId}/detail`);
+      return UserDetail.fromJson(response.data);
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || "Failed to fetch user details!";
+      console.error("Error fetching user details:", errorMessage);
+      throw new Error(errorMessage);
+    }
+  }
+
+  /**
    * Update current user's profile
    * @param {Object} profileData - User profile data to update
    * @returns {Promise<Object>} - Updated user data
    */
   async updateUserProfile(profileData) {
     try {
-      const response = await apiClient.put('/User/me', {
-        fullName: profileData.fullName,
-        location: profileData.location,
-        bio: profileData.bio,
-        website: profileData.website,
-        workDisplayEmail: profileData.workDisplayEmail,
-        phoneNumber: profileData.phoneNumber,
-        workHistory: profileData.workHistory || [],
-        education: profileData.education || []
-      });
+      console.log("Sending profile update:", JSON.stringify(profileData, null, 2));
+      
+      // Make sure workHistory and education have all required fields
+      const formattedData = {
+        ...profileData,
+        workHistory: (profileData.workHistory || []).map(job => ({
+          title: job.title || "",
+          company: job.company || "",
+          yearStart: job.yearStart || "",
+          yearEnd: job.yearEnd || "",
+          description: job.description || ""
+        })),
+        education: (profileData.education || []).map(edu => ({
+          institution: edu.institution || "",
+          degree: edu.degree || "",
+          field: edu.field || "",
+          startYear: edu.startYear || "",
+          endYear: edu.endYear || "",
+          description: edu.description || ""
+        }))
+      };
+
+      const response = await apiClient.put('/User/me', formattedData);
       return response.data;
     } catch (error) {
       const errorMessage = error.response?.data?.message || "Failed to update user profile!";
-      console.error(errorMessage);
+      console.error("Update profile error:", error.response?.data || error.message);
       throw new Error(errorMessage);
     }
   }

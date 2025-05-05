@@ -32,8 +32,26 @@ class UserDetail {
     this.workDisplayEmail = workDisplayEmail;
     this.phoneNumber = phoneNumber;
     this.createdAt = createdAt;
-    this.workHistory = workHistory;
-    this.education = education;
+    
+    // Ensure workHistory has the correct format
+    this.workHistory = workHistory.map(job => ({
+      title: job.title || '',
+      company: job.company || '',
+      yearStart: job.yearStart || '',
+      yearEnd: job.yearEnd || '',
+      description: job.description || ''
+    }));
+    
+    // Ensure education has the correct format
+    this.education = education.map(edu => ({
+      institution: edu.institution || '',
+      degree: edu.degree || '',
+      field: edu.field || '',
+      startYear: edu.startYear || '',
+      endYear: edu.endYear || '',
+      description: edu.description || ''
+    }));
+    
     this.followersCount = followersCount;
     this.followingCount = followingCount;
     this.isFollowedByCurrentUser = isFollowedByCurrentUser;
@@ -47,6 +65,24 @@ class UserDetail {
   static fromJson(json) {
     if (!json) return new UserDetail();
 
+    // Format workHistory and education arrays to match expected structure
+    const formattedWorkHistory = Array.isArray(json.workHistory) ? json.workHistory.map(job => ({
+      title: job.title || '',
+      company: job.company || '',
+      yearStart: job.yearStart || '',
+      yearEnd: job.yearEnd || '',
+      description: job.description || ''
+    })) : [];
+
+    const formattedEducation = Array.isArray(json.education) ? json.education.map(edu => ({
+      institution: edu.institution || '',
+      degree: edu.degree || '',
+      field: edu.field || '',
+      startYear: edu.startYear || '',
+      endYear: edu.endYear || '',
+      description: edu.description || ''
+    })) : [];
+
     return new UserDetail({
       id: json.id || '',
       userName: json.userName || '',
@@ -59,8 +95,8 @@ class UserDetail {
       workDisplayEmail: json.workDisplayEmail || '',
       phoneNumber: json.phoneNumber || '',
       createdAt: json.createdAt ? new Date(json.createdAt) : null,
-      workHistory: json.workHistory || [],
-      education: json.education || [],
+      workHistory: formattedWorkHistory,
+      education: formattedEducation,
       followersCount: json.followersCount || 0,
       followingCount: json.followingCount || 0,
       isFollowedByCurrentUser: json.isFollowedByCurrentUser || false
