@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { FaEnvelope, FaMapMarkerAlt, FaGlobe, FaPhone } from 'react-icons/fa';
-import useAuth from '../../../hooks/useAuth';
-import userManagerService from '../../../services/usermanagerService';
+import useAuth from '../../../../hooks/useAuth';
+import userManagerService from '../../../../services/usermanagerService';
 import './About.css';
 
 const About = () => {

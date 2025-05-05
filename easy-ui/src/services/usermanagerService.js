@@ -228,6 +228,56 @@ class UserManagerService {
       return false; // Default to not following if there's an error
     }
   }
+
+  /**
+   * Check the email verification status for the current user
+   * @returns {Promise<Object>} - Email verification status
+   */
+  async getEmailStatus() {
+    try {
+      const response = await apiClient.get('/User/me/email-status');
+      console.log('API response for email status:', response.data);
+      return response.data;
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || "Failed to check email status!";
+      console.error("Error checking email status:", errorMessage);
+      throw new Error(errorMessage);
+    }
+  }
+
+  /**
+   * Send a confirmation email to the current user
+   * @returns {Promise<Object>} - Response data
+   */
+  async sendConfirmationEmail() {
+    try {
+      const response = await apiClient.post('/User/me/send-confirmation-email');
+      return response.data;
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || "Failed to send confirmation email!";
+      console.error("Error sending confirmation email:", errorMessage);
+      throw new Error(errorMessage);
+    }
+  }
+
+  /**
+   * Confirm user email using userId and token
+   * @param {string} userId - The ID of the user
+   * @param {string} token - Confirmation token
+   * @returns {Promise<Object>} - Response data
+   */
+  async confirmEmail(userId, token) {
+    try {
+      const response = await apiClient.get('/User/confirm-email', {
+        params: { userId, token }
+      });
+      return response.data;
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || "Failed to confirm email!";
+      console.error("Error confirming email:", errorMessage);
+      throw new Error(errorMessage);
+    }
+  }
 }
 
 export default new UserManagerService(); 
