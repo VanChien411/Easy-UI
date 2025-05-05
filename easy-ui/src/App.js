@@ -12,6 +12,7 @@ import Content from "./components/ui/Contents/Content";
 import PaymentCallback from "./components/payment/PaymentCallback";
 import PurchasedProducts from './components/ui/PurchasedProducts/PurchasedProducts';
 import Profile from './components/ui/Profile/Profile';
+import About from './components/ui/Profile/About';
 import EditProfile from './components/ui/Profile/EditProfile';
 import ProductDetail from './components/ui/ProductDetail/ProductDetail';
 import SearchPage from './pages/Search/SearchPage';
@@ -128,6 +129,26 @@ function App() {
             }
           />
           <Route
+            path="/profile/about"
+            element={
+              <PageHome>
+                <Profile>
+                  <About />
+                </Profile>
+              </PageHome>
+            }
+          />
+          <Route
+            path="/profile/:id/about"
+            element={
+              <PageHome>
+                <Profile>
+                  <About />
+                </Profile>
+              </PageHome>
+            }
+          />
+          <Route
             path="/profile/edit"
             element={
               <PageHome>
@@ -151,7 +172,14 @@ function App() {
               </PageHome>
             }
           />
-          {/* <Route path="/about" element={<PageHome><About /></PageHome>} /> */}
+          <Route
+            path="/components"
+            element={
+              <PageHome>
+                <Content />
+              </PageHome>
+            }
+          />
         </Routes>
       </Router>
       <ToastContainer />

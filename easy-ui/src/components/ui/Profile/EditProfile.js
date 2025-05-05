@@ -28,12 +28,15 @@ const EditProfile = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [showJobSelector, setShowJobSelector] = useState(false);
   const [showEducationForm, setShowEducationForm] = useState(false);
+  
+  // Initialize education form with the exact field names expected by the API
   const [newEducation, setNewEducation] = useState({
     institution: "",
     degree: "",
     field: "",
     startYear: "",
-    endYear: ""
+    endYear: "",
+    description: ""
   });
   
   // Initialize user state with default values
@@ -62,6 +65,24 @@ const EditProfile = () => {
         setIsLoading(true);
         const userDetail = await userManagerService.getCurrentUserDetail();
         
+        // Ensure workHistory and education have all required fields
+        const formattedWorkHistory = (userDetail.workHistory || []).map(job => ({
+          title: job.title || "",
+          company: job.company || "",
+          yearStart: job.yearStart || "",
+          yearEnd: job.yearEnd || "",
+          description: job.description || ""
+        }));
+
+        const formattedEducation = (userDetail.education || []).map(edu => ({
+          institution: edu.institution || "",
+          degree: edu.degree || "",
+          field: edu.field || "",
+          startYear: edu.startYear || "",
+          endYear: edu.endYear || "",
+          description: edu.description || ""
+        }));
+        
         setUser({
           name: userDetail.fullName || userDetail.userName || "",
           avatar: userDetail.avatar || "/placeholder.svg?height=100&width=100",
@@ -71,8 +92,8 @@ const EditProfile = () => {
           phoneNumber: userDetail.phoneNumber || "",
           website: userDetail.website || "",
           customUrl: userDetail.userName || "",
-          workHistory: userDetail.workHistory || [],
-          education: userDetail.education || []
+          workHistory: formattedWorkHistory,
+          education: formattedEducation
         });
       } catch (error) {
         console.error("Failed to load user details:", error);
@@ -80,13 +101,13 @@ const EditProfile = () => {
         
         // Fall back to auth data if API fails
         if (authUser) {
-          setUser(prevUser => ({
-            ...prevUser,
-            name: authUser.name || authUser.userName || prevUser.name,
-            avatar: authUser.avatar || prevUser.avatar,
-            workEmail: authUser.email || prevUser.workEmail,
-          }));
-        }
+      setUser(prevUser => ({
+        ...prevUser,
+        name: authUser.name || authUser.userName || prevUser.name,
+        avatar: authUser.avatar || prevUser.avatar,
+        workEmail: authUser.email || prevUser.workEmail,
+      }));
+    }
       } finally {
         setIsLoading(false);
       }
@@ -111,7 +132,12 @@ const EditProfile = () => {
     try {
       setIsSaving(true);
       
-      // Prepare data for API request
+      console.log("Submitting profile data:", {
+        workHistory: user.workHistory,
+        education: user.education
+      });
+      
+      // Prepare data for API request with the exact structure required by the backend
       const profileData = {
         fullName: user.name,
         location: user.location,
@@ -119,8 +145,21 @@ const EditProfile = () => {
         website: user.website,
         workDisplayEmail: user.workEmail,
         phoneNumber: user.phoneNumber,
-        workHistory: user.workHistory,
-        education: user.education
+        workHistory: user.workHistory.map(job => ({
+          title: job.title || "",
+          company: job.company || "",
+          yearStart: job.yearStart || "",
+          yearEnd: job.yearEnd || "",
+          description: job.description || ""
+        })),
+        education: user.education.map(edu => ({
+          institution: edu.institution || "",
+          degree: edu.degree || "",
+          field: edu.field || "",
+          startYear: edu.startYear || "",
+          endYear: edu.endYear || "",
+          description: edu.description || ""
+        }))
       };
       
       // Call the API to update profile
@@ -128,8 +167,8 @@ const EditProfile = () => {
       
       showSuccessAlert("Profile updated successfully!");
       
-      // Redirect to profile page
-      navigate("/profile");
+    // Redirect to profile page
+    navigate("/profile");
     } catch (error) {
       console.error("Failed to update profile:", error);
       showErrorAlert(error.message || "Failed to update profile. Please try again.");
@@ -142,7 +181,13 @@ const EditProfile = () => {
   const handleSelectJob = (jobType) => {
     setUser(prev => ({
       ...prev,
-      workHistory: [...prev.workHistory, { title: jobType, company: "", yearStart: "", yearEnd: "" }]
+      workHistory: [...prev.workHistory, { 
+        title: jobType, 
+        company: "", 
+        yearStart: "", 
+        yearEnd: "",
+        description: "" 
+      }]
     }));
     setShowJobSelector(false);
   };
@@ -188,7 +233,10 @@ const EditProfile = () => {
 
     setUser(prev => ({
       ...prev,
-      education: [...prev.education, newEducation]
+      education: [...prev.education, {
+        ...newEducation,
+        description: newEducation.description || "" // Ensure description field is always included
+      }]
     }));
 
     // Reset form
@@ -197,7 +245,8 @@ const EditProfile = () => {
       degree: "",
       field: "",
       startYear: "",
-      endYear: ""
+      endYear: "",
+      description: ""
     });
     setShowEducationForm(false);
   };
@@ -425,6 +474,15 @@ const EditProfile = () => {
                                   />
                                 </div>
                               </div>
+                              <div className="entry-field">
+                                <label>Description</label>
+                                <input
+                                  type="text"
+                                  value={job.description || ''}
+                                  onChange={(e) => handleJobChange(index, 'description', e.target.value)}
+                                  placeholder="Brief job description"
+                                />
+                              </div>
                             </div>
                           </div>
                         ))}
@@ -463,8 +521,8 @@ const EditProfile = () => {
                         className="add-item-button"
                         onClick={() => setShowJobSelector(true)}
                       >
-                        + Add job
-                      </button>
+                      + Add job
+                    </button>
                     )}
                   </div>
 
@@ -563,6 +621,16 @@ const EditProfile = () => {
                               />
                             </div>
                           </div>
+                          <div className="education-field">
+                            <label>Description</label>
+                            <input
+                              type="text"
+                              name="description"
+                              value={newEducation.description}
+                              onChange={handleEducationChange}
+                              placeholder="Brief education description"
+                            />
+                          </div>
                           <div className="education-form-actions">
                             <button 
                               type="button" 
@@ -580,8 +648,8 @@ const EditProfile = () => {
                         className="add-item-button"
                         onClick={() => setShowEducationForm(true)}
                       >
-                        + Add education
-                      </button>
+                      + Add education
+                    </button>
                     )}
                   </div>
                 </div>

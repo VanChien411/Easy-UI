@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation, useParams } from 'react-router-dom';
+import { Link, useLocation, useParams, Routes, Route } from 'react-router-dom';
 import { FaEllipsisH, FaPlus, FaUserFriends } from 'react-icons/fa';
 import useAuth from '../../../hooks/useAuth';
 import UserManagerService from '../../../services/usermanagerService';
 import CardItem from '../Product/Card-item';
+import About from './About';
 import './Profile.css';
 
-const Profile = () => {
+const Profile = ({ children }) => {
   const { isAuthenticated, user, userId: currentUserId } = useAuth();
   const location = useLocation();
   const { id: profileId } = useParams();
@@ -125,13 +126,16 @@ const Profile = () => {
 
   // Function to determine if a nav link is active
   const isActive = (path) => {
-    return location.pathname === path ? 'active-nav-link' : '';
+    return location.pathname === path;
   };
 
   // Handle card expand/collapse
   const handleCardExpand = (index) => {
     setExpandedCardIndex(expandedCardIndex === index ? null : index);
   };
+
+  // Check if we're on the About tab
+  const isAboutPage = location.pathname.includes('/about');
 
   return (
     <div className="profile-page">
@@ -187,66 +191,75 @@ const Profile = () => {
 
             <div className="profile-tabs-container">
               <nav className="profile-tabs">
-                <Link to={`/profile${profileId ? `/${profileId}` : ''}`} className={`profile-tab ${isActive(`/profile${profileId ? `/${profileId}` : ''}`) ? 'active' : ''}`}>
+                <Link 
+                  to={`/profile${profileId ? `/${profileId}` : ''}`} 
+                  className={`profile-tab ${isActive(`/profile${profileId ? `/${profileId}` : ''}`) ? 'active' : ''}`}
+                >
                   Work
                 </Link>
-                <Link to={`/profile${profileId ? `/${profileId}` : ''}/services`} className={`profile-tab ${isActive(`/profile${profileId ? `/${profileId}` : ''}/services`) ? 'active' : ''}`}>
+                <Link 
+                  to={`/profile${profileId ? `/${profileId}` : ''}/services`} 
+                  className={`profile-tab ${isActive(`/profile${profileId ? `/${profileId}` : ''}/services`) ? 'active' : ''}`}
+                >
                   Artical
                   <span className="new-badge">NEW</span>
                 </Link>
-                <Link to={`/profile${profileId ? `/${profileId}` : ''}/liked`} className={`profile-tab ${isActive(`/profile${profileId ? `/${profileId}` : ''}/liked`) ? 'active' : ''}`}>
+                <Link 
+                  to={`/profile${profileId ? `/${profileId}` : ''}/liked`} 
+                  className={`profile-tab ${isActive(`/profile${profileId ? `/${profileId}` : ''}/liked`) ? 'active' : ''}`}
+                >
                   Liked Shots
                 </Link>
-                <Link to={`/profile${profileId ? `/${profileId}` : ''}/about`} className={`profile-tab ${isActive(`/profile${profileId ? `/${profileId}` : ''}/about`) ? 'active' : ''}`}>
+                <Link 
+                  to={`/profile${profileId ? `/${profileId}` : ''}/about`} 
+                  className={`profile-tab ${isActive(`/profile${profileId ? `/${profileId}` : ''}/about`) ? 'active' : ''}`}
+                >
                   About
                 </Link>
               </nav>
             </div>
 
             <div className="profile-content">
-              {componentsLoading ? (
-                <div className="loading-container">
-                  <div className="loading-spinner"></div>
-                  <p>Loading components...</p>
-                </div>
+              {isAboutPage ? (
+                // Render About component or children if we're on the About tab
+                children || <About />
               ) : (
-                <div className="profile-grid">
-                  {userComponents.length === 0 ? (
-                    // Show upload card only if no components and viewing own profile
-                    isOwnProfile && (
-                      <div className="profile-grid-item">
-                        <div className="upload-card">
-                          <div className="upload-icon">
-                            <FaPlus size={24} />
-                          </div>
-                          <h2 className="upload-title">Upload your first shot</h2>
-                          <p className="upload-description">
-                            Show off your best work. Get feedback, likes and be a part of a growing community.
-                          </p>
-                          <button className="upload-button">
-                            Upload your first shot
-                          </button>
-                        </div>
-                      </div>
-                    )
+                // Otherwise render the default content (components grid)
+                <div className="profile-grid-container">
+                  {componentsLoading ? (
+                    <div className="loading-container">
+                      <div className="loading-spinner"></div>
+                      <p>Loading components...</p>
+                    </div>
+                  ) : userComponents.length === 0 ? (
+                    <div className="empty-components">
+                      <p>No components found.</p>
+                      {isOwnProfile && (
+                        <Link to="/components" className="create-component-button">
+                          <FaPlus size={14} />
+                          Create Component
+                        </Link>
+                      )}
+                    </div>
                   ) : (
-                    // Map through components and render CardItem for each
-                    userComponents.map((component, index) => (
-                      <div key={component.id || index} className="profile-grid-item">
-                        <CardItem
-                          item={{
-                            ...component,
-                            createdBy: {
-                              id: targetUserId,
-                              name: userData.name,
-                              avatar: userData.avatar
-                            }
-                          }}
-                          isExpanded={expandedCardIndex === index}
-                          onExpand={() => handleCardExpand(index)}
-                        />
-                      </div>
-                    ))
+                    <div className="profile-grid">
+                      {userComponents.map((component, index) => (
+                        <div key={component.id || index} className="profile-grid-item">
+                          <CardItem
+                            item={{
+                              ...component,
+                              createdBy: {
+                                id: targetUserId,
+                                name: userData.name,
+                                avatar: userData.avatar
+                              }
+                            }}
+                            isExpanded={expandedCardIndex === index}
+                            onExpand={() => handleCardExpand(index)}
+                          />
+                        </div>
+                      ))}
+                    </div>
                   )}
                 </div>
               )}
