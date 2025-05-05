@@ -18,6 +18,9 @@ function LoginSignup() {
     email: "",
     password: "",
     fullName: "",
+    userName: "",
+    phoneNumber: "",
+    avatar: ""
   });
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -110,9 +113,12 @@ function LoginSignup() {
   // Function to register a new user
   const registerUser = async (userData) => {
     const response = await register({
-      email: userData.email,
-      password: userData.password,
-      fullName: userData.fullName,
+      email: userData.email || "",
+      password: userData.password || "",
+      fullName: userData.fullName || "",
+      userName: userData.email || "",
+      phoneNumber: userData.phoneNumber || "",
+      avatar: userData.avatar || ""
     });
     return response;
   };
@@ -149,18 +155,19 @@ function LoginSignup() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Validate fields
-    if (!validate()) {
-      return;
-    }
-    
     setIsLoading(true);
     try {
-      if (action === "sign-up") {
+      // Sửa lại cách xác định action đăng ký
+      // Kiểm tra xem form hiện tại là form đăng ký hay không
+      const isRegisterForm = containerRef.current.classList.contains("active");
+      
+      if (isRegisterForm) {
+        // Gọi API đăng ký
         await registerUser(formData);
         showSuccessAlert("Registration successful!");
-        navigate("/LoginSignup/sign-in");
+        navigate("/LoginSignup/login");
       } else {
+        // Gọi API đăng nhập
         const result = await loginUser(formData);
         showSuccessAlert("Login successful!");
         

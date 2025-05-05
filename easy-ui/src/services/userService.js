@@ -2,7 +2,17 @@ import apiClient from "../config/axios"; // Correct relative path
 
 export const register = async (data) => {
   try {
-    const response = await apiClient.post("/Auth/register", data);
+    // Đảm bảo gửi đúng dữ liệu theo model AspNetUsers
+    const userData = {
+      userName: data.userName || "",  // Sử dụng email làm username nếu không có
+      email: data.email || "",
+      password: data.password || "",
+      fullName: data.fullName || "",
+      phoneNumber: data.phoneNumber || "",
+      avatar: data.avatar || ""
+    };
+    
+    const response = await apiClient.post("/Auth/register", userData);
     const { token, user } = response.data;
     
     // Return both token and user data for Redux store
