@@ -219,10 +219,10 @@ function Navbar() {
             </div>
             
             {/* Cart Icon */}
-            <div className="cart-container" onMouseEnter={handleCartHover} onMouseLeave={handleCartLeave}>
-              <span onClick={() => navigate("/Cart")}>
+            <div className="cart-container" onClick={() => navigate("/Cart")} onMouseEnter={handleCartHover} onMouseLeave={handleCartLeave}>
+           
                 <span className="fa fa-shopping-cart cart-icon"></span>
-                <span className="cart-count">{totalQuantity}</span>
+                <span className="cart-count-test">{totalQuantity}</span>
                 <div className="cart-dropdown" style={{ display: isCartOpen ? "block" : "none" }}>
                   {items.map((item) => (
                     <div key={item.uiComponentId} className="cart-item">
@@ -231,8 +231,17 @@ function Navbar() {
                       <span className="cart-item-price">{item.price || "0"}$</span>
                     </div>
                   ))}
+                  <div className="cart-summary">
+    <div className="cart-summary-row">
+      <span>Subtotal:</span>
+      <span>${items.reduce((total, item) => total + (item.price * item.quantity || 0), 0).toFixed(2)}</span>
+    </div>
+    <button className="checkout-button">
+      Checkout
+    </button>
+  </div>
                 </div>
-              </span>
+          
             </div>
 
             {!isAuthenticated ? (

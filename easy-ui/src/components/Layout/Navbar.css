@@ -373,17 +373,17 @@
   color: var(--text-color);
 }
 
-.cart-count {
+.cart-count-test {
   position: absolute;
-  top: -8px;
-  right: -8px;
+  top: -10px;
+  right: -15px;
   background: #ea4c89;
   color: white;
   font-size: 10px;
   font-weight: bold;
-  border-radius: 50%;
-  padding: 2px 6px;
-  min-width: 16px;
+  border-radius: 40%;
+  padding: 2px 5px;
+  min-width: 10px;
   text-align: center;
 }
 
@@ -427,6 +427,38 @@
   font-size: 13px;
   color: var(--text-color);
   text-align: right;
+}
+
+/* Cart Summary Styles */
+.cart-summary {
+  padding: 15px;
+  border-top: 1px solid var(--card-border-color);
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+.cart-summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.checkout-button {
+  width: 100%;
+  padding: 10px;
+  background-color: var(--button-html-color);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.checkout-button:hover {
+  background-color: var(--button-html-hover-color, #5a3f7a);
 }
 
 /* Header wrapper for better spacing */
