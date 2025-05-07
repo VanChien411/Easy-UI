@@ -165,7 +165,7 @@ function AddUi({
 
   return (
     <>
-      <div className="add-ui-container">
+      <div className="add-ui-container-container">
         <div className="left-panel">
           <div className="tabs">
             <button

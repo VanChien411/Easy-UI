@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import chatbotService from "../../services/chatbotService";
 import ChatbotIcon from "../../../src/assets/images/chatbot.png";
+import "../../assets/styles/Chatbot.css"; // Import your CSS file for styling
 
 function Chatbot() {
   const [isOpen, setIsOpen] = useState(false);
@@ -64,138 +65,6 @@ function Chatbot() {
 
   return (
     <>
-      <style>{`
-        .chatbot-icon {
-          position: fixed;
-          bottom: 20px;
-          right: 20px;
-          cursor: pointer;
-          z-index: 999;
-        }
-
-        .chatbot-container {
-          position: fixed;
-          bottom: 80px;
-          right: 20px;
-          width: 320px;
-          height: 460px;
-          background-color: white;
-          border-radius: 10px;
-          box-shadow: 0 0 10px rgba(0,0,0,0.3);
-          display: flex;
-          flex-direction: column;
-          z-index: 1000;
-          overflow: hidden;
-          font-family: Arial, sans-serif;
-        }
-
-        .chatbot-header {
-          background-color: #4a90e2;
-          color: white;
-          padding: 10px;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-        }
-
-        .chatbot-controls button {
-          background: none;
-          border: none;
-          color: white;
-          margin-left: 5px;
-          font-size: 14px;
-          cursor: pointer;
-        }
-
-        .chatbot-messages {
-          flex: 1;
-          padding: 10px;
-          overflow-y: auto;
-          background-color: #f5f5f5;
-        }
-
-        .message {
-          padding: 8px 12px;
-          margin-bottom: 8px;
-          border-radius: 20px;
-          max-width: 80%;
-          word-wrap: break-word;
-          color: black;
-          font-size: 14px;
-          line-height: 1.4;
-        }
-
-        .user-message {
-          background-color: #d1e7dd;
-          align-self: flex-end;
-          margin-left: auto;
-        }
-
-        .bot-message {
-          background-color: #ffffff;
-          border: 1px solid #ccc;
-          align-self: flex-start;
-          margin-right: auto;
-        }
-
-        .chatbot-input {
-          display: flex;
-          padding: 10px;
-          border-top: 1px solid #ccc;
-          background-color: white;
-        }
-
-        .chatbot-input input {
-          flex: 1;
-          padding: 8px 10px;
-          border-radius: 20px;
-          border: 1px solid #ccc;
-          outline: none;
-        }
-
-        .chatbot-input button {
-          background-color: #4a90e2;
-          color: white;
-          border: none;
-          border-radius: 50%;
-          width: 36px;
-          height: 36px;
-          margin-left: 10px;
-          cursor: pointer;
-        }
-
-        .loading {
-          display: flex;
-          gap: 4px;
-          padding: 10px 16px;
-        }
-
-        .loading .dot {
-          width: 6px;
-          height: 6px;
-          background-color: #888;
-          border-radius: 50%;
-          animation: blink 1s infinite alternate;
-        }
-
-        .loading .dot:nth-child(2) {
-          animation-delay: 0.2s;
-        }
-
-        .loading .dot:nth-child(3) {
-          animation-delay: 0.4s;
-        }
-
-        @keyframes blink {
-          0% { opacity: 0.2; }
-          100% { opacity: 1; }
-        }
-
-        .minimized {
-          height: 40px;
-          overflow: hidden;
-        }
-      `}</style>
 
       {!isOpen && (
         <div

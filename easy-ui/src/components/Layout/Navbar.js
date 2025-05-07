@@ -158,9 +158,9 @@ function Navbar() {
               </button>
             </div>
 
-            <Link to="/" className="navbar-menu-item">
+            {/* <Link to="/" className="navbar-menu-item">
               Find Jobs
-            </Link>
+            </Link> */}
 
             {/* Develop Dropdown */}
             <div className="nav-dropdown" ref={developDropdownRef}>
@@ -246,11 +246,6 @@ function Navbar() {
 
             {!isAuthenticated ? (
               <>
-                {/* Sign up button */}
-                <Link to="/LoginSignup/register" className="text-sm font-medium hidden md:block">
-                  Sign up
-                </Link>
-
                 {/* Login button */}
                 <Link to="/LoginSignup/login" style={{ backgroundColor: isDarkMode ? '#6c4f94' : '#333', color: '#fff' }} className="px-4 py-2 rounded-full text-sm font-medium">
                   Log in
@@ -306,9 +301,9 @@ function Navbar() {
             <Link to="/" className="navbar-menu-item">
               Hire a Designer
             </Link>
-            <Link to="/" className="navbar-menu-item">
+            {/* <Link to="/" className="navbar-menu-item">
               Find Jobs
-            </Link>
+            </Link> */}
             <Link to="/" className="navbar-menu-item">
               Blog
             </Link>

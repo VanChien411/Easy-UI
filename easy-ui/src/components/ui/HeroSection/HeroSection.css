@@ -54,12 +54,16 @@
 .hero-search-container {
   position: relative;
   width: 100%;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .hero-search-input {
   width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
   height: 48px;
-  padding: 0 48px 0 16px;
+  padding: 0 16px;
   border: 1px solid var(--card-border-color);
   border-radius: 8px;
   background-color: rgba(255, 255, 255, 0.1);
@@ -68,6 +72,7 @@
   color: var(--text-color);
 }
 
+
 .hero-search-input:focus {
   outline: none;
   box-shadow: 0 0 0 4px rgba(var(--card-border-color), 0.2);
@@ -75,7 +80,7 @@
 
 .hero-search-button {
   position: absolute;
-  right: 8px;
+  right: 15px;
   top: 50%;
   transform: translateY(-50%);
   background-color: var(--button-html-color);
@@ -231,5 +236,8 @@
   
   .filters-button {
     align-self: flex-end;
+  }
+  .hero-content{
+    padding: 0 20px; /* Adjusted padding for smaller screens */
   }
 }
