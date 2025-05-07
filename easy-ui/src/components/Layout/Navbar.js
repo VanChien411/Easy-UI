@@ -203,7 +203,7 @@ function Navbar() {
               )}
             </div>
 
-            <Link to="/" className="navbar-menu-item">
+            <Link to="/blog" className="navbar-menu-item">
               Blog
             </Link>
           </div>

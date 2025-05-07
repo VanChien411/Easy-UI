@@ -26,6 +26,9 @@ import 'react-toastify/dist/ReactToastify.css';
 import Alert from './components/utils/Alert';
 import VerifyEmail from './pages/VerifyEmail';
 import { UserProfileProvider } from './hooks/UserProfileContext';
+import BlogPage from './components/ui/Blog/BlogPage';
+import BlogPost from './components/ui/Blog/BlogPost';
+import BlogTagPage from './components/ui/Blog/BlogTagPage';
 
 // Define a ProfileLayout component that wraps its children with UserProfileProvider
 const ProfileLayout = ({ children }) => (
@@ -136,6 +139,32 @@ function App() {
             }
           />
           <Route path="/purchased-products" element={<PurchasedProducts />} />
+
+          {/* Blog routes */}
+          <Route
+            path="/blog"
+            element={
+              <PageHome>
+                <BlogPage />
+              </PageHome>
+            }
+          />
+          <Route
+            path="/blog/:slug"
+            element={
+              <PageHome>
+                <BlogPost />
+              </PageHome>
+            }
+          />
+          <Route
+            path="/blog/tag/:tag"
+            element={
+              <PageHome>
+                <BlogTagPage />
+              </PageHome>
+            }
+          />
 
           {/* Profile routes with UserProfileProvider */}
           <Route
