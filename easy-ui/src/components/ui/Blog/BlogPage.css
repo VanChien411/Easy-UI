@@ -1,0 +1,127 @@
+/* Blog page styles */
+.blog-page {
+  width: 100%;
+}
+
+.blog-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+  text-align: left;
+}
+
+.blog-main-title {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 24px;
+  color: #111827;
+}
+
+/* Blog posts list */
+.blog-posts-list {
+  margin-bottom: 20px;
+}
+
+.blog-post {
+  padding: 10px 0;
+}
+
+.blog-post-date {
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 8px;
+}
+
+.blog-post-title {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0 0 10px 0;
+  line-height: 1.3;
+}
+
+.blog-post-title-link {
+  color: #111827;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.blog-post-title-link:hover {
+  color: #ea4c89;
+}
+
+.blog-post-excerpt {
+  font-size: 16px;
+  line-height: 1.5;
+  color: #4b5563;
+  margin-bottom: 10px;
+}
+
+.blog-post-read-more {
+  color: #ea4c89;
+  font-weight: 500;
+  text-decoration: none;
+  font-size: 15px;
+  display: inline-block;
+  margin-bottom: 10px;
+}
+
+.blog-post-read-more:hover {
+  text-decoration: underline;
+}
+
+.blog-post-divider {
+  border: none;
+  border-top: 1px solid #e5e7eb;
+  margin: 5px 0;
+}
+
+/* Load more button */
+.blog-load-more {
+  margin-top: 20px;
+}
+
+.blog-load-more-button {
+  padding: 10px 20px;
+  background-color: #f3f4f6;
+  color: #374151;
+  border: none;
+  border-radius: 24px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.blog-load-more-button:hover {
+  background-color: #e5e7eb;
+}
+
+/* Dark mode styles */
+html[data-theme="dark"] .blog-main-title {
+  color: #f9fafb;
+}
+
+html[data-theme="dark"] .blog-post-title-link {
+  color: #f9fafb;
+}
+
+html[data-theme="dark"] .blog-post-excerpt {
+  color: #d1d5db;
+}
+
+html[data-theme="dark"] .blog-post-date {
+  color: #9ca3af;
+}
+
+html[data-theme="dark"] .blog-post-divider {
+  border-color: #374151;
+}
+
+html[data-theme="dark"] .blog-load-more-button {
+  background-color: #1f2937;
+  color: #e5e7eb;
+}
+
+html[data-theme="dark"] .blog-load-more-button:hover {
+  background-color: #374151;
+} 
