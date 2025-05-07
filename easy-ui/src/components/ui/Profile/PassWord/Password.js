@@ -1,18 +1,12 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import './Password.css';
 import useAuth from '../../../../hooks/useAuth';
+import { ProfileHeader, ProfileSidebar } from '../shared';
 
 const Password = () => {
   const { user } = useAuth();
   
-  // Mock user data, will be replaced with real auth data when available
-  const [userData, setUserData] = useState({
-    name: user?.name || "Tien Pham",
-    avatar: user?.avatar || "/placeholder.svg?height=100&width=100",
-  });
-
   // Password state
   const [passwords, setPasswords] = useState({
     currentPassword: "",
@@ -86,67 +80,18 @@ const Password = () => {
   return (
     <div className="password-page">
       <div className="profile-container">
-        <div className="profile-header">
-          <div className="profile-avatar-container">
-            <img
-              src={userData.avatar}
-              alt={userData.name}
-              className="profile-avatar"
-            />
-          </div>
+        {/* Use the shared ProfileHeader component */}
+        <ProfileHeader 
+          section="Password"
+          description="Update your password"
+        />
 
-          <h1 className="profile-name">
-            {userData.name} <span className="profile-subheading">/ Password</span>
-          </h1>
-          <p className="profile-bio">Update your password</p>
-        </div>
-
-        <div className="password-container">
-          {/* Sidebar Navigation */}
-          <div className="profile-sidebar">
-            <h2 className="sidebar-heading">ACCOUNT</h2>
-            <div className="sidebar-links">
-              <Link to="/profile/edit" className="sidebar-nav-item">
-                Edit Profile
-              </Link>
-              <Link to="/profile/password" className="sidebar-nav-item active">
-                Password
-              </Link>
-              <Link to="/profile/social" className="sidebar-nav-item">
-                Social Profiles
-              </Link>
-              <Link to="/profile/company" className="sidebar-nav-item">
-                Company
-              </Link>
-              <Link to="/profile/payouts" className="sidebar-nav-item">
-                Payouts
-              </Link>
-              <Link to="/profile/notifications" className="sidebar-nav-item">
-                Email Notifications
-              </Link>
-              <Link to="/profile/billing" className="sidebar-nav-item">
-                Billing
-              </Link>
-              <Link to="/profile/sessions" className="sidebar-nav-item">
-                Sessions
-              </Link>
-              <Link to="/profile/applications" className="sidebar-nav-item">
-                Applications
-              </Link>
-              <Link to="/profile/data-export" className="sidebar-nav-item">
-                Data Export
-              </Link>
-            </div>
-
-            <div className="delete-account-section">
-              <Link to="/profile/delete" className="delete-account-link">
-                Delete Account
-              </Link>
-            </div>
-          </div>
+        <div className="profile-layout">
+          {/* Use the shared ProfileSidebar component */}
+          <ProfileSidebar activeTab="password" />
 
           {/* Main Content */}
-          <div className="password-content">
+          <div className="profile-content">
             <div className="password-card">
               <h2 className="password-section-title">Change Password</h2>
 
@@ -198,7 +143,6 @@ const Password = () => {
                       {showPasswords.newPassword ? <FaEyeSlash /> : <FaEye />}
                     </button>
                   </div>
-                  <p className="password-hint">Password must be at least 8 characters long</p>
                 </div>
 
                 <div className="form-group">
@@ -225,24 +169,11 @@ const Password = () => {
                 </div>
 
                 <div className="form-actions">
-                  <button
-                    type="submit"
-                    className="update-password-button"
-                  >
-                    Update Password
+                  <button type="submit" className="password-submit-button">
+                    Change Password
                   </button>
                 </div>
               </form>
-
-              <div className="forgot-password-section">
-                <h3 className="forgot-password-title">Forgot your password?</h3>
-                <p className="forgot-password-text">
-                  If you can't remember your current password, you can{" "}
-                  <Link to="/forgot-password" className="forgot-password-link">
-                    reset your password here
-                  </Link>.
-                </p>
-              </div>
             </div>
           </div>
         </div>

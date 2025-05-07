@@ -25,4 +25,4 @@ yarn-error.log*
 
 
 # local env production
-# src/config/axios.js
+src/config/axios.js

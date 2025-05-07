@@ -356,3 +356,114 @@
     border-top-color: #ea4c89;
   }
 }
+
+/* Light Theme Override for Profile Elements */
+html:not(.dark-mode) .more-options-button {
+  background-color: #f9fafb;
+  color: #6b7280;
+  border: 1px solid #e5e7eb;
+}
+
+html:not(.dark-mode) .more-options-button:hover {
+  background-color: #f3f4f6;
+}
+
+html:not(.dark-mode) .profile-tab {
+  color: #6b7280;
+  border-bottom: 2px solid transparent;
+}
+
+html:not(.dark-mode) .profile-tab.active {
+  color: #ea4c89;
+  border-bottom-color: #ea4c89;
+}
+
+html:not(.dark-mode) .profile-tab:hover:not(.active) {
+  color: #111827;
+}
+
+html:not(.dark-mode) .profile-name {
+  color: #111827;
+}
+
+html:not(.dark-mode) .profile-bio {
+  color: #6b7280;
+}
+
+html:not(.dark-mode) .profile-stat-value {
+  color: #111827;
+}
+
+html:not(.dark-mode) .profile-stat-label {
+  color: #6b7280;
+}
+
+html:not(.dark-mode) .profile-stat-separator {
+  background-color: #d1d5db;
+}
+
+/* Add these rules at the end of the file to ensure proper styling in dark theme */
+
+/* Dark Theme styles with correct attribute selector */
+html[data-theme="dark"] .profile-header {
+  border-bottom-color: #1f2937;
+}
+
+html[data-theme="dark"] .profile-tabs-container {
+  border-bottom-color: #1f2937;
+}
+
+html[data-theme="dark"] .profile-name {
+  color: #f9fafb;
+}
+
+html[data-theme="dark"] .profile-bio {
+  color: #9ca3af;
+}
+
+html[data-theme="dark"] .profile-stat-value {
+  color: #f3f4f6;
+}
+
+html[data-theme="dark"] .profile-stat-label {
+  color: #9ca3af;
+}
+
+html[data-theme="dark"] .profile-stat-separator {
+  background-color: #4b5563;
+}
+
+html[data-theme="dark"] .more-options-button {
+  background-color: #1f2937 !important;
+  border-color: #374151 !important;
+  color: #9ca3af !important;
+}
+
+html[data-theme="dark"] .more-options-button:hover {
+  background-color: #111827 !important;
+}
+
+html[data-theme="dark"] .follow-button.following {
+  background-color: #1f2937;
+  color: #d1d5db;
+  border-color: #374151;
+}
+
+html[data-theme="dark"] .follow-button.following:hover {
+  background-color: #7f1d1d;
+  color: #fee2e2;
+  border-color: #7f1d1d;
+}
+
+html[data-theme="dark"] .profile-tab {
+  color: #9ca3af;
+}
+
+html[data-theme="dark"] .profile-tab:hover:not(.active) {
+  color: #f3f4f6;
+}
+
+html[data-theme="dark"] .loading-spinner {
+  border-color: #1f2937;
+  border-top-color: #ea4c89;
+}
