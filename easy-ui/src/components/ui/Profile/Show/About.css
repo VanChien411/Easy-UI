@@ -199,52 +199,59 @@
   }
 }
 
-/* Dark Mode Support */
-@media (prefers-color-scheme: dark) {
-  .about-section {
-    background-color: #1f2937;
-    border-color: #374151;
-  }
-  
-  .about-section-title {
-    color: #f9fafb;
-    border-bottom-color: #374151;
-  }
-  
-  .about-bio {
-    color: #d1d5db;
-  }
-  
-  .about-bio-empty,
-  .contact-empty {
-    color: #6b7280;
-  }
-  
-  .contact-label {
-    color: #9ca3af;
-  }
-  
-  .contact-value {
-    color: #e5e7eb;
-  }
-  
-  .history-item {
-    border-bottom-color: #374151;
-  }
-  
-  .history-title {
-    color: #f9fafb;
-  }
-  
-  .history-company,
-  .history-degree,
-  .history-field,
-  .member-since,
-  .history-description {
-    color: #d1d5db;
-  }
-  
-  .history-period {
-    color: #9ca3af;
-  }
+/* Dark Theme Styles */
+html[data-theme="dark"] .about-section {
+  background-color: #1f2937;
+  border-color: #374151;
+}
+
+html[data-theme="dark"] .about-section-title {
+  color: #f9fafb;
+  border-bottom-color: #374151;
+}
+
+html[data-theme="dark"] .about-bio {
+  color: #d1d5db;
+}
+
+html[data-theme="dark"] .about-bio-empty,
+html[data-theme="dark"] .contact-empty {
+  color: #6b7280;
+}
+
+html[data-theme="dark"] .contact-icon {
+  color: #9ca3af;
+}
+
+html[data-theme="dark"] .contact-label {
+  color: #9ca3af;
+}
+
+html[data-theme="dark"] .contact-value {
+  color: #e5e7eb;
+}
+
+html[data-theme="dark"] .history-item {
+  border-bottom-color: #374151;
+}
+
+html[data-theme="dark"] .history-title {
+  color: #f9fafb;
+}
+
+html[data-theme="dark"] .history-company,
+html[data-theme="dark"] .history-degree,
+html[data-theme="dark"] .history-field,
+html[data-theme="dark"] .member-since,
+html[data-theme="dark"] .history-description {
+  color: #d1d5db;
+}
+
+html[data-theme="dark"] .history-period {
+  color: #9ca3af;
+}
+
+html[data-theme="dark"] .loading-spinner {
+  border-color: #374151;
+  border-top-color: #ea4c89;
 } 

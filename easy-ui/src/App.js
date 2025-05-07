@@ -17,6 +17,7 @@ import EditProfile from './components/ui/Profile/Edit/EditProfile';
 import EmailNotifications from './components/ui/Profile/Email/EmailNotifications';
 import Password from './components/ui/Profile/PassWord/Password';
 import Payouts from './components/ui/Profile/Payouts/Payouts';
+import Social from './components/ui/Profile/Social';
 import ProductDetail from './components/ui/ProductDetail/ProductDetail';
 import SearchPage from './pages/Search/SearchPage';
 import { CategoryList, CategoryComponents } from './components/ui/Category';
@@ -24,6 +25,16 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Alert from './components/utils/Alert';
 import VerifyEmail from './pages/VerifyEmail';
+import { UserProfileProvider } from './hooks/UserProfileContext';
+
+// Define a ProfileLayout component that wraps its children with UserProfileProvider
+const ProfileLayout = ({ children }) => (
+  <PageHome>
+    <UserProfileProvider>
+      {children}
+    </UserProfileProvider>
+  </PageHome>
+);
 
 function App() {
   return (
@@ -125,72 +136,82 @@ function App() {
             }
           />
           <Route path="/purchased-products" element={<PurchasedProducts />} />
+
+          {/* Profile routes with UserProfileProvider */}
           <Route
             path="/profile"
             element={
-              <PageHome>
+              <ProfileLayout>
                 <Profile />
-              </PageHome>
+              </ProfileLayout>
             }
           />
           <Route
             path="/profile/about"
             element={
-              <PageHome>
+              <ProfileLayout>
                 <Profile>
                   <About />
                 </Profile>
-              </PageHome>
+              </ProfileLayout>
             }
           />
           <Route
             path="/profile/:id/about"
             element={
-              <PageHome>
+              <ProfileLayout>
                 <Profile>
                   <About />
                 </Profile>
-              </PageHome>
+              </ProfileLayout>
             }
           />
           <Route
             path="/profile/notifications"
             element={
-              <PageHome>
+              <ProfileLayout>
                 <EmailNotifications />
-              </PageHome>
+              </ProfileLayout>
             }
           />
           <Route
             path="/profile/password"
             element={
-              <PageHome>
+              <ProfileLayout>
                 <Password />
-              </PageHome>
+              </ProfileLayout>
             }
           />
           <Route
             path="/profile/payouts"
             element={
-              <PageHome>
+              <ProfileLayout>
                 <Payouts />
-              </PageHome>
+              </ProfileLayout>
+            }
+          />
+          <Route
+            path="/profile/social"
+            element={
+              <ProfileLayout>
+                <Social />
+              </ProfileLayout>
             }
           />
           <Route
             path="/profile/edit"
             element={
-              <PageHome>
+              <ProfileLayout>
                 <EditProfile />
-              </PageHome>
+              </ProfileLayout>
             }
           />
           <Route
             path="/profile/:id"
             element={
-              <PageHome>
+              <ProfileLayout>
                 <Profile />
-              </PageHome>
+              </ProfileLayout>
             }
           />
           <Route
