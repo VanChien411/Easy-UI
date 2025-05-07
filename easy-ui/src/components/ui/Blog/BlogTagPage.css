@@ -199,4 +199,66 @@ html[data-theme="dark"] .blog-tag-back-button:hover {
 
 html[data-theme="dark"] .blog-tag-post-image-wrapper {
   background-color: #1f2937;
+}
+
+.blog-tag-loading,
+.blog-tag-error {
+  text-align: center;
+  padding: 40px 20px;
+  margin: 20px 0;
+  border-radius: 8px;
+  background-color: #f9fafb;
+}
+
+html[data-theme="dark"] .blog-tag-loading,
+html[data-theme="dark"] .blog-tag-error {
+  background-color: #1f2937;
+  color: #e5e7eb;
+}
+
+.blog-tag-loading {
+  color: #6b7280;
+  font-style: italic;
+}
+
+.blog-tag-error {
+  color: #dc2626;
+  font-weight: 500;
+}
+
+.blog-tag-load-more {
+  margin: 40px 0;
+  text-align: center;
+}
+
+.blog-tag-load-more-button {
+  padding: 8px 20px;
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  font-weight: 500;
+  color: #4b5563;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.blog-tag-load-more-button:hover {
+  background-color: #f3f4f6;
+  border-color: #d1d5db;
+}
+
+.blog-tag-load-more-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+html[data-theme="dark"] .blog-tag-load-more-button {
+  background-color: #1f2937;
+  border-color: #374151;
+  color: #9ca3af;
+}
+
+html[data-theme="dark"] .blog-tag-load-more-button:hover {
+  background-color: #374151;
+  border-color: #4b5563;
 } 

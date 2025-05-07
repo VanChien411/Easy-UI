@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import "../../../assets/styles/Develop/AddUi.css";
 import { saveUIComponent } from '../../../services/uiComponentsService';
 import { fetchCategories } from "../../../services/categoriesService";
@@ -6,6 +6,7 @@ import { showAlert, showErrorAlert, showSuccessAlert, showWarningAlert } from ".
 import Spinner from "../../utils/Spinner";
 import MonacoEditor from "@monaco-editor/react";
 import apiClient from "../../../config/axios";
+import UIStudioButton from './UIStudioButton';
 
 function AddUi({
   html: initialHtml = "",
@@ -25,7 +26,10 @@ function AddUi({
   const [isSaving, setIsSaving] = useState(false);
   const [isPreviewing, setIsPreviewing] = useState(false);
   const [uniqueId] = useState(`ui-${Math.random().toString(36).substr(2, 9)}`);
+  const [isUIStudioActive, setIsUIStudioActive] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const editorRef = useRef(null);
+  const containerRef = useRef(null);
 
   useEffect(() => {
     const loadCategories = async () => {
@@ -39,6 +43,22 @@ function AddUi({
     loadCategories();
   }, []);
 
+  // Handle resize events
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+      if (editorRef.current) {
+        // Prevent excessive layout calculations
+        requestAnimationFrame(() => {
+          editorRef.current.layout();
+        });
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const handleCodeChange = (value) => {
     if (activeTab === "html") setHtml(value || "");
     if (activeTab === "css") setCss(value || "");
@@ -47,10 +67,10 @@ function AddUi({
 
   const handleEditorDidMount = (editor) => {
     editorRef.current = editor;
-    // Trigger layout update on window resize
-    const handleResize = () => editor.layout();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    // Initial layout update
+    setTimeout(() => {
+      editor.layout();
+    }, 100);
   };
 
   // Reusable function to scope and sanitize user input
@@ -106,6 +126,7 @@ function AddUi({
         <!DOCTYPE html>
         <html lang="en">
         <head>
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
           <style>${scopedCss}</style>
         </head>
         <body>
@@ -163,9 +184,19 @@ function AddUi({
     }
   };
 
+  const handleUIStudioClick = () => {
+    setIsUIStudioActive(true);
+    showSuccessAlert("UI Studio mode activated!");
+    
+    // Reset the animation state after animation completes
+    setTimeout(() => {
+      setIsUIStudioActive(false);
+    }, 2000);
+  };
+
   return (
     <>
-      <div className="add-ui-container-container">
+      <div className="add-ui-container-container" ref={containerRef}>
         <div className="left-panel">
           <div className="tabs">
             <button
@@ -209,8 +240,11 @@ function AddUi({
                 fontSize: 14,
                 minimap: { enabled: false },
                 scrollBeyondLastLine: false,
+                automaticLayout: true, // Enable automatic layout
+                fixedOverflowWidgets: true // Fix widgets for mobile
               }}
               onMount={handleEditorDidMount}
+              loading={<div className="editor-loading">Loading editor...</div>}
             />
           </div>
         </div>
@@ -219,6 +253,7 @@ function AddUi({
             <button onClick={handleSubmit} disabled={isPreviewing}>
               {isPreviewing ? <Spinner size={12} /> : "Preview"}
             </button>
+            <UIStudioButton onClick={handleUIStudioClick} isMobile={isMobile} />
             <button onClick={handleSave} disabled={isSaving}>
               {isSaving ? <Spinner size={12} /> : "Save"}
             </button>

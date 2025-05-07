@@ -164,3 +164,372 @@
           height: auto; /* Cho phép chiều cao tự động điều chỉnh */
       }
   }
+
+/* Add the UI Studio button styles to your existing CSS */
+
+/* Enhanced UI Studio Button Styles */
+.ui-studio-button {
+  position: relative;
+  padding: 12px 24px;
+  background: linear-gradient(45deg, #ff3e9d, #0e123a);
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  overflow: hidden;
+  transform: perspective(500px) rotateY(0deg);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3), 
+              inset 0 0 15px rgba(255, 255, 255, 0.2);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-size: 16px;
+  outline: none;
+  margin-left: 10px;
+  border: 2px solid transparent;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+  min-width: 150px;
+}
+
+.ui-studio-button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.6),
+    transparent
+  );
+  transition: 0.5s;
+  z-index: 3;
+}
+
+.ui-studio-button::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0),
+    rgba(255, 255, 255, 0),
+    rgba(255, 255, 255, 0.1),
+    rgba(255, 255, 255, 0)
+  );
+  transform: rotate(0deg);
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+
+.ui-studio-button:hover {
+  transform: perspective(500px) rotateY(5deg) scale(1.05);
+  background: linear-gradient(45deg, #ff3e9d, #0e123a, #3498db);
+  background-size: 200% 200%;
+  animation: gradientShift 3s ease infinite;
+  box-shadow: 0 10px 30px rgba(255, 62, 157, 0.6),
+              0 0 15px rgba(255, 62, 157, 0.5),
+              0 0 30px rgba(255, 62, 157, 0.3),
+              inset 0 0 15px rgba(255, 255, 255, 0.3);
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  letter-spacing: 3px;
+}
+
+.ui-studio-button:hover::before {
+  left: 100%;
+  transition: 0.7s;
+}
+
+.ui-studio-button:hover::after {
+  opacity: 1;
+  animation: rotateEffect 2s linear infinite;
+}
+
+.ui-studio-button:active {
+  transform: translateY(3px) scale(0.98);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.ui-studio-button.active {
+  animation: pulse 0.5s infinite alternate, rainbow 2s linear infinite;
+  box-shadow: 0 0 20px rgba(255, 62, 157, 0.8), 
+              0 0 40px rgba(255, 62, 157, 0.6), 
+              0 0 60px rgba(255, 62, 157, 0.4),
+              inset 0 0 20px rgba(255, 255, 255, 0.4);
+  border: 2px solid rgba(255, 255, 255, 0.7);
+}
+
+.ui-studio-text {
+  position: relative;
+  z-index: 2;
+  transition: all 0.3s;
+  display: inline-block;
+}
+
+.ui-studio-button:hover .ui-studio-text {
+  animation: vibrate 0.1s linear 3;
+  text-shadow: 0 0 10px white, 0 0 20px white, 0 0 30px rgba(255, 255, 255, 0.5);
+}
+
+.ui-studio-effect {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+}
+
+/* Lightning effect on hover */
+.ui-studio-button:hover .ui-studio-effect::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cpath d='M50,0 L45,50 L60,50 L40,100 L45,65 L30,65 Z' fill='white' fill-opacity='0.5'/%3E%3C/svg%3E") no-repeat;
+  background-position: center;
+  background-size: 0;
+  opacity: 0;
+  transition: all 0.2s;
+  filter: brightness(2) contrast(2);
+  animation: lightning 2s infinite;
+}
+
+.ui-studio-button.active .ui-studio-effect {
+  animation: sparkles 1s ease-in-out infinite, electricField 3s ease-in-out infinite;
+  background-image: 
+    radial-gradient(circle, transparent 10%, rgba(255, 255, 255, 0.1) 10%, rgba(255, 255, 255, 0.1) 20%, transparent 20%, transparent 30%, rgba(255, 255, 255, 0.1) 30%, rgba(255, 255, 255, 0.1) 40%, transparent 40%),
+    linear-gradient(45deg, rgba(255,255,255,0.1) 25%, transparent 25%, transparent 50%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.1) 75%, transparent 75%, transparent);
+  background-size: 60px 60px, 30px 30px;
+}
+
+/* Enhanced keyframes for animations */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.08);
+  }
+}
+
+@keyframes rainbow {
+  0% {
+    filter: hue-rotate(0deg);
+  }
+  100% {
+    filter: hue-rotate(360deg);
+  }
+}
+
+@keyframes sparkles {
+  0% {
+    background-position: 0 0;
+    opacity: 0.5;
+  }
+  100% {
+    background-position: 60px 60px;
+    opacity: 1;
+  }
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes rotateEffect {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes vibrate {
+  0% {
+    transform: translateX(-1px);
+  }
+  50% {
+    transform: translateX(1px);
+  }
+  100% {
+    transform: translateX(-1px);
+  }
+}
+
+@keyframes lightning {
+  0%, 100% {
+    opacity: 0;
+    background-size: 0;
+  }
+  10%, 90% {
+    opacity: 0;
+    background-size: 0;
+  }
+  50% {
+    opacity: 1;
+    background-size: 100%;
+  }
+}
+
+@keyframes electricField {
+  0% {
+    filter: brightness(1) contrast(1);
+    background-size: 60px 60px, 30px 30px;
+  }
+  50% {
+    filter: brightness(1.5) contrast(1.2);
+    background-size: 70px 70px, 35px 35px;
+  }
+  100% {
+    filter: brightness(1) contrast(1);
+    background-size: 60px 60px, 30px 30px;
+  }
+}
+
+/* Special effect for electric border */
+.ui-studio-button::before,
+.ui-studio-button::after {
+  pointer-events: none;
+}
+
+/* Enhance button container for better layout */
+.right-panel .actions {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+/* Apply some depth to other buttons for consistency */
+.right-panel .actions button {
+  transition: all 0.3s ease;
+}
+
+.right-panel .actions button:not(.ui-studio-button) {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
+
+.right-panel .actions button:not(.ui-studio-button):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* Editor loading state */
+.editor-loading {
+  text-align: center;
+  padding: 20px;
+  color: #6b7280;
+  background-color: #1e1e1e;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Improved responsive layout */
+@media (max-width: 768px) {
+  .add-ui-container-container {
+    grid-template-columns: 1fr;
+    height: auto;
+    min-height: 95vh;
+    overflow: visible;
+  }
+
+  .left-panel, .right-panel {
+    height: auto; 
+    min-height: 40vh;
+    overflow: visible;
+  }
+
+  .editor {
+    min-height: 200px;
+    height: 40vh;
+    overflow: hidden;
+  }
+
+  iframe {
+    height: 40vh;
+  }
+
+  .tabs {
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+
+  .componentName {
+    width: 100%;
+    margin-top: 5px;
+    margin-left: 0;
+    order: 4;
+  }
+
+  .tabs button {
+    flex: 1;
+    min-width: 60px;
+  }
+
+  .actions {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    padding-bottom: 10px;
+  }
+
+  .actions button {
+    width: 100%;
+    margin: 0 0 5px 0;
+  }
+
+  .price-category-container {
+    flex-direction: column;
+  }
+
+  .price-input, .category-select {
+    width: 100%;
+  }
+
+  /* Mobile adjustments for the UI Studio button */
+  .ui-studio-button.mobile {
+    width: 100%;
+    margin-left: 0;
+    font-size: 14px;
+    padding: 10px;
+    min-width: unset;
+  }
+}
+
+/* Fix Monaco editor in mobile */
+.monaco-editor {
+  overflow: hidden !important;
+}
+
+.monaco-editor .overflow-guard {
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+/* Ensure Monaco widgets don't cause layout shifts */
+.monaco-editor-overlaymessage {
+  position: absolute !important;
+  z-index: 1000 !important;
+}

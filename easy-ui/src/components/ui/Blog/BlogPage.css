@@ -124,4 +124,36 @@ html[data-theme="dark"] .blog-load-more-button {
 
 html[data-theme="dark"] .blog-load-more-button:hover {
   background-color: #374151;
+}
+
+.blog-loading,
+.blog-error-message,
+.blog-no-posts {
+  text-align: center;
+  padding: 40px 20px;
+  margin: 20px 0;
+  border-radius: 8px;
+  background-color: #f9fafb;
+}
+
+html[data-theme="dark"] .blog-loading,
+html[data-theme="dark"] .blog-error-message,
+html[data-theme="dark"] .blog-no-posts {
+  background-color: #1f2937;
+  color: #e5e7eb;
+}
+
+.blog-loading {
+  color: #6b7280;
+  font-style: italic;
+}
+
+.blog-error-message {
+  color: #dc2626;
+  font-weight: 500;
+}
+
+.blog-no-posts {
+  color: #6b7280;
+  font-weight: 400;
 } 

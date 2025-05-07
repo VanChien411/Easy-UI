@@ -318,4 +318,43 @@ html[data-theme="dark"] .blog-post-not-found h1 {
 
 html[data-theme="dark"] .blog-post-not-found p {
   color: #d1d5db;
+}
+
+.blog-post-loading,
+.blog-post-error {
+  text-align: center;
+  padding: 60px 20px;
+  max-width: 720px;
+  margin: 40px auto;
+  border-radius: 8px;
+  background-color: #f9fafb;
+}
+
+html[data-theme="dark"] .blog-post-loading,
+html[data-theme="dark"] .blog-post-error {
+  background-color: #1f2937;
+  color: #e5e7eb;
+}
+
+.blog-post-loading {
+  color: #6b7280;
+  font-style: italic;
+  font-size: 18px;
+}
+
+.blog-post-error {
+  color: #dc2626;
+  font-weight: 500;
+  font-size: 18px;
+}
+
+.related-posts-loading {
+  text-align: center;
+  padding: 20px;
+  color: #6b7280;
+  font-style: italic;
+}
+
+html[data-theme="dark"] .related-posts-loading {
+  color: #9ca3af;
 } 
