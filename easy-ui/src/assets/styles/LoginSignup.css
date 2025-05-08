@@ -153,6 +153,16 @@
     justify-content: center;
     transition: all 0.3s ease; /* Thêm hiệu ứng mượt mà */
 }
+.S9gUrf-YoZ4jf{
+    opacity: 0.5;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+.login-signup .social-icons a.google {
+    padding: 0px;
+
+}
 .login-signup .social-icons a:hover {
     background-color: #333; /* Thêm màu nền khi hover */
     transform: scale(1.1); /* Tăng kích thước nhẹ */
