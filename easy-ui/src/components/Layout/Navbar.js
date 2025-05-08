@@ -4,8 +4,10 @@ import { useNavigate, Link } from "react-router-dom"; // Import useNavigate and 
 import { applyTheme, lightTheme, darkTheme } from "../../config/theme"; // Import themes
 import CartService from "../../services/CartService"; // Import CartService
 import { setCart } from "../../redux/slices/cartSlice";
-import { logout } from '../../redux/slices/authSlice'; // Import logout action
+import { logout, updateUser } from '../../redux/slices/authSlice'; // Import logout action
 import { fetchCategories } from "../../services/categoriesService"; // Import categoriesService
+import UserManagerService from "../../services/usermanagerService"; // Import UserManagerService
+import { jwtDecode } from "jwt-decode"; // Import jwt-decode for token decoding
 import "./Navbar.css"; // Import the CSS file
 
 function Navbar() {
@@ -28,6 +30,7 @@ function Navbar() {
   const [showDevelopDropdown, setShowDevelopDropdown] = useState(false);
   const categoriesDropdownRef = useRef(null);
   const developDropdownRef = useRef(null);
+  const [userDetail, setUserDetail] = useState(null);
 
   useEffect(() => {
     // Apply the theme on component mount
@@ -79,6 +82,61 @@ function Navbar() {
     fetchCartItems();
   }, [dispatch]);
 
+  // Fetch user details if authenticated
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      if (isAuthenticated) {
+        try {
+          const userDetailData = await UserManagerService.getCurrentUserDetail();
+          setUserDetail(userDetailData);
+          
+          // Cập nhật thông tin user vào Redux store nếu có dữ liệu mới
+          if (userDetailData) {
+            dispatch(updateUser({
+              userName: userDetailData.userName || userDetailData.fullName,
+              avatar: userDetailData.avatar,
+              email: userDetailData.email
+            }));
+            console.log('Updated user details from API:', userDetailData);
+          }
+        } catch (error) {
+          console.error("Failed to fetch user details:", error);
+        }
+      }
+    };
+
+    fetchUserDetails();
+  }, [isAuthenticated, dispatch]);
+
+  // Fallback từ token nếu API không trả về thông tin
+  useEffect(() => {
+    if (isAuthenticated && user && !user.userName && !user.name && !userDetail) {
+      try {
+        // Lấy token từ localStorage
+        const token = localStorage.getItem('authToken');
+        if (token) {
+          // Giải mã token để lấy thông tin
+          const decodedToken = jwtDecode(token);
+          
+          // Nếu có thông tin username trong token
+          if (decodedToken && (decodedToken.userName || decodedToken.name || decodedToken.unique_name || decodedToken.email)) {
+            // Lấy username theo thứ tự ưu tiên
+            const userName = decodedToken.userName || 
+                            decodedToken.name || 
+                            decodedToken.unique_name || 
+                            decodedToken.email.split('@')[0]; // Lấy phần trước @ của email
+            
+            // Cập nhật thông tin user trong Redux store
+            dispatch(updateUser({ userName }));
+            console.log('Updated user name from token:', userName);
+          }
+        }
+      } catch (error) {
+        console.error('Error extracting username from token:', error);
+      }
+    }
+  }, [isAuthenticated, user, userDetail, dispatch]);
+
   useEffect(() => {
     console.log('Dropdown visibility:', showDropdown);
   }, [showDropdown]);
@@ -105,6 +163,7 @@ function Navbar() {
   const handleLogout = () => {
     // Clear out auth state
     dispatch(logout());
+    setUserDetail(null);
     navigate('/LoginSignup/login');
   };
 
@@ -112,6 +171,22 @@ function Navbar() {
   const handleDevelopToggle = (e) => {
     e.preventDefault();
     setShowDevelopDropdown(!showDevelopDropdown);
+  };
+
+  // Hiển thị tên người dùng theo thứ tự ưu tiên
+  const displayName = () => {
+    // 1. Từ userDetail
+    if (userDetail) {
+      return userDetail.userName || userDetail.fullName || userDetail.email?.split('@')[0];
+    }
+    
+    // 2. Từ user trong Redux
+    if (user) {
+      return user.userName || user.name || user.email?.split('@')[0];
+    }
+    
+    // 3. Fallback
+    return 'User';
   };
 
   return (
@@ -259,9 +334,13 @@ function Navbar() {
                   onClick={() => setShowDropdown(!showDropdown)}
                 >
                   <div className="user-avatar-icon">
-                    <i className="fas fa-user"></i>
+                    {userDetail && userDetail.avatar ? (
+                      <img src={userDetail.avatar} alt="Profile" className="avatar-image" />
+                    ) : (
+                      <i className="fas fa-user"></i>
+                    )}
                   </div>
-                  <span className="user-name">{user?.name || 'User'}</span>
+                  <span className="user-name">{displayName()}</span>
                 </div>
                 
                 <div className={`user-dropdown ${showDropdown ? 'show' : ''}`}>

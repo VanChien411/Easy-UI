@@ -39,6 +39,21 @@ export const login = async (data) => {
   }
 };
 
+// Google login function
+export const googleLogin = async (googleToken) => {
+  try {
+    const response = await apiClient.post("/Auth/google-login", { googleToken });
+    const { token, user } = response.data;
+    
+    // Return both token and user data for Redux store
+    return { token, user };
+  } catch (error) {
+    const errorMessage = error.response?.data?.message || "Google login failed!";
+    console.error(errorMessage);
+    throw new Error(errorMessage);
+  }
+};
+
 // Get the current user profile
 export const getCurrentUser = async () => {
   try {

@@ -198,15 +198,15 @@ const Profile = ({ children }) => {
                   Work
                 </Link>
                 <Link 
-                  to={`/profile${profileId ? `/${profileId}` : ''}/services`} 
-                  className={`profile-tab ${isActive(`/profile${profileId ? `/${profileId}` : ''}/services`) ? 'active' : ''}`}
+                  to={`#`} 
+                  className={`profile-tab`}
                 >
                   Artical
                   <span className="new-badge">NEW</span>
                 </Link>
                 <Link 
-                  to={`/profile${profileId ? `/${profileId}` : ''}/liked`} 
-                  className={`profile-tab ${isActive(`/profile${profileId ? `/${profileId}` : ''}/liked`) ? 'active' : ''}`}
+                  to={`#`} 
+                  className={`profile-tab`}
                 >
                   Liked Shots
                 </Link>

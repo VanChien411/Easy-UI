@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useParams, useNavigate, useSearchParams } from "react-router-dom"; // Import useNavigate and useSearchParams
-import { useDispatch } from "react-redux"; // Import useDispatch
+import { useParams, useNavigate, useSearchParams, useLocation } from "react-router-dom"; // Add useLocation 
+import { useDispatch, useSelector } from "react-redux"; // Add useSelector
 import { login as loginAction } from "../../../redux/slices/authSlice"; // Import login action
-import { register, login } from "../../../services/userService"; // Ensure this path is correct
+import { register, login, googleLogin } from "../../../services/userService"; // Import googleLogin service
 import Spinner from "../../utils/Spinner"; // Import the Spinner component
 import Alert, { showAlert, showSuccessAlert, showErrorAlert } from "../../utils/Alert";
 import "../../../assets/styles/LoginSignup.css";
@@ -18,8 +18,9 @@ import { jwtDecode } from "jwt-decode"; // Changed import statement
 
 function LoginSignup() {
   const { action } = useParams();
-  const navigate = useNavigate(); // Initialize navigate
-  const dispatch = useDispatch(); // Initialize dispatch for Redux actions
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const location = useLocation(); // Get location to access state passed by navigation
   const containerRef = useRef(null);
   const registerBtnRef = useRef(null);
   const loginBtnRef = useRef(null);
@@ -36,37 +37,67 @@ function LoginSignup() {
   const [showPassword, setShowPassword] = useState(false);
   const [isPasswordTyped, setIsPasswordTyped] = useState(true);
   const [searchParams] = useSearchParams();
+  const auth = useSelector(state => state.auth);
+  const hasRedirectedRef = useRef(false); // Track if redirect has happened
+  const googleScriptLoadedRef = useRef(false); // Track if Google script is loaded
+
+  // Một lần duy nhất khi component mount, kiểm tra token
+  useEffect(() => {
+    // Chỉ chạy code này một lần khi component được mount
+    if (hasRedirectedRef.current) return;
+
+    const token = localStorage.getItem('authToken');
+    
+    // Nếu người dùng đã đăng nhập và đang ở trang login, chuyển hướng một lần
+    if (token) {
+      hasRedirectedRef.current = true; // Đánh dấu đã chuyển hướng
+      const returnTo = searchParams.get("returnTo") || "/";
+      window.location.replace(returnTo); // Sử dụng replace để ngăn back button
+      return;
+    }
+  }, []); // Dependecy array rỗng để chỉ chạy một lần
 
   useEffect(() => {
     const container = containerRef.current;
-    if (action === "signup") {
+    if (!container) return;
+
+    const currentAction = action || 'login'; // Default to login if no action specified
+    
+    if (currentAction === "signup") {
       container.classList.add("active");
-    } else if (action === "login") {
+    } else if (currentAction === "login") {
       container.classList.remove("active");
     }
   }, [action]);
 
   useEffect(() => {
+    if (hasRedirectedRef.current) return; // Không thiết lập event nếu đang chuyển hướng
+    
     const container = containerRef.current;
     const registerBtn = registerBtnRef.current;
     const loginBtn = loginBtnRef.current;
+    
+    if (!container || !registerBtn || !loginBtn) return;
 
-    registerBtn.addEventListener("click", () => {
+    // Tạo các hàm xử lý sự kiện một lần duy nhất
+    const handleRegisterClick = () => {
       container.classList.add("active");
-    });
+      // Thay vì navigate, thay đổi URL trực tiếp
+      window.history.pushState({}, "", '/LoginSignup/signup');
+    };
 
-    loginBtn.addEventListener("click", () => {
+    const handleLoginClick = () => {
       container.classList.remove("active");
-    });
+      // Thay vì navigate, thay đổi URL trực tiếp
+      window.history.pushState({}, "", '/LoginSignup/login');
+    };
+
+    registerBtn.addEventListener("click", handleRegisterClick);
+    loginBtn.addEventListener("click", handleLoginClick);
 
     return () => {
-      registerBtn.removeEventListener("click", () => {
-        container.classList.add("active");
-      });
-
-      loginBtn.removeEventListener("click", () => {
-        container.classList.remove("active");
-      });
+      registerBtn.removeEventListener("click", handleRegisterClick);
+      loginBtn.removeEventListener("click", handleLoginClick);
     };
   }, []);
 
@@ -111,7 +142,8 @@ function LoginSignup() {
       return false;
     }
 
-    if (action === "signup" && !formData.fullName) {
+    const currentAction = action || 'login';
+    if (currentAction === "signup" && !formData.fullName) {
       showErrorAlert("Please enter your full name");
       return false;
     }
@@ -154,15 +186,26 @@ function LoginSignup() {
     return response;
   };
 
-
+  // Tải Google script một lần duy nhất
   useEffect(() => {
+    // Nếu đã tải script, không tải lại
+    if (googleScriptLoadedRef.current) return;
+    googleScriptLoadedRef.current = true;
+    
+    const existingScript = document.querySelector('script[src="https://accounts.google.com/gsi/client"]');
+    if (existingScript) {
+      // Script đã tồn tại, không tải lại
+      handleGoogleLogin();
+      return;
+    }
+    
     const script = document.createElement('script');
     script.src = 'https://accounts.google.com/gsi/client';
+    script.id = 'google-login-script';
     script.async = true;
     script.defer = true;
   
     script.onload = () => {
-      // Gọi sau khi script đã tải xong
       handleGoogleLogin();
     };
   
@@ -172,64 +215,89 @@ function LoginSignup() {
     };
   
     document.body.appendChild(script);
+    
+    return () => {
+      // Không xóa script khi component unmount để tránh tải lại liên tục
+    };
   }, []);
   
-  
+  // Google login handler
   const handleGoogleLogin = () => {
+    if (!window.google || !window.google.accounts) {
+      return; // Google API chưa sẵn sàng
+    }
+
     try {
       const googleButtons = document.querySelectorAll('.google');
-      if (window.google && window.google.accounts) {
-        window.google.accounts.id.initialize({
-          client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID,
-          callback: async (response) => {
-            try {
-              if (!response.credential) {
-                throw new Error('No credentials received from Google');
-              }
-  
-              const decoded = jwtDecode(response.credential);
-              console.log('Decoded token:', decoded);
-  
-              const userData = {
-                email: decoded.email,
-                fullName: decoded.name,
-                avatar: decoded.picture,
-                googleId: decoded.sub,
-              };
-  
-              dispatch(loginAction({ 
-                token: response.credential,
-                user: userData 
-              }));
-              // showSuccessAlert('Google login successful!');
-              navigate('/');
-            } catch (error) {
-              console.error('Google login error:', error);
-              showErrorAlert('Failed to process Google login');
+      if (googleButtons.length === 0) return;
+      
+      window.google.accounts.id.initialize({
+        client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID,
+        callback: async (response) => {
+          try {
+            if (!response.credential) {
+              throw new Error('No credentials received from Google');
             }
-          },
-          auto_select: false,
-          ux_mode: 'popup'
-        });
   
-        // Render the button into each .google element
-        googleButtons.forEach(buttonDiv => {
-          // Optional: Clear previous buttons inside if needed
-          buttonDiv.innerHTML = '';
-          window.google.accounts.id.renderButton(buttonDiv, {
-            type: 'standard',
-            theme: 'outline',
-            size: 'large',
-            text: 'continue_with',
-            shape: 'rectangular',
-            width: '250',
-          });
+            const googleToken = response.credential;
+            setIsLoading(true);
+            
+            try {
+              // Call our backend API with the Google token
+              const { token, user } = await googleLogin(googleToken);
+              
+              // Store received JWT token in Redux
+              dispatch(loginAction({ token, user }));
+              
+              // Đánh dấu đã chuyển hướng để tránh các useEffect khác chạy
+              hasRedirectedRef.current = true;
+              
+              showSuccessAlert('Google login successful!');
+              
+              // Xác định đường dẫn sau đăng nhập
+              let redirectPath = "/";
+              const returnToParam = searchParams.get("returnTo");
+              if (returnToParam) {
+                redirectPath = returnToParam;
+              } else if (location.state?.from?.pathname) {
+                redirectPath = location.state.from.pathname;
+              }
+              
+              // Chuyển hướng bằng window.location thay vì navigate
+              window.location.replace(redirectPath);
+            } catch (error) {
+              console.error('Backend authentication error:', error);
+              showErrorAlert(error.message || 'Google authentication failed on server');
+            } finally {
+              setIsLoading(false);
+            }
+          } catch (error) {
+            console.error('Google login error:', error);
+            showErrorAlert('Failed to process Google login');
+            setIsLoading(false);
+          }
+        },
+        auto_select: false,
+        ux_mode: 'popup'
+      });
+
+      // Render button
+      googleButtons.forEach(buttonDiv => {
+        // Clear previous content
+        buttonDiv.innerHTML = '';
+        window.google.accounts.id.renderButton(buttonDiv, {
+          type: 'standard',
+          theme: 'outline',
+          size: 'large',
+          text: 'continue_with',
+          shape: 'rectangular',
+          width: '250',
         });
-  
+      });
+
+      // Chỉ gọi prompt một lần
+      if (!hasRedirectedRef.current) {
         window.google.accounts.id.prompt();
-  
-      } else {
-        throw new Error('Google API not loaded');
       }
     } catch (error) {
       console.error('Google Sign-In Error:', error);
@@ -237,35 +305,46 @@ function LoginSignup() {
     }
   };
   
-  
-
-
+  // Form submission handler
   const handleSubmit = async (e) => {
     e.preventDefault();
     
+    if (!validate()) return;
+    
     setIsLoading(true);
     try {
-      // Sửa lại cách xác định action đăng ký
-      // Kiểm tra xem form hiện tại là form đăng ký hay không
-      const isRegisterForm = containerRef.current.classList.contains("active");
+      // Xác định đây là form đăng ký hay đăng nhập
+      const currentAction = action || 'login';
+      const isRegisterForm = currentAction === 'signup' || 
+                             containerRef.current?.classList.contains("active");
       
       if (isRegisterForm) {
-        // Gọi API đăng ký
+        // Xử lý đăng ký
         await registerUser(formData);
         showSuccessAlert("Registration successful!");
-        navigate("/LoginSignup/login");
+        
+        // Chuyển hướng đến trang login
+        window.location.replace("/LoginSignup/login");
       } else {
-        // Gọi API đăng nhập
+        // Xử lý đăng nhập
         const result = await loginUser(formData);
+        
+        // Đánh dấu đã chuyển hướng
+        hasRedirectedRef.current = true;
+        
         showSuccessAlert("Login successful!");
         
-        // Check if coming from cart checkout
-        const returnPath = searchParams.get("returnTo");
-        if (returnPath) {
-          navigate(returnPath);
-        } else {
-          navigate("/");
+        // Xác định đường dẫn chuyển hướng sau đăng nhập
+        let redirectPath = "/";
+        const returnToParam = searchParams.get("returnTo");
+        if (returnToParam) {
+          redirectPath = returnToParam;
+        } else if (location.state?.from?.pathname) {
+          redirectPath = location.state.from.pathname;
         }
+        
+        // Sử dụng window.location thay vì navigate
+        window.location.replace(redirectPath);
       }
     } catch (error) {
       console.error("Authentication error:", error);
@@ -275,20 +354,33 @@ function LoginSignup() {
     }
   };
 
-  const handleGoogleAuth = async () => {
+  // Google authentication handler
+  const handleGoogleAuth = async (e) => {
+    e.preventDefault();
     try {
-      await handleGoogleLogin();
-      showSuccessAlert("Google authentication successful!");
-      navigate("/");
+      setIsLoading(true);
+      handleGoogleLogin();
     } catch (error) {
       console.error("Google authentication error:", error);
       showErrorAlert(error.message || "Google authentication failed");
+    } finally {
+      setIsLoading(false);
     }
   };
 
+  // Remember me checkbox handler
   const handleRememberMeChange = (e) => {
     setRememberMe(e.target.checked);
   };
+
+  // Ngăn render nếu đang chuyển hướng
+  if (hasRedirectedRef.current) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <p>Redirecting...</p>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -344,7 +436,7 @@ function LoginSignup() {
               </button>
               <p>or register with social platforms</p>
               <div className="social-icons">
-                <a href="#" className="google">
+                <a href="#" className="google" onClick={handleGoogleAuth}>
                   <i className="fa-brands fa-google"></i>
                 </a>
                 <a href="#" className="facebook">
@@ -406,10 +498,10 @@ function LoginSignup() {
               <button type="submit" className="btn" disabled={isLoading}>
                 {isLoading ? <Spinner size={16} /> : "Register"}
               </button>
-              <p>or1 register with social platforms</p>
+              <p>or register with social platforms</p>
                 
               <div className="social-icons">
-                <a href="#" className="google" id="googleButton" >
+                <a href="#" className="google" id="googleButton" onClick={handleGoogleAuth}>
                   <i className="fa-brands fa-google"></i>
                 </a>
                 <a href="#" className="facebook">
