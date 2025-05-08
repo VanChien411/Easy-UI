@@ -160,15 +160,24 @@ function LoginSignup() {
     script.src = 'https://accounts.google.com/gsi/client';
     script.async = true;
     script.defer = true;
+  
+    script.onload = () => {
+      // Gọi sau khi script đã tải xong
+      handleGoogleLogin();
+    };
+  
+    script.onerror = () => {
+      console.error('Failed to load Google API script');
+      showErrorAlert('Failed to load Google login script');
+    };
+  
     document.body.appendChild(script);
   }, []);
   
+  
   const handleGoogleLogin = () => {
     try {
-      // Clear any existing Google Sign-In buttons
-      // document.getElementById('googleButton')?.remove();
-      // Create container for Google button
-      const googleButtonDiv = document.getElementById('googleButton');
+      const googleButtons = document.querySelectorAll('.google');
       if (window.google && window.google.accounts) {
         window.google.accounts.id.initialize({
           client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID,
@@ -181,7 +190,6 @@ function LoginSignup() {
               const decoded = jwtDecode(response.credential);
               console.log('Decoded token:', decoded);
   
-              // Format user data
               const userData = {
                 email: decoded.email,
                 fullName: decoded.name,
@@ -189,33 +197,35 @@ function LoginSignup() {
                 googleId: decoded.sub,
               };
   
-              // Save to Redux store
               dispatch(loginAction({ 
                 token: response.credential,
                 user: userData 
               }));
-              showSuccessAlert('Google login successful!');
+              // showSuccessAlert('Google login successful!');
               navigate('/');
             } catch (error) {
               console.error('Google login error:', error);
               showErrorAlert('Failed to process Google login');
             }
           },
-          // Additional configuration
           auto_select: false,
           ux_mode: 'popup'
         });
-        // Render the Google button
-        window.google.accounts.id.renderButton(googleButtonDiv, {
-          type: 'standard',
-          theme: 'outline',
-          size: 'large',
-          text: 'continue_with',
-          shape: 'rectangular',
-          width: '250',
+  
+        // Render the button into each .google element
+        googleButtons.forEach(buttonDiv => {
+          // Optional: Clear previous buttons inside if needed
+          buttonDiv.innerHTML = '';
+          window.google.accounts.id.renderButton(buttonDiv, {
+            type: 'standard',
+            theme: 'outline',
+            size: 'large',
+            text: 'continue_with',
+            shape: 'rectangular',
+            width: '250',
+          });
         });
   
-        // Optionally prompt One Tap UI
         window.google.accounts.id.prompt();
   
       } else {
@@ -226,6 +236,7 @@ function LoginSignup() {
       showErrorAlert('Failed to initialize Google login');
     }
   };
+  
   
 
 
@@ -333,7 +344,7 @@ function LoginSignup() {
               </button>
               <p>or register with social platforms</p>
               <div className="social-icons">
-                <a href="#" className="google" onClick={handleGoogleAuth}>
+                <a href="#" className="google">
                   <i className="fa-brands fa-google"></i>
                 </a>
                 <a href="#" className="facebook">
@@ -396,9 +407,9 @@ function LoginSignup() {
                 {isLoading ? <Spinner size={16} /> : "Register"}
               </button>
               <p>or1 register with social platforms</p>
-
+                
               <div className="social-icons">
-                <a href="#" className="google" id="googleButton" onClick={handleGoogleLogin}>
+                <a href="#" className="google" id="googleButton" >
                   <i className="fa-brands fa-google"></i>
                 </a>
                 <a href="#" className="facebook">
