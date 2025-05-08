@@ -11,6 +11,18 @@ export default function UIStudioButton({ onClick, isMobile }) {
   const [isDisappeared, setIsDisappeared] = useState(false);
   const [shakeIntensity, setShakeIntensity] = useState(1); // Control shake intensity
   
+  // Handle close space view
+  const handleCloseSpace = (e) => {
+    e.stopPropagation();
+    setIsDisappeared(false);
+    setIsDissolving(false);
+    // Reset the button to its original state
+    setTimeout(() => {
+      // Wait a bit before resetting to allow animations to complete
+      setShakeIntensity(1);
+    }, 100);
+  };
+  
   // Increase shake intensity over time when idle
   useEffect(() => {
     if (!isHovered && !isActive && !isDissolving && !isDisappeared) {
@@ -129,12 +141,12 @@ export default function UIStudioButton({ onClick, isMobile }) {
     ];
     
     // Generate many meteors
-    for (let i = 0; i < 30; i++) {
-      const size = 1 + Math.random() * 2; // Size between 1-3px
-      const length = 30 + Math.random() * 70; // Length between 30-100px
+    for (let i = 0; i < 50; i++) {
+      const size = 1 + Math.random() * 3; // Size between 1-4px
+      const length = 50 + Math.random() * 150; // Length between 50-200px
       const color = colors[Math.floor(Math.random() * colors.length)];
       const delay = Math.random() * 15; // Random delay for continuous effect
-      const duration = 1 + Math.random() * 2; // Duration between 1-3s
+      const duration = 1 + Math.random() * 3; // Duration between 1-4s
       const xPos = Math.random() * 100; // Random horizontal position
       
       const style = {
@@ -145,8 +157,8 @@ export default function UIStudioButton({ onClick, isMobile }) {
         top: '-50px',
         background: `linear-gradient(to bottom, ${color}, transparent)`,
         borderRadius: '50%',
-        filter: `blur(${size > 2 ? 1 : 0}px) drop-shadow(0 0 3px ${color})`,
-        opacity: 0.8,
+        filter: `blur(${size > 2 ? 1 : 0}px) drop-shadow(0 0 5px ${color})`,
+        opacity: 0.9,
         animation: `continuous-meteor ${duration}s linear infinite`,
         animationDelay: `${delay}s`,
         transform: 'rotate(15deg)',
@@ -158,9 +170,40 @@ export default function UIStudioButton({ onClick, isMobile }) {
       );
     }
     
+    // Add some glowing stars that pulse
+    for (let i = 0; i < 20; i++) {
+      const size = 2 + Math.random() * 3;
+      const xPos = Math.random() * 100;
+      const yPos = Math.random() * 100;
+      const pulseDuration = 1 + Math.random() * 5;
+      const color = colors[Math.floor(Math.random() * colors.length)];
+      
+      const style = {
+        position: 'absolute',
+        width: `${size}px`,
+        height: `${size}px`,
+        left: `${xPos}%`,
+        top: `${yPos}%`,
+        backgroundColor: 'transparent',
+        borderRadius: '50%',
+        boxShadow: `0 0 ${size * 2}px ${size}px ${color}`,
+        animation: `pulse ${pulseDuration}s ease-in-out infinite`,
+        animationDelay: `${Math.random() * 5}s`,
+      };
+      
+      meteors.push(
+        <div key={`star-${i}`} className="pulsing-star" style={style}></div>
+      );
+    }
+    
     return (
       <div className="continuous-meteor-container">
         {meteors}
+        <div className="space-text">UI STUDIO SPACE</div>
+        <button className="close-space-button" onClick={handleCloseSpace}>
+          <span className="close-icon">×</span>
+          <span className="close-text">EXIT SPACE</span>
+        </button>
       </div>
     );
   };
