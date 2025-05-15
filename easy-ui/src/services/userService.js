@@ -13,10 +13,10 @@ export const register = async (data) => {
     };
     
     const response = await apiClient.post("/Auth/register", userData);
-    const { token, user } = response.data;
+    const { token, refreshToken, user } = response.data;
     
     // Return both token and user data for Redux store
-    return { token, user };
+    return { token, refreshToken, user };
   } catch (error) {
     const errorMessage =
       error.response?.data?.message || "Registration failed!";
@@ -28,10 +28,10 @@ export const register = async (data) => {
 export const login = async (data) => {
   try {
     const response = await apiClient.post("/Auth/login", data);
-    const { token, user } = response.data;
+    const { token, refreshToken, user } = response.data;
     
-    // Return both token and user data for Redux store
-    return { token, user };
+    // Return both token, refreshToken and user data for Redux store
+    return { token, refreshToken, user };
   } catch (error) {
     const errorMessage = error.response?.data?.message || "Login failed!";
     console.error(errorMessage);
@@ -43,14 +43,47 @@ export const login = async (data) => {
 export const googleLogin = async (googleToken) => {
   try {
     const response = await apiClient.post("/Auth/google-login", { googleToken });
-    const { token, user } = response.data;
+    const { token, refreshToken, user } = response.data;
     
-    // Return both token and user data for Redux store
-    return { token, user };
+    // Return both token, refreshToken and user data for Redux store
+    return { token, refreshToken, user };
   } catch (error) {
     const errorMessage = error.response?.data?.message || "Google login failed!";
     console.error(errorMessage);
     throw new Error(errorMessage);
+  }
+};
+
+// Refresh token function - lấy token mới khi token hiện tại hết hạn
+export const refreshToken = async (refreshTokenStr) => {
+  try {
+    const response = await apiClient.post("/Auth/refresh-token", { 
+      refreshToken: refreshTokenStr 
+    });
+    
+    const { token, refreshToken: newRefreshToken } = response.data;
+    
+    return { token, refreshToken: newRefreshToken };
+  } catch (error) {
+    const errorMessage = error.response?.data?.message || "Failed to refresh token!";
+    console.error(errorMessage);
+    throw new Error(errorMessage);
+  }
+};
+
+// Revoke token function - vô hiệu hóa refresh token khi logout
+export const revokeToken = async (refreshTokenStr) => {
+  try {
+    await apiClient.post("/Auth/revoke-token", { 
+      refreshToken: refreshTokenStr 
+    });
+    
+    return { success: true };
+  } catch (error) {
+    const errorMessage = error.response?.data?.message || "Failed to revoke token!";
+    console.error(errorMessage);
+    // Không throw error ở đây để không làm gián đoạn quá trình logout
+    return { success: false, error: errorMessage };
   }
 };
 
