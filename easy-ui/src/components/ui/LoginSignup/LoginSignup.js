@@ -25,8 +25,8 @@ function LoginSignup() {
   const registerBtnRef = useRef(null);
   const loginBtnRef = useRef(null);
   const [formData, setFormData] = useState({
-    email: "",
-    password: "",
+    email: "test1@gmail.com", // Email mặc định cho HR
+    password: "Bmzzxv62002@", // Password mặc định cho HR
     fullName: "",
     userName: "",
     phoneNumber: "",
@@ -172,7 +172,10 @@ function LoginSignup() {
     });
     
     // Store token in Redux
-    dispatch(loginAction({ token: response.token }));
+    dispatch(loginAction({ 
+      token: response.token, 
+      refreshToken: response.refreshToken
+    }));
     
     // Save credentials if remember me is checked
     if (rememberMe) {
@@ -244,10 +247,10 @@ function LoginSignup() {
             
             try {
               // Call our backend API with the Google token
-              const { token, user } = await googleLogin(googleToken);
+              const { token, refreshToken, user } = await googleLogin(googleToken);
               
               // Store received JWT token in Redux
-              dispatch(loginAction({ token, user }));
+              dispatch(loginAction({ token, refreshToken, user }));
               
               // Đánh dấu đã chuyển hướng để tránh các useEffect khác chạy
               hasRedirectedRef.current = true;

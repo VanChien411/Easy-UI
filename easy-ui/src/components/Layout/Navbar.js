@@ -7,6 +7,7 @@ import { setCart } from "../../redux/slices/cartSlice";
 import { logout, updateUser } from '../../redux/slices/authSlice'; // Import logout action
 import { fetchCategories } from "../../services/categoriesService"; // Import categoriesService
 import UserManagerService from "../../services/usermanagerService"; // Import UserManagerService
+import { revokeToken } from "../../services/userService"; // Import revokeToken service
 import { jwtDecode } from "jwt-decode"; // Import jwt-decode for token decoding
 import "./Navbar.css"; // Import the CSS file
 
@@ -160,11 +161,27 @@ function Navbar() {
     setIsCartOpen(false);
   };
   
-  const handleLogout = () => {
-    // Clear out auth state
-    dispatch(logout());
-    setUserDetail(null);
-    navigate('/LoginSignup/login');
+  const handleLogout = async () => {
+    try {
+      // Lấy refreshToken từ localStorage hoặc state
+      const refreshTokenValue = localStorage.getItem('refreshToken');
+      
+      if (refreshTokenValue) {
+        // Vô hiệu hóa refresh token trên server
+        await revokeToken(refreshTokenValue);
+      }
+      
+      // Sau đó mới đăng xuất trên client
+      dispatch(logout());
+      setUserDetail(null);
+      navigate('/LoginSignup/login');
+    } catch (error) {
+      console.error("Error during logout:", error);
+      // Vẫn đăng xuất trên client ngay cả khi có lỗi
+      dispatch(logout());
+      setUserDetail(null);
+      navigate('/LoginSignup/login');
+    }
   };
 
   // handleDevelopToggle handles opening/closing the Develop dropdown
