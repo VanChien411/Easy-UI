@@ -22,9 +22,9 @@ function PageHome({ children }) {
       <Header />
       <main className={showSidebar ? '' : 'fullwidth'}>
         {isHomePage && <HeroSection />}
-        <article className={!isHomePage ? 'content-no-hero' : ''}>
-          {children} {/* Nội dung của các route sẽ được render ở đây */}
-        </article>
+        <>
+          {children} 
+        </>
         {showSidebar && <Sidebar />}
       </main>
       <Footer />
