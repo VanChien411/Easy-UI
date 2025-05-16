@@ -168,14 +168,9 @@ function Content() {
 
   if (isLoading) {
     return (
-      <div className="content-container">
-        <div className="category-navigation">
+      <>
+      <div className="category-navigation">
           <div className="categories-container">
-            <div className="filter-dropdown" ref={filterRef}>
-              <button className="filter-button" onClick={() => setIsFilterOpen(!isFilterOpen)}>
-                {sortFilter} <span className="dropdown-arrow">▼</span>
-              </button>
-            </div>
             
             <div className="category-nav-items">
               <button 
@@ -197,24 +192,60 @@ function Content() {
               ))}
             </div>
           </div>
+          
+          
         </div>
+        <div className="content-container">
+        <div className="filter-dropdown ml-auto mt-4" ref={filterRef}>
+          <button className="filter-button" onClick={() => setIsFilterOpen(!isFilterOpen)}>
+              {sortFilter} <span className="dropdown-arrow">▼</span>
+            </button>
+        </div>
+            
         <div className="skeleton-grid">
           {[...Array(16)].map((_, index) => (
             <Skeleton key={index} />
           ))}
         </div>
       </div>
+      </>
+      
     );
   }
 
   return (
-    <div className="content-container">
-      <div className="category-navigation">
+    <>
+    <div className="category-navigation">
         <div className="categories-container">
-          <div className="filter-dropdown" ref={filterRef}>
-            <button className="filter-button" onClick={() => setIsFilterOpen(!isFilterOpen)}>
-              {sortFilter} <span className="dropdown-arrow">▼</span>
+          
+          <div className="category-nav-items">
+            <button 
+              key="all" 
+              className={`category-nav-item ${activeCategory === null ? 'active' : ''}`}
+              onClick={() => handleCategoryChange(null)}
+            >
+              All Components
             </button>
+            
+            {categoriesList.map((category) => (
+              <button 
+                key={category.id} 
+                className={`category-nav-item ${activeCategory === category.id ? 'active' : ''}`}
+                onClick={() => handleCategoryChange(category.id)}
+              >
+                {category.name}
+              </button>
+            ))}
+          </div>
+        </div>
+        
+      </div>
+      <div className="content-container">
+      
+      <div className="filter-dropdown ml-auto mt-4" ref={filterRef}>
+        <button className="filter-button" onClick={() => setIsFilterOpen(!isFilterOpen)}>
+            {sortFilter} <span className="dropdown-arrow">▼</span>
+          </button>
             {isFilterOpen && (
               <div className="filter-dropdown-content">
                 <button 
@@ -238,29 +269,6 @@ function Content() {
               </div>
             )}
           </div>
-          
-          <div className="category-nav-items">
-            <button 
-              key="all" 
-              className={`category-nav-item ${activeCategory === null ? 'active' : ''}`}
-              onClick={() => handleCategoryChange(null)}
-            >
-              All Components
-            </button>
-            
-            {categoriesList.map((category) => (
-              <button 
-                key={category.id} 
-                className={`category-nav-item ${activeCategory === category.id ? 'active' : ''}`}
-                onClick={() => handleCategoryChange(category.id)}
-              >
-                {category.name}
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-      
       <div className="content-header">
         <h2 className="content-title">
           {getActiveCategoryName()} {activeCategory !== null ? 'Components' : ''}
@@ -294,7 +302,8 @@ function Content() {
           </button>
         </div>
       )}
-    </div>
+    </div></>
+    
   );
 }
 
