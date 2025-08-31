@@ -13,6 +13,7 @@ import {
   fetchTrendingUIComponents
 } from '../../../services/uiComponentsService';
 import useAuth from '../../../hooks/useAuth';
+import { useAuthAction } from '../../../hooks/useAuthAction';
 import CommentsPanel from './CommentsPanel';
 import DetailsPanel from './DetailsPanel';
 import SharePanel from './SharePanel';
@@ -298,6 +299,7 @@ const ProductDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { isAuthenticated, user, userId } = useAuth();
+  const { executeAuthAction } = useAuthAction();
   const dispatch = useDispatch();
   
   // States for UI
@@ -540,31 +542,28 @@ const ProductDetail = () => {
 
   // Handle follow/unfollow actions
   const handleFollowUser = async () => {
-    if (!isAuthenticated) {
-      alert("Please login to follow this user!");
-      return;
-    }
-    
     if (!creatorId || isCurrentUserCreator) return;
     
-    setIsFollowingLoading(true);
-    try {
-      if (isFollowing) {
-        await UserManagerService.unfollowUser(creatorId);
-        localStorage.removeItem(`follow_${creatorId}`);
-        setIsFollowing(false);
-        showSuccessAlert("Unfollowed successfully!");
-      } else {
-        await UserManagerService.followUser(creatorId);
-        localStorage.setItem(`follow_${creatorId}`, 'true');
-        setIsFollowing(true);
-        showSuccessAlert("Following successfully!");
+    await executeAuthAction(async () => {
+      setIsFollowingLoading(true);
+      try {
+        if (isFollowing) {
+          await UserManagerService.unfollowUser(creatorId);
+          localStorage.removeItem(`follow_${creatorId}`);
+          setIsFollowing(false);
+          showSuccessAlert("Unfollowed successfully!");
+        } else {
+          await UserManagerService.followUser(creatorId);
+          localStorage.setItem(`follow_${creatorId}`, 'true');
+          setIsFollowing(true);
+          showSuccessAlert("Following successfully!");
+        }
+      } catch (error) {
+        showErrorAlert(error.message || "Failed to update follow status!");
+      } finally {
+        setIsFollowingLoading(false);
       }
-    } catch (error) {
-      showErrorAlert(error.message || "Failed to update follow status!");
-    } finally {
-      setIsFollowingLoading(false);
-    }
+    }, true); // requireAuth = true
   };
 
   // Kiểm tra trạng thái từ localStorage khi component mount
@@ -685,50 +684,46 @@ const ProductDetail = () => {
   };
 
   const toggleLike = async () => {
-    if (!isAuthenticated) {
-      // If user is not authenticated, show alert or redirect to login
-      alert("Vui lòng đăng nhập để thích nội dung này!");
-      return;
-    }
-    
     // Prevent multiple clicks
     if (isLiking) return;
     
-    setIsLiking(true);
-    
-    try {
-      if (isFavorited) {
-        // Unlike the component
-        const result = await unlikeComponent(id);
-        if (result.success) {
-          setIsFavorited(false);
-          // Ensure likesCount never goes below 0
-          setLikesCount(prev => Math.max(0, prev - 1));
-          console.log('Successfully unliked component. New likes count:', likesCount - 1);
-        } else {
-          console.error('Error unliking component:', result.error);
-        }
-      } else {
-        // Like the component
-        const result = await likeComponent(id);
-        if (result.success) {
-          setIsFavorited(true);
-          setLikesCount(prev => prev + 1);
-          console.log('Successfully liked component. New likes count:', likesCount + 1);
-        } else {
-          console.error('Error liking component:', result.error);
-        }
-      }
+    await executeAuthAction(async () => {
+      setIsLiking(true);
       
-      // Refresh likes data from the server to ensure accuracy
-      setTimeout(() => {
-        fetchLikesData();
-      }, 500);
-    } catch (error) {
-      console.error("Error toggling like:", error);
-    } finally {
-      setIsLiking(false);
-    }
+      try {
+        if (isFavorited) {
+          // Unlike the component
+          const result = await unlikeComponent(id);
+          if (result.success) {
+            setIsFavorited(false);
+            // Ensure likesCount never goes below 0
+            setLikesCount(prev => Math.max(0, prev - 1));
+            console.log('Successfully unliked component. New likes count:', likesCount - 1);
+          } else {
+            console.error('Error unliking component:', result.error);
+          }
+        } else {
+          // Like the component
+          const result = await likeComponent(id);
+          if (result.success) {
+            setIsFavorited(true);
+            setLikesCount(prev => prev + 1);
+            console.log('Successfully liked component. New likes count:', likesCount + 1);
+          } else {
+            console.error('Error liking component:', result.error);
+          }
+        }
+        
+        // Refresh likes data from the server to ensure accuracy
+        setTimeout(() => {
+          fetchLikesData();
+        }, 500);
+      } catch (error) {
+        console.error("Error toggling like:", error);
+      } finally {
+        setIsLiking(false);
+      }
+    }, true); // requireAuth = true
   };
 
   const toggleSave = () => {

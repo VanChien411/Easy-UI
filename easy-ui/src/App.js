@@ -1,5 +1,6 @@
 import "./App.css";
 import LoginSignup from "./components/ui/LoginSignup/LoginSignup";
+import LoginModal from "./components/ui/LoginSignup/LoginModal";
 import PageNotFound from "./components/ui/PageNotFound";
 import PageHome from "./pages/Home/Page-home";
 import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
@@ -26,6 +27,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import Alert from './components/utils/Alert';
 import VerifyEmail from './pages/VerifyEmail';
 import { UserProfileProvider } from './hooks/UserProfileContext';
+import { LoginModalProvider, useLoginModal } from './hooks/useLoginModal';
 import BlogPage from './components/ui/Blog/BlogPage';
 import BlogPost from './components/ui/Blog/BlogPost';
 import BlogTagPage from './components/ui/Blog/BlogTagPage';
@@ -85,28 +87,25 @@ const RequireAuth = ({ children }) => {
 
 function App() {
   return (
-    <div className="App">
-      <Router>
-        {/* Các route của ứng dụng */}
-        <Routes>
-          {/* Public routes */}
-          <Route path="/LoginSignup" element={<LoginSignup />} />
-          <Route path="/LoginSignup/:action" element={<LoginSignup />} />
-          <Route path="/verify-email" element={<VerifyEmail />} />
-          
-          {/* Redirect root to login if no token, otherwise to home */}
-          <Route 
-            path="/" 
-            element={
-              localStorage.getItem('authToken') ? (
+    <LoginModalProvider>
+      <div className="App">
+        <Router>
+          {/* Các route của ứng dụng */}
+          <Routes>
+            {/* Public routes */}
+            <Route path="/LoginSignup" element={<LoginSignup />} />
+            <Route path="/LoginSignup/:action" element={<LoginSignup />} />
+            <Route path="/verify-email" element={<VerifyEmail />} />
+            
+            {/* Root route - always accessible */}
+            <Route 
+              path="/" 
+              element={
                 <PageHome>
                   <Content />
                 </PageHome>
-              ) : (
-                <Navigate to="/LoginSignup/login" replace />
-              )
-            } 
-          />
+              } 
+            />
 
           {/* Protected routes */}
           <Route
@@ -122,31 +121,25 @@ function App() {
           <Route
             path="/search/:keyword"
             element={
-              <RequireAuth>
-                <PageHome>
-                  <SearchPage />
-                </PageHome>
-              </RequireAuth>
+              <PageHome>
+                <SearchPage />
+              </PageHome>
             }
           />
           <Route
             path="/categories"
             element={
-              <RequireAuth>
-                <PageHome>
-                  <CategoryList />
-                </PageHome>
-              </RequireAuth>
+              <PageHome>
+                <CategoryList />
+              </PageHome>
             }
           />
           <Route
             path="/category/:categoryId"
             element={
-              <RequireAuth>
-                <PageHome>
-                  <CategoryComponents />
-                </PageHome>
-              </RequireAuth>
+              <PageHome>
+                <CategoryComponents />
+              </PageHome>
             }
           />
           <Route
@@ -212,31 +205,25 @@ function App() {
           <Route
             path="/blog"
             element={
-              <RequireAuth>
-                <PageHome>
-                  <BlogPage />
-                </PageHome>
-              </RequireAuth>
+              <PageHome>
+                <BlogPage />
+              </PageHome>
             }
           />
           <Route
             path="/blog/:slug"
             element={
-              <RequireAuth>
-                <PageHome>
-                  <BlogPost />
-                </PageHome>
-              </RequireAuth>
+              <PageHome>
+                <BlogPost />
+              </PageHome>
             }
           />
           <Route
             path="/blog/tag/:tag"
             element={
-              <RequireAuth>
-                <PageHome>
-                  <BlogTagPage />
-                </PageHome>
-              </RequireAuth>
+              <PageHome>
+                <BlogTagPage />
+              </PageHome>
             }
           />
 
@@ -338,21 +325,17 @@ function App() {
           <Route
             path="/product/:id"
             element={
-              <RequireAuth>
-                <PageHome>
-                  <ProductDetail />
-                </PageHome>
-              </RequireAuth>
+              <PageHome>
+                <ProductDetail />
+              </PageHome>
             }
           />
           <Route
             path="/components"
             element={
-              <RequireAuth>
-                <PageHome>
-                  <Content />
-                </PageHome>
-              </RequireAuth>
+              <PageHome>
+                <Content />
+              </PageHome>
             }
           />
           
@@ -362,7 +345,22 @@ function App() {
       </Router>
       <ToastContainer />
       <Alert />
+      <LoginModalWrapper />
     </div>
+    </LoginModalProvider>
+  );
+}
+
+// Component để render LoginModal
+function LoginModalWrapper() {
+  const { isModalOpen, closeLoginModal, handleLoginSuccess } = useLoginModal();
+  
+  return (
+    <LoginModal
+      isOpen={isModalOpen}
+      onClose={closeLoginModal}
+      onLoginSuccess={handleLoginSuccess}
+    />
   );
 }
 

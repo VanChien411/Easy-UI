@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { FaStar, FaRegStar, FaEdit, FaTrash, FaTimes } from 'react-icons/fa';
 import useComments from '../../../hooks/useComments';
 import useAuth from '../../../hooks/useAuth';
+import { useAuthAction } from '../../../hooks/useAuthAction';
 import { fetchComments } from '../../../services/commentsService';
 import './ProductDetail.css';
 import { showSuccessAlert, showErrorAlert } from "../../utils/Alert";
@@ -9,6 +10,7 @@ import { showSuccessAlert, showErrorAlert } from "../../utils/Alert";
 const CommentsPanel = ({ onClose, componentId }) => {
   // Get auth state
   const { isAuthenticated, user } = useAuth();
+  const { executeAuthAction } = useAuthAction();
   
   // Log current user for debugging
   useEffect(() => {
@@ -100,44 +102,46 @@ const CommentsPanel = ({ onClose, componentId }) => {
   // Handle submitting a new comment
   const handleSubmitComment = async (e) => {
     e.preventDefault();
-    if (!commentText.trim() || submitting || !isAuthenticated) return;
+    if (!commentText.trim() || submitting) return;
     
-    setSubmitting(true);
-    
-    try {
-      const result = await createComment(commentText, rating || null);
+    await executeAuthAction(async () => {
+      setSubmitting(true);
       
-      if (result.success) {
-        setCommentText('');
-        setRating(0);
+      try {
+        const result = await createComment(commentText, rating || null);
         
-        // Add the comment to the display list with current user info
-        const newComment = {
-          id: result.commentId || `temp-${Date.now()}`,
-          content: commentText,
-          rating: rating || null,
-          createdAt: new Date().toISOString(),
-          creatorName: user?.fullName || user?.name || user?.userName || 'Bạn',
-          isCurrentUserComment: true
-        };
-        
-        setDisplayComments(prevComments => [newComment, ...prevComments]);
-        
-        showSuccessAlert('Đã thêm bình luận thành công');
-        
-        // Refresh comments from the server after a short delay to allow DB to update
-        setTimeout(() => {
-          testDirectApiCall();
-        }, 500);
-      } else {
-        showErrorAlert(result.message || 'Không thể thêm bình luận. Vui lòng thử lại sau.');
+        if (result.success) {
+          setCommentText('');
+          setRating(0);
+          
+          // Add the comment to the display list with current user info
+          const newComment = {
+            id: result.commentId || `temp-${Date.now()}`,
+            content: commentText,
+            rating: rating || null,
+            createdAt: new Date().toISOString(),
+            creatorName: user?.fullName || user?.name || user?.userName || 'Bạn',
+            isCurrentUserComment: true
+          };
+          
+          setDisplayComments(prevComments => [newComment, ...prevComments]);
+          
+          showSuccessAlert('Đã thêm bình luận thành công');
+          
+          // Refresh comments from the server after a short delay to allow DB to update
+          setTimeout(() => {
+            testDirectApiCall();
+          }, 500);
+        } else {
+          showErrorAlert(result.message || 'Không thể thêm bình luận. Vui lòng thử lại sau.');
+        }
+      } catch (err) {
+        showErrorAlert('Không thể thêm bình luận. Vui lòng thử lại sau.');
+        console.error('Error adding comment:', err);
+      } finally {
+        setSubmitting(false);
       }
-    } catch (err) {
-      showErrorAlert('Không thể thêm bình luận. Vui lòng thử lại sau.');
-      console.error('Error adding comment:', err);
-    } finally {
-      setSubmitting(false);
-    }
+    }, true); // requireAuth = true
   };
 
   // Handle edit comment

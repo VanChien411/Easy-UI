@@ -1,435 +1,963 @@
 
+/* Modern Login Modal Styles */
+.login-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  backdrop-filter: blur(10px);
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.login-modal-container {
+  position: relative;
+  width: 900px;
+  height: 600px;
+  background: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%);
+  border-radius: 25px;
+  box-shadow: 0 25px 80px rgba(255, 107, 157, 0.4);
+  overflow: hidden;
+  animation: slideIn 0.5s ease-out;
+  transform-origin: center;
+}
+
+@keyframes slideIn {
+  from {
+    transform: scale(0.8) translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+.login-modal-close {
+  position: absolute;
+  top: 25px;
+  right: 30px;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+  color: white;
+  z-index: 10;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(15px);
+  font-weight: bold;
+}
+
+.login-modal-close:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: rotate(90deg) scale(1.1);
+}
+
+.login-modal-content {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+/* Container for the sliding forms */
+.container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: white;
+  border-radius: 25px;
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+}
+
+/* Form containers */
+.form-container {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  transition: all 0.7s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 60px;
+  overflow-y: auto;
+}
+
+.sign-in-container {
+  left: 0;
+  width: 50%;
+  z-index: 2;
+}
+
+.sign-up-container {
+  left: 0;
+  width: 50%;
+  opacity: 0;
+  z-index: 1;
+  visibility: hidden;
+}
+
+.container.active .sign-in-container {
+  transform: translateX(100%);
+  visibility: hidden;
+}
+
+.container.active .sign-up-container {
+  transform: translateX(100%);
+  opacity: 1;
+  z-index: 5;
+  visibility: visible;
+}
+
+/* Form styling */
+.form-container h1 {
+  margin: 0 0 35px 0;
+  font-size: 36px;
+  font-weight: 800;
+  color: #333;
+  text-align: center;
+  letter-spacing: -0.5px;
+}
+
+.form-container span {
+  font-size: 15px;
+  color: #666;
+  text-align: center;
+  margin-bottom: 35px;
+  display: block;
+  font-weight: 500;
+}
+
+/* Social container - chỉ hiển thị ở phần đăng nhập */
+.sign-in-container .social-container {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 35px;
+}
+
+.sign-up-container .social-container {
+  display: none;
+}
+
+.social {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 2px solid #f0f0f0;
+  text-decoration: none;
+  color: #666;
+  font-size: 20px;
+  transition: all 0.3s ease;
+  background: white;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.social:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.social:nth-child(1):hover {
+  border-color: #1877f2;
+  color: #1877f2;
+}
+
+.social:nth-child(2):hover {
+  border-color: #db4437;
+  color: #db4437;
+}
+
+.social:nth-child(3):hover {
+  border-color: #0077b5;
+  color: #0077b5;
+}
+
+/* Google button specific styling */
+.social-container .google {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 2px solid #f0f0f0;
+  text-decoration: none;
+  color: #666;
+  font-size: 20px;
+  transition: all 0.3s ease;
+  background: white;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.social-container .google:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  border-color: #db4437;
+  color: #db4437;
+}
+
+/* Input fields */
+.form-container input {
+  background: #f8f9fa;
+  border: 2px solid #e9ecef;
+  padding: 18px 25px;
+  margin-bottom: 20px;
+  border-radius: 12px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  width: 100%;
+  box-sizing: border-box;
+  font-weight: 500;
+  min-height: 55px;
+}
+
+.form-container input:focus {
+  outline: none;
+  border-color: #ff6b9d;
+  background: white;
+  box-shadow: 0 0 0 4px rgba(255, 107, 157, 0.1);
+  transform: translateY(-2px);
+}
+
+.form-container input::placeholder {
+  color: #adb5bd;
+  font-weight: 400;
+}
+
+/* Password container */
+.password-container {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.password-container input {
+  margin-bottom: 0;
+  padding-right: 60px;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+  color: #666;
+  transition: color 0.3s ease;
+  padding: 5px;
+  border-radius: 50%;
+}
+
+.password-toggle:hover {
+  color: #ff6b9d;
+  background: rgba(255, 107, 157, 0.1);
+}
+
+/* Forgot password link */
+.form-container a {
+  color: #ff6b9d;
+  text-decoration: none;
+  font-size: 14px;
+  margin-bottom: 35px;
+  display: block;
+  text-align: center;
+  transition: color 0.3s ease;
+  font-weight: 600;
+}
+
+.form-container a:hover {
+  color: #c44569;
+  text-decoration: underline;
+}
+
+/* Submit button */
+.form-container button[type="submit"] {
+  background: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%);
+  color: white;
+  padding: 18px 25px;
+  border: none;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  width: 100%;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 5px 20px rgba(255, 107, 157, 0.3);
+  min-height: 55px;
+}
+
+.form-container button[type="submit"]:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 35px rgba(255, 107, 157, 0.4);
+}
+
+.form-container button[type="submit"]:active {
+  transform: translateY(-1px);
+}
+
+.form-container button[type="submit"]:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Overlay container */
+.overlay-container {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 50%;
+  height: 100%;
+  overflow: hidden;
+  transition: transform 0.7s ease-in-out;
+  z-index: 100;
+}
+
+.container.active .overlay-container {
+  transform: translateX(-100%);
+}
+
+.overlay {
+  background: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: 0 0;
+  color: white;
+  position: relative;
+  left: -100%;
+  height: 100%;
+  width: 200%;
+  transform: translateX(0);
+  transition: transform 0.7s ease-in-out;
+}
+
+.container.active .overlay {
+  transform: translateX(50%);
+}
+
+/* Overlay panels */
+.overlay-panel {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 0 50px;
+  text-align: center;
+  top: 0;
+  height: 100%;
+  width: 50%;
+  transform: translateX(0);
+  transition: transform 0.7s ease-in-out;
+}
+
+.overlay-left {
+  transform: translateX(-20%);
+}
+
+.container.active .overlay-left {
+  transform: translateX(0);
+}
+
+.overlay-right {
+  right: 0;
+  transform: translateX(0);
+}
+
+.container.active .overlay-right {
+  transform: translateX(20%);
+}
+
+.overlay-panel h1 {
+  font-size: 38px;
+  font-weight: 800;
+  margin-bottom: 25px;
+  letter-spacing: -0.5px;
+}
+
+.overlay-panel p {
+  font-size: 17px;
+  line-height: 1.7;
+  margin-bottom: 40px;
+  opacity: 0.95;
+  font-weight: 400;
+}
+
+/* Ghost button */
+.ghost {
+  background: transparent;
+  border: 3px solid white;
+  color: white;
+  padding: 15px 35px;
+  border-radius: 30px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.ghost:hover {
+  background: white;
+  color: #ff6b9d;
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive design for modal */
+@media (max-width: 768px) {
+  .login-modal-container {
+    width: 95%;
+    height: 90vh;
+    max-width: 400px;
+  }
+  
+  .container {
+    flex-direction: column;
+  }
+  
+  .form-container {
+    width: 100%;
+    padding: 40px 25px;
+  }
+  
+  .sign-in-container,
+  .sign-up-container {
+    width: 100%;
+  }
+  
+  .overlay-container {
+    display: none;
+  }
+  
+  .container.active .sign-in-container {
+    transform: translateX(0);
+    opacity: 0;
+    visibility: hidden;
+  }
+  
+  .container.active .sign-up-container {
+    transform: translateX(0);
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+/* Loading spinner styles */
+.spinner {
+  display: inline-block;
+  width: 22px;
+  height: 22px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Bubble effect for modal */
+.login-modal-container::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+  animation: bubbleFloat 8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes bubbleFloat {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-25px) rotate(180deg);
+  }
+}
+
+/* Additional bubble effects */
+.login-modal-container::after {
+  content: '';
+  position: absolute;
+  top: 25%;
+  right: 15%;
+  width: 70px;
+  height: 70px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  animation: bubbleRise 5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes bubbleRise {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translateY(-35px) scale(1.3);
+    opacity: 0.7;
+  }
+}
+
+/* Additional decorative elements */
+.overlay::before {
+  content: '';
+  position: absolute;
+  top: 10%;
+  left: 10%;
+  width: 80px;
+  height: 80px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  animation: bubbleFloat 6s ease-in-out infinite reverse;
+  pointer-events: none;
+}
+
+.overlay::after {
+  content: '';
+  position: absolute;
+  bottom: 15%;
+  right: 20%;
+  width: 60px;
+  height: 60px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 50%;
+  animation: bubbleRise 7s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* ======================================== */
+/* ORIGINAL LOGINSIGNUP PAGE STYLES */
+/* ======================================== */
+
 .login-signup * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    text-decoration: none;
-    list-style: none;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  text-decoration: none;
+  list-style: none;
 }
 
 .login-signup {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh; /* Chiều cao của phần tử cha để canh giữa */
-
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
 
 .login-signup body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
 }
 
 .login-signup .container {
-    position: relative;
-    width: 850px;
-    height: 550px;
-    background: #fff;
-    margin: 20px;
-    border-radius: 30px;
-    box-shadow: 0 0 30px rgba(0, 0, 0, .2);
-    overflow: hidden;
-    transition: .3s ease-in-out 0.6s, visibility 0s 0.5s;
+  position: relative;
+  width: 850px;
+  height: 550px;
+  background: #fff;
+  margin: 20px;
+  border-radius: 30px;
+  box-shadow: 0 0 30px rgba(0, 0, 0, .2);
+  overflow: hidden;
+  transition: .3s ease-in-out 0.6s, visibility 0s 0.5s;
 }
 
 .login-signup .container h1 {
-    font-size: 36px;
-    margin: -10px 0;
+  font-size: 36px;
+  margin: -10px 0;
 }
 
 .login-signup .container p {
-    font-size: 14.5px;
-    margin: 15px 0;
+  font-size: 14.5px;
+  margin: 15px 0;
 }
 
 .login-signup form {
-    width: 100%;
+  width: 100%;
 }
 
 .login-signup .form-box {
-    position: absolute;
-    right: 0;
-    width: 50%;
-    height: 100%;
-    background: #fff;
-    display: flex;
-    align-items: center;
-    color: #333;
-    text-align: center;
-    padding: 40px;
-    z-index: 1;
-    transition: .3s ease-in-out 0.6s, visibility 0s 0.5s;
+  position: absolute;
+  right: 0;
+  width: 50%;
+  height: 100%;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  color: #333;
+  text-align: center;
+  padding: 40px;
+  z-index: 1;
+  transition: .3s ease-in-out 0.6s, visibility 0s 0.5s;
 }
 
 .login-signup .container.active .form-box {
-    right: 50%;
+  right: 50%;
 }
 
 .login-signup .form-box.register {
-    visibility: hidden;
+  visibility: hidden;
 }
 
 .login-signup .container.active .form-box.register {
-    visibility: visible;
+  visibility: visible;
 }
 
 .login-signup .input-box {
-    position: relative;
-    margin: 30px 0;
-  
+  position: relative;
+  margin: 30px 0;
 }
 
 .login-signup .input-box input {
-    width: 100%;
-    padding: 13px 50px 13px 20px;
-    background: #eee;
-    border-radius: 8px;
-    border: none;
-    outline: none;
-    font-size: 16px;
-    color: #333;
-    font-weight: 500;
+  width: 100%;
+  padding: 13px 50px 13px 20px;
+  background: #eee;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  color: #333;
+  font-weight: 500;
 }
 
 .login-signup .input-box input::placeholder {
-    color: #888;
-    font-weight: 400;
+  color: #888;
+  font-weight: 400;
 }
 
 .login-signup .input-box i {
-    position: absolute;
-    right: 20px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 20px;
-    width: 20px;
-    /* pointer-events: none; */
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 20px;
+  width: 20px;
 }
 
 .login-signup .forgot-link {
-    margin: 10px;
+  margin: 10px;
 }
 
 .login-signup .forgot-link a {
-    font-size: 14.5px;
-    color: #333;
+  font-size: 14.5px;
+  color: #333;
 }
 
 .login-signup .btn {
-    width: 100%;
-    height: 48px;
-    background: #8d0d66;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, .1);
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-    color: #fff;
-    font-weight: 600;
-    transition: background-color 0.3s, transform 0.3s;
+  width: 100%;
+  height: 48px;
+  background: #8d0d66;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, .1);
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  color: #fff;
+  font-weight: 600;
+  transition: background-color 0.3s, transform 0.3s;
 }
 
 .login-signup .btn:hover {
-    background-color: rgba(225, 47, 199, 0.8);
-    transform: scale(1.05);
+  background-color: rgba(225, 47, 199, 0.8);
+  transform: scale(1.05);
 }
 
 .login-signup .social-icons {
-    display: flex;
-    justify-content: center;
+  display: flex;
+  justify-content: center;
 }
 
 .login-signup .social-icons a {
-    display: inline-flex;
-    padding: 10px;
-    border: 2px solid #ccc;
-    border-radius: 8px;
-    font-size: 24px;
-    color: #333;
-    margin: 0 8px;
-    width: 50px;
-    justify-content: center;
-    transition: all 0.3s ease; /* Thêm hiệu ứng mượt mà */
+  display: inline-flex;
+  padding: 10px;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  font-size: 24px;
+  color: #333;
+  margin: 0 8px;
+  width: 50px;
+  justify-content: center;
+  transition: all 0.3s ease;
 }
-.S9gUrf-YoZ4jf{
-    opacity: 0.5;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-  }
-.login-signup .social-icons a.google {
-    padding: 0px;
 
+.S9gUrf-YoZ4jf {
+  opacity: 0.5;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
 }
+
+.login-signup .social-icons a.google {
+  padding: 0px;
+}
+
 .login-signup .social-icons a:hover {
-    background-color: #333; /* Thêm màu nền khi hover */
-    transform: scale(1.1); /* Tăng kích thước nhẹ */
-    color: #ffffff;
+  background-color: #333;
+  transform: scale(1.1);
+  color: #ffffff;
 }
+
 /* Google */
 .login-signup .social-icons a.google {
-    color: #db4437;
-    border-color: #db4437;
+  color: #db4437;
+  border-color: #db4437;
 }
+
 .login-signup .social-icons a.google:hover {
-    color: #fff;
-    background-color: #db4437;
-    transform: scale(1.1);
-    border-color: #c1351d;
+  color: #fff;
+  background-color: #db4437;
+  transform: scale(1.1);
+  border-color: #c1351d;
 }
 
 /* Facebook */
 .login-signup .social-icons a.facebook {
-    color: #3b5998;
-    border-color: #3b5998;
+  color: #3b5998;
+  border-color: #3b5998;
 }
+
 .login-signup .social-icons a.facebook:hover {
-    color: #fff;
-    background-color: #3b5998;
-    transform: scale(1.1);
-    border-color: #2d4373;
+  color: #fff;
+  background-color: #3b5998;
+  transform: scale(1.1);
+  border-color: #2d4373;
 }
 
 /* GitHub */
 .login-signup .social-icons a.github {
-    color: #333333;
-    border-color: #333333;
+  color: #333333;
+  border-color: #333333;
 }
+
 .login-signup .social-icons a.github:hover {
-    color: #fff;
-    background-color: #333333;
-    transform: scale(1.1);
-    border-color: #222222;
+  color: #fff;
+  background-color: #333333;
+  transform: scale(1.1);
+  border-color: #222222;
 }
 
 /* LinkedIn */
 .login-signup .social-icons a.linkedin {
-    color: #0077b5;
-    border-color: #0077b5;
+  color: #0077b5;
+  border-color: #0077b5;
 }
+
 .login-signup .social-icons a.linkedin:hover {
-    color: #fff;
-    background-color: #0077b5;
-    transform: scale(1.1);
-    border-color: #005582;
+  color: #fff;
+  background-color: #0077b5;
+  transform: scale(1.1);
+  border-color: #005582;
 }
 
 .login-signup .toggle-box {
-    position: absolute;
-    width: 100%;
-    height: 100%;
+  position: absolute;
+  width: 100%;
+  height: 100%;
 }
 
 .login-signup .toggle-box::before {
-    content: '';
-    position: absolute;
-    left: -250%;
-    width: 300%;
-    height: 100%;
-    background: rgba(225, 47, 199, 1);
-    border-radius: 150px;
-    z-index: 2;
-    transition: 0.9s ease-in-out;
+  content: '';
+  position: absolute;
+  left: -250%;
+  width: 300%;
+  height: 100%;
+  background: rgba(225, 47, 199, 1);
+  border-radius: 150px;
+  z-index: 2;
+  transition: 0.9s ease-in-out;
 }
 
 .login-signup .container.active .toggle-box::before {
-    left: 50%;
+  left: 50%;
 }
 
 .login-signup .toggle-panel {
-    position: absolute;
-    width: 50%;
-    height: 100%;
-    color: #fff;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    z-index: 2;
-    transition: .3s ease-in-out;
+  position: absolute;
+  width: 50%;
+  height: 100%;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+  transition: .3s ease-in-out;
 }
 
 .login-signup .toggle-panel.toggle-left {
-    left: 0;
-    transition-delay: 1.2s;
+  left: 0;
+  transition-delay: 1.2s;
 }
 
 .login-signup .container.active .toggle-panel.toggle-left {
-    left: -50%;
-    transition-delay: .6s;
+  left: -50%;
+  transition-delay: .6s;
 }
 
 .login-signup .toggle-panel.toggle-right {
-    right: -50%;
-    transition-delay: .6s;
+  right: -50%;
+  transition-delay: .6s;
 }
 
 .login-signup .container.active .toggle-panel.toggle-right {
-    right: 0;
-    transition-delay: 1.2s;
+  right: 0;
+  transition-delay: 1.2s;
 }
 
 .login-signup .toggle-panel p {
-    margin-bottom: 20px;
+  margin-bottom: 20px;
 }
 
 .login-signup .toggle-panel .btn {
-    width: 160px;
-    height: 46px;
-    background: transparent;
-    border: 2px solid #fff;
-    box-shadow: none;
+  width: 160px;
+  height: 46px;
+  background: transparent;
+  border: 2px solid #fff;
+  box-shadow: none;
 }
 
 @media screen and (max-width: 650px) {
-    .login-signup .container {
-        height: calc(100vh - 40px);
-    }
+  .login-signup .container {
+    height: calc(100vh - 40px);
+  }
 
-    .login-signup .form-box {
-        bottom: 0;
-        width: 100%;
-        height: 70%;
-    }
+  .login-signup .form-box {
+    bottom: 0;
+    width: 100%;
+    height: 70%;
+  }
 
-    .login-signup .container.active .form-box {
-        right: 0;
-        bottom: 30%;
-    }
+  .login-signup .container.active .form-box {
+    right: 0;
+    bottom: 30%;
+  }
 
-    .login-signup .toggle-box::before {
-        left: 0;
-        top: -270%;
-        width: 100%;
-        height: 300%;
-        border-radius: 20vw;
-    }
+  .login-signup .toggle-box::before {
+    left: 0;
+    top: -270%;
+    width: 100%;
+    height: 300%;
+    border-radius: 20vw;
+  }
 
-    .login-signup .container.active .toggle-box::before {
-        left: 0;
-        top: 70%;
-    }
+  .login-signup .container.active .toggle-box::before {
+    left: 0;
+    top: 70%;
+  }
 
-    .login-signup .container.active .toggle-panel.toggle-left {
-        left: 0;
-        top: -30%;
-    }
+  .login-signup .container.active .toggle-panel.toggle-left {
+    left: 0;
+    top: -30%;
+  }
 
-    .login-signup .toggle-panel {
-        width: 100%;
-        height: 30%;
-    }
+  .login-signup .toggle-panel {
+    width: 100%;
+    height: 30%;
+  }
 
-    .login-signup .toggle-panel.toggle-left {
-        top: 0;
-    }
+  .login-signup .toggle-panel.toggle-left {
+    top: 0;
+  }
 
-    .login-signup .toggle-panel.toggle-right {
-        right: 0;
-        bottom: -30%;
-    }
+  .login-signup .toggle-panel.toggle-right {
+    right: 0;
+    bottom: -30%;
+  }
 
-    .login-signup .container.active .toggle-panel.toggle-right {
-        bottom: 0;
-    }
+  .login-signup .container.active .toggle-panel.toggle-right {
+    bottom: 0;
+  }
 }
 
 @media screen and (max-width: 400px) {
-    .login-signup .form-box {
-        padding: 20px;
-    }
+  .login-signup .form-box {
+    padding: 20px;
+  }
 
-    .login-signup .toggle-panel h1 {
-        font-size: 30px;
-    }
+  .login-signup .toggle-panel h1 {
+    font-size: 30px;
+  }
 }
 
-/* -- External Social Link CSS Styles -- */
-
-.login-signup #source-link {
-    top: 120px;
-}
-
-.login-signup #source-link>i {
-    color: rgb(94, 106, 210);
-}
-
-.login-signup #yt-link {
-    top: 65px;
-}
-
-.login-signup #yt-link>i {
-    color: rgb(219, 31, 106);
-}
-
-.login-signup #Fund-link {
-    top: 10px;
-}
-
-.login-signup #Fund-link>i {
-    color: rgb(255, 251, 0);
-}
-
-.login-signup .meta-link {
-    align-items: center;
-    backdrop-filter: blur(3px);
-    background-color: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 6px;
-    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.1);
-    cursor: pointer;
-    display: inline-flex;
-    gap: 5px;
-    left: 10px;
-    padding: 10px 20px;
-    position: fixed;
-    text-decoration: none;
-    transition: background-color 600ms, border-color 600ms;
-    z-index: 10000;
-}
-
-.login-signup .meta-link:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.login-signup .meta-link>i,
-.login-signup .meta-link>span {
-    height: 20px;
-    line-height: 20px;
-}
-
-.login-signup .meta-link>span {
-    color: white;
-    font-family: "Rubik", sans-serif;
-    transition: color 600ms;
-}
+/* Remember me styles */
 .remember-me {
-    display: flex;
-    align-items: center;
-    gap: 8px; /* Thêm khoảng cách giữa checkbox và label */
-  }
-  
-  .remember-me input[type="checkbox"] {
-    margin-right: 0px;
-    cursor: pointer;
-    accent-color: blue; /* Đổi màu checkbox sang xanh */
-    width: 16px; /* Tăng kích thước nếu cần */
-    height: 16px;
-  }
-  
-  .remember-me label {
-    font-size: 14px;
-    color: rgb(86, 86, 86);
-    cursor: pointer;
-  }
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.remember-me input[type="checkbox"] {
+  margin-right: 0px;
+  cursor: pointer;
+  accent-color: blue;
+  width: 16px;
+  height: 16px;
+}
+
+.remember-me label {
+  font-size: 14px;
+  color: rgb(86, 86, 86);
+  cursor: pointer;
+}
+
+/* Password field styles */
 input[type="password"]::-ms-reveal,
 input[type="password"]::-ms-clear {
-  display: none; /* Ẩn icon mắt trên trình duyệt Edge */
+  display: none;
 }
 
 input[type="password"]::-webkit-credentials-auto-fill-button {
-  visibility: hidden; /* Ẩn trên Chrome */
+  visibility: hidden;
+}
+
+/* Password toggle styles */
+.password-toggle {
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.password-toggle:hover {
+  color: #8d0d66;
 }

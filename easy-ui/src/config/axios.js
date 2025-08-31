@@ -4,8 +4,8 @@ import { store } from "../redux/store";
 import { updateToken, setTokenExpired, isTokenExpired } from "../redux/slices/authSlice";
 
 const apiClient = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || "https://easy-ui-backend.onrender.com/api" ,
-  // baseURL: process.env.REACT_APP_API_URL || "http://localhost:8080/api",
+  // baseURL: process.env.REACT_APP_API_URL || "https://easy-ui-backend.onrender.com/api" ,
+  baseURL: process.env.REACT_APP_API_URL || "http://localhost:8080/api",
   timeout: 10000, // Request timeout in milliseconds
   headers: {
     "Content-Type": "application/json",
@@ -39,30 +39,51 @@ apiClient.interceptors.request.use(
       return config;
     }
     
-    // Check all possible token storage locations
-    const token = 
-      localStorage.getItem("authToken") || 
-      localStorage.getItem("auth_token") || 
-      localStorage.getItem("token") ||
-      sessionStorage.getItem("authToken") ||
-      sessionStorage.getItem("auth_token") ||
-      sessionStorage.getItem("token");
+    // Danh sách các API public không cần authentication
+    const publicApis = [
+      '/Article',
+      '/UIComponent',
+      '/UIComponent/trending',
+      '/Category',
+      '/Tag',
+      '/Comment/component',
+      '/AboutUs',
+      '/payment/momo/callback',
+      '/payment/momo/notify'
+    ];
     
-    if (token) {
-      // Kiểm tra nếu token sắp hết hạn (còn 5 phút) thì tự động refresh
-      try {
-        if (isTokenExpired(token)) {
-          console.log("Token expired, will try to refresh");
-          store.dispatch(setTokenExpired(true));
-        }
-      } catch (error) {
-        console.error("Error checking token expiration:", error);
-      }
+    // Kiểm tra xem API hiện tại có phải là public API không
+    const isPublicApi = publicApis.some(api => config.url.includes(api));
+    
+    // Chỉ thêm token cho các API không phải public
+    if (!isPublicApi) {
+      // Check all possible token storage locations
+      const token = 
+        localStorage.getItem("authToken") || 
+        localStorage.getItem("auth_token") || 
+        localStorage.getItem("token") ||
+        sessionStorage.getItem("authToken") ||
+        sessionStorage.getItem("auth_token") ||
+        sessionStorage.getItem("token");
       
-      console.log("Found auth token, adding to request headers");
-      config.headers.Authorization = `Bearer ${token}`;
+      if (token) {
+        // Kiểm tra nếu token sắp hết hạn (còn 5 phút) thì tự động refresh
+        try {
+          if (isTokenExpired(token)) {
+            console.log("Token expired, will try to refresh");
+            store.dispatch(setTokenExpired(true));
+          }
+        } catch (error) {
+          console.error("Error checking token expiration:", error);
+        }
+        
+        console.log("Found auth token, adding to request headers");
+        config.headers.Authorization = `Bearer ${token}`;
+      } else {
+        console.log("No auth token found for protected API");
+      }
     } else {
-      console.log("No auth token found for request");
+      console.log("Public API detected, skipping token authentication");
     }
     
     // Log the final request config for debugging
